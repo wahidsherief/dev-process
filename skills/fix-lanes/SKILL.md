@@ -28,7 +28,7 @@ Severity: **S1** outage, data loss or security exposure. **S2** a major feature 
 4. **Minimal fix.** The smallest change. No refactoring or cleanup in the same PR. Never "fix" by weakening or deleting a test, or by swallowing the error.
 5. **Prove.** The new test passes, the whole suite passes, and a neighbouring behaviour is checked.
 6. **Record.** `docs/memory/fix/YYYY-MM-DD-name.md` from `templates/fix-note.md`: symptom, root cause, fix, test, prevention.
-7. **Done check (short).** Failing then passing test shown; root cause stated; no unrelated changes; suite green; memory note; approver named. If the fix touched a query, UI or auth code, also apply `db-review`, `ui-check` or `security-check`.
+7. **Done check (short).** Failing then passing test shown; root cause stated; no unrelated changes; suite green; memory note; approver named. If the fix touched a query, UI, auth code or code that calls an AI provider, also apply `db-review`, `ui-check`, `security-check` or `ai-check`.
 
 Expected size under about 100 changed lines. Larger: say why, or split.
 
