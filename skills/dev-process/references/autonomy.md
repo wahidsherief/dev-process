@@ -14,6 +14,10 @@ Goal: easy for the developer, strict underneath.
 - Tests for what is built; mocks and seed data
 - Gathering proof: query counts, test output, screenshots at 360 / 768 / 1280 px, accessibility scan, log line
 
+## Scope: changed code only
+
+Everything above applies to the lines and components this task changes or adds. Do not refactor, restyle or add features to nearby code to meet a standard. Report it in the handoff as "Noticed, not changed" so the team can decide.
+
 ## Ask only when needed
 
 - The requirement is unclear or has more than one reasonable reading

@@ -40,7 +40,7 @@ import json, sys
 d = json.load(open(sys.argv[1]))
 assert d["skill_name"] == sys.argv[2]
 ev = d["evals"]
-assert 3 <= len(ev) <= 6, "need 3 to 6 evals, have %d" % len(ev)
+assert 3 <= len(ev) <= 8, "need 3 to 8 evals, have %d" % len(ev)
 assert any(e.get("should_trigger") is False for e in ev), "need a non-trigger eval"
 assert any(e.get("should_trigger", True) for e in ev), "need a trigger eval"
 ids = [e["id"] for e in ev]; assert len(set(ids)) == len(ids), "duplicate ids"

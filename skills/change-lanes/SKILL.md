@@ -55,13 +55,15 @@ If it grows past the limits, say so and switch to the full flow.
 
 ## Handoff
 
-Always end with this handoff, under 12 lines. The first line must name the lane (quick change, refactor, upgrade, spike or release):
+Always end with this handoff, under 14 lines. The first line must name the lane (quick change, refactor, upgrade, spike or release):
 
 ```
 Lane: <lane>   Result: <done | needs you>
 Did: <one or two lines>
 Applied automatically: <one line, with numbers>
 Proof: <what was run and the result: tests before -> after, scan before -> after>
+Skipped: <standards or checks not applied, with a reason> or "none"
+Noticed, not changed: <existing non-compliance nearby> or "none"
 Needs you: <only real items> or "nothing"
 PR: <ready-to-paste title and description>
 ```

@@ -10,6 +10,8 @@ Standards for AI-integrated systems. Full tier.
 
 Apply when a feature calls an AI provider. AI usage must be visible, limited and priced. Full tier.
 
+**Scope.** Apply these standards to the lines and components this task changes or adds, not to the rest of the file or screen. Do not refactor existing code to meet them. If existing code nearby breaks a standard, leave it and note it under "Noticed, not changed" in the handoff.
+
 1. **Settings page.** Provider, model, API key (masked), limits, model options, mock mode. Store the key encrypted or in a secret store, never as plaintext in the database or in code.
 2. **Service layer.** One service for every AI call. Timeouts, safe retries, clear failure messages.
 3. **Usage log and dashboard.** Log every call: model, tokens in, tokens out, cost, feature, user, time. Dashboard: today, this month, by feature, by user.

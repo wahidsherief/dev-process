@@ -10,6 +10,8 @@ Backend and data standards. Apply them automatically while building. Do not ask 
 
 [L] = applies in Light and Full. No tag = Full only. Apply these automatically when the task touches API, data, jobs or email.
 
+**Scope.** Apply these standards to the lines and components this task changes or adds, not to the rest of the file or screen. Do not refactor existing code to meet them. If existing code nearby breaks a standard, leave it and note it under "Noticed, not changed" in the handoff.
+
 ## Before you finish (every time)
 1. Lists are paginated. Every foreign-key, filter and sort column has an index, checked with the real query plan.
 2. A test fails if the query count grows.

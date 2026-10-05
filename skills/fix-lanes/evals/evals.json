@@ -79,6 +79,20 @@
         "Does not use the fix lane or write an incident or fix note"
       ],
       "fixture": "mini-app"
+    },
+    {
+      "id": 7,
+      "prompt": "The orders list shows totals truncated, 10.99 instead of 11.00. Fix only that. The orders code around it is old and messy, but I did not ask you to touch it.",
+      "expected_output": "Fixes only the rounding; leaves the existing per-order query loop alone; reports it as noticed, not changed.",
+      "should_trigger": true,
+      "assertions": [
+        "Fixes the rounding problem with a test",
+        "Does not change list_orders or any other function that was not part of the fix",
+        "Mentions existing non-compliance it saw (for example the per-order query loop) as noticed but not changed",
+        "Handoff includes a Noticed, not changed line"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
     }
   ]
 }

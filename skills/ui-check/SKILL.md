@@ -10,6 +10,8 @@ Frontend standards. Apply them automatically while building UI and gather the sc
 
 [L] = applies in Light and Full. No tag = Full only. Apply these automatically when the task touches UI.
 
+**Scope.** Apply these standards to the lines and components this task changes or adds, not to the rest of the file or screen. Do not refactor existing code to meet them. If existing code nearby breaks a standard, leave it and note it under "Noticed, not changed" in the handoff.
+
 ## Before you finish (every time)
 1. No hard-coded colors, including shadows and overlays: everything is a token.
 2. Success = toast. Failure = inline alert. Destructive = confirm dialog that states the consequence. See "Feedback patterns".

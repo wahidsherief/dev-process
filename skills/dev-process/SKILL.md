@@ -42,13 +42,15 @@ If a quick change grows past its limits, say so and switch to the full flow.
 7. **Record.** Update `docs/PROCESS.md` (short). Write the memory note when the lane calls for one (`references/04-done-and-memory.md`).
 8. **Handoff.** The summary below. The developer opens the PR; the approver approves.
 
-## Handoff (always this shape, under 12 lines)
+## Handoff (always this shape, under 14 lines)
 
 ```
 Lane: <lane>   Result: <done | needs you>
 Did: <one or two lines>
 Applied automatically: <one line each, with the numbers: queries before -> after, index/plan check, cache key and TTL>
 Proof: <tests, scans, screenshots taken>
+Skipped: <standards or checks not applied, each with a one-line reason> or "none"
+Noticed, not changed: <existing non-compliance seen nearby, one line each> or "none"
 Needs you: <only real items, for example "Screenshots: Customers x dark x 360, 1280 px"> or "nothing"
 PR: <ready-to-paste title and description with the checklist filled in>
 ```
@@ -69,6 +71,7 @@ PR: <ready-to-paste title and description with the checklist filled in>
 5. Log every critical action and report every error.
 6. Never mark something done without proof. N/A only with a written reason.
 7. Never write outside the plan without saying so.
+8. Standards apply to the code this task changes or adds. Do not rewrite surrounding code to meet them. Note nearby non-compliance in the handoff instead ("Noticed, not changed"). If the fix itself requires changing an area, the changed code follows the standard.
 
 Tier: rules tagged [L] apply in the Light tier and the Full tier; the rest apply to Full only. Read it from `docs/PROCESS.md`.
 

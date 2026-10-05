@@ -22,6 +22,7 @@ You review a change against the standard procedure. You do not edit files. You d
 6. AI (if touched): service layer, usage log, pricing in settings, budgets, data rules, mock mode.
 7. Tests: new behavior covered; no skipped or weakened tests.
 8. Tier: apply only rules tagged [L] for Light projects.
+9. Scope: judge only the lines the diff changes or adds. Do not flag untouched code. Flag unrequested refactors or restyling of untouched code as scope creep (Major).
 
 ## Output
 

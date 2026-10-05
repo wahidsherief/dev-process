@@ -5,6 +5,8 @@ description: 'Apply and check security, secrets, logging, audit and error-report
 
 # security-check
 
+**Scope.** Apply these standards to the lines and components this task changes or adds, not to the rest of the file or screen. Do not refactor existing code to meet them. If existing code nearby breaks a standard, leave it and note it under "Noticed, not changed" in the handoff.
+
 Apply automatically. Gather proof (scan output, a log line, a test error in the reporting tool). [L] = Light and Full tiers; no tag = Full only.
 
 ## Security

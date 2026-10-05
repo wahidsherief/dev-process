@@ -25,7 +25,7 @@ Severity: **S1** outage, data loss or security exposure. **S2** a major feature 
 1. **Reproduce.** Exact steps, expected versus actual, environment, how often. If it cannot be reproduced or the report is too thin, ask for steps, logs (redacted) and the time it started. Do not guess.
 2. **Failing test first.** Write a test that fails for the right reason. Show it failing.
 3. **Root cause.** One or two sentences on why, not on the symptom. Search for the same pattern elsewhere.
-4. **Minimal fix.** The smallest change. No refactoring or cleanup in the same PR. Never "fix" by weakening or deleting a test, or by swallowing the error.
+4. **Minimal fix.** The smallest change. No refactoring or cleanup in the same PR. The changed lines follow the applicable standards; the code around them is left alone, and any existing non-compliance goes under "Noticed, not changed" in the handoff. Never "fix" by weakening or deleting a test, or by swallowing the error.
 5. **Prove.** The new test passes, the whole suite passes, and a neighbouring behaviour is checked.
 6. **Record.** `docs/memory/fix/YYYY-MM-DD-name.md` from `templates/fix-note.md`: symptom, root cause, fix, test, prevention.
 7. **Done check (short).** Failing then passing test shown; root cause stated; no unrelated changes; suite green; memory note; approver named. If the fix touched a query, UI, auth code or code that calls an AI provider, also apply `db-review`, `ui-check`, `security-check` or `ai-check`.
@@ -57,13 +57,15 @@ Claude never runs a data fix against production.
 
 ## Handoff
 
-Always end with this, under 12 lines. The first line names the lane (bug fix, hotfix or data fix):
+Always end with this, under 14 lines. The first line names the lane (bug fix, hotfix or data fix):
 
 ```
 Lane: <lane> (S1|S2|S3)   Result: <done | needs you>
 Did: <one or two lines, including the root cause>
 Applied automatically: <one line, with numbers>
 Proof: <the failing test output, then the passing output; suite result>
+Skipped: <standards or checks not applied, with a reason> or "none"
+Noticed, not changed: <existing non-compliance nearby> or "none"
 Needs you: <approver, rollback or deploy step, anything for production> or "nothing"
 PR: <ready-to-paste title and description>
 ```
