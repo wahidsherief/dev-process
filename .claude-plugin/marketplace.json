@@ -1,0 +1,13 @@
+{
+  "name": "dev-process",
+  "owner": {
+    "name": "Wahidul Alam"
+  },
+  "plugins": [
+    {
+      "name": "dev-process",
+      "source": "./",
+      "description": "AI-assisted development process: the developer types the task, the plugin picks the lane and enforces standards, proof and notes behind the scenes. Stack-agnostic."
+    }
+  ]
+}

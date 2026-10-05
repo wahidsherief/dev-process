@@ -89,9 +89,24 @@ python3 tests/run-evals.py      runs every eval with the claude CLI and grades t
 
 Mark the `standards` CI jobs as required in branch protection. Require one approving review.
 
-## Open items
+## Known limitations
 
-- Pilot project: UNIAPTIX (confirm stack for hook and CI commands)
-- Confirm: quick-change threshold (about 50 lines), hotfix approver (technical lead or on-call approver)
-- Process owner: not documented
-- Not yet in the V1 document: requirement intake, autonomy rules, lanes, extension rules, the prompt-secret hook.
+- The standards are guidance to Claude, not enforced code. Hooks and CI enforce only a small set (secrets, risky git commands, lint and tests, PR size, scans, a test with every fix).
+- Standards are intended to apply to the code a task changes. They do not audit or fix existing code.
+- Defaults you may want to change: quick-change limit (about 50 lines), 400-line PR limit, hotfix approver.
+- Eval scores come from an LLM grader and vary between runs. See `tests/EVAL-RESULTS.md` and `tests/TOKEN-COST.md`.
+
+## Install from this repo
+
+```
+/plugin marketplace add wahidsherief/dev-process
+/plugin install dev-process@dev-process
+```
+
+## Contributing
+
+Issues and pull requests are welcome. Run `bash tests/run.sh` and `claude plugin validate .` before opening a PR. A new skill needs an `evals/evals.json` (see the `extend-process` skill).
+
+## License
+
+MIT. See `LICENSE`.
