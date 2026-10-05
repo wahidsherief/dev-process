@@ -1,0 +1,57 @@
+{
+  "skill_name": "db-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add an endpoint that lists orders with each order's customer name.",
+      "expected_output": "Uses one batched query with only needed columns, pagination, an index on the filter column, and a query-count test.",
+      "should_trigger": true,
+      "assertions": [
+        "No query inside a loop",
+        "Loads the customer in the same query or in a batch",
+        "Paginates the list",
+        "Adds or checks an index on the filter or foreign-key column",
+        "Adds a test that fails when the query count grows"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 2,
+      "prompt": "The /orders page is slow. Find out why and fix it.",
+      "expected_output": "Finds the N+1, rewrites it, and shows the query count before and after.",
+      "should_trigger": true,
+      "assertions": [
+        "Identifies the N+1 pattern",
+        "Gives the batched rewrite",
+        "Reports query count before and after",
+        "Mentions the query plan or index check"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 3,
+      "prompt": "Add a cached lookup for the currency list.",
+      "expected_output": "Caches with a key pattern, TTL and invalidation on write, with no per-user data under a shared key, and an admin clear-cache action.",
+      "should_trigger": true,
+      "assertions": [
+        "Names a cache key pattern and a TTL",
+        "Invalidates in the write path, or states exactly where invalidation must be called because no write path exists",
+        "Does not put per-user data under a shared key"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 4,
+      "prompt": "Change the button colour on the login page.",
+      "expected_output": "Not backend work; should not trigger.",
+      "should_trigger": false,
+      "assertions": [
+        "Does not load db-review"
+      ],
+      "fixture": "mini-app"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "skill_name": "ui-check",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build a customer list screen with a search box and a create button.",
+      "expected_output": "Uses tokens, supports dark and light and the three densities, is responsive, has loading, empty and error states, and attaches screenshots.",
+      "should_trigger": true,
+      "assertions": [
+        "Uses design tokens, no hard-coded colours",
+        "Handles loading, empty and error states",
+        "Uses a responsive layout for 360, 768 and 1280 px, or lists the screenshots needed at those widths",
+        "Supports dark and light mode",
+        "Gathers or lists the screenshots as proof"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 2,
+      "prompt": "Add a form for creating a customer with name, email and phone.",
+      "expected_output": "Validates on blur beside the field, keeps entered data after a failed submit, disables submit while sending, maps server errors to fields, and confirms with a toast.",
+      "should_trigger": true,
+      "assertions": [
+        "Message beside the field after leaving it",
+        "Keeps entered data after a failed submit",
+        "Maps server errors to the right fields",
+        "Uses a toast for success, not for field validation"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 3,
+      "prompt": "Delete button for a customer.",
+      "expected_output": "Uses a confirm dialog that states the consequence and offers undo where possible.",
+      "should_trigger": true,
+      "assertions": [
+        "Confirm dialog states the consequence",
+        "Offers undo where possible, or states in the dialog that it cannot be undone",
+        "Uses an alert, not a toast, for failure"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 4,
+      "prompt": "Write a SQL migration to add an index.",
+      "expected_output": "Not UI work; should not trigger.",
+      "should_trigger": false,
+      "assertions": [
+        "Does not load ui-check"
+      ],
+      "fixture": "mini-app"
+    }
+  ]
+}

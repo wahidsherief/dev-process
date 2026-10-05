@@ -1,0 +1,55 @@
+{
+  "skill_name": "ai-check",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a button that summarises a ticket with the AI provider.",
+      "expected_output": "Adds a service layer with timeout and retry, a usage log row, pricing from settings in GBP and USD, a budget check, a settings page and a mock mode.",
+      "should_trigger": true,
+      "assertions": [
+        "Calls the provider through one service layer",
+        "Logs model, tokens in and out, cost, feature, user and time",
+        "Reads prices and the USD to GBP rate from settings",
+        "Shows cost in both GBP and USD",
+        "Provides a mock mode and a test for the cost calculation"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 2,
+      "prompt": "Where should I put the API key for the AI provider?",
+      "expected_output": "Admin settings page, masked, stored encrypted, never in code or prompts or logs.",
+      "should_trigger": true,
+      "assertions": [
+        "Key is masked in the UI",
+        "Stored encrypted or in a secret store",
+        "Never in code or logs"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 3,
+      "prompt": "Add a monthly spend limit for AI usage per user.",
+      "expected_output": "Per-user and monthly budgets in settings, a warning bar and an alert before the limit, and a test.",
+      "should_trigger": true,
+      "assertions": [
+        "Limits live in settings, not code",
+        "Provides a warning before the limit (status, warning bar or alert), or names it as a follow-up slice",
+        "Adds a test for the limit"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 4,
+      "prompt": "Sort this table by date.",
+      "expected_output": "Not AI work; should not trigger.",
+      "should_trigger": false,
+      "assertions": [
+        "Does not load ai-check"
+      ],
+      "fixture": "mini-app"
+    }
+  ]
+}

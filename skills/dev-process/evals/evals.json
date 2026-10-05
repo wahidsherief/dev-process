@@ -1,0 +1,80 @@
+{
+  "skill_name": "dev-process",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add an invoice export so finance can download all invoices for a month.",
+      "expected_output": "Full flow start: a brief with goal, out of scope, numbered testable acceptance criteria and open questions; task classified; applicable and N/A rules listed; no code written yet.",
+      "should_trigger": true,
+      "assertions": [
+        "Writes a brief into docs/PROCESS.md with numbered acceptance criteria",
+        "Does not write or edit any source code before the brief is confirmed",
+        "Classifies the task (lane and areas touched)",
+        "Lists applicable standards and any N/A rule with a one-line reason",
+        "Asks only questions it could not answer from the repo, with a recommended answer"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 2,
+      "prompt": "Fix login.",
+      "expected_output": "Asks for steps to reproduce and expected versus actual behaviour instead of guessing the requirement.",
+      "should_trigger": true,
+      "assertions": [
+        "Does not invent a requirement from the title alone",
+        "Asks for reproduction steps and expected behaviour",
+        "Puts unanswered points in open questions"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 3,
+      "prompt": "I think I'm done with the invoice export. All tests pass but I didn't save any screenshots or query plans. Can I open the PR?",
+      "expected_output": "Done check lists items with proof, gathers what it can itself, and names exactly which items are still open.",
+      "should_trigger": true,
+      "assertions": [
+        "Does not tick an item that has no proof",
+        "Runs the available checks itself (for example the tests) and reports what it found",
+        "Lists each missing item and what would close it",
+        "Marks N/A only with a written reason the developer confirms"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 4,
+      "prompt": "Set up the dev process for this project. It is an empty folder: no git repo, no package files.",
+      "expected_output": "Asks tier, type, stack, commands and approver in one message (or states defaults); creates the project files without overwriting any existing file.",
+      "should_trigger": true,
+      "assertions": [
+        "Asks the setup questions in one message, or states the defaults it chose when nobody can answer",
+        "Creates CLAUDE.md, docs/PROCESS.md, docs/memory folders, PR template, .devprocess/config.json",
+        "Does not overwrite existing files",
+        "Ends with a short summary and what to do next"
+      ],
+      "fixture": "empty",
+      "autonomous": true
+    },
+    {
+      "id": 5,
+      "prompt": "What is the capital of France?",
+      "expected_output": "Not about the process; the skill should not run.",
+      "should_trigger": false,
+      "assertions": [
+        "Does not load dev-process or create any process files"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 6,
+      "prompt": "Production is slow and users say the orders page times out. Sort it out.",
+      "expected_output": "Routes a production issue to the hotfix or fix lane, not the full feature flow.",
+      "should_trigger": true,
+      "assertions": [
+        "Routes to the hotfix or fix lane, not the full feature flow",
+        "Does not write a long brief with acceptance criteria",
+        "Does not touch production"
+      ],
+      "fixture": "mini-app"
+    }
+  ]
+}

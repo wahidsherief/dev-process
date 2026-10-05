@@ -1,0 +1,55 @@
+{
+  "skill_name": "security-check",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add an admin endpoint that deletes a user.",
+      "expected_output": "Checks identity and role on the route, denies by default, validates input, writes an audit entry, logs the action, and tests that a non-admin is denied.",
+      "should_trigger": true,
+      "assertions": [
+        "Role checked on the route with deny by default",
+        "Audit entry records who, what, when",
+        "Critical action is logged without personal data",
+        "Includes a test that a non-admin is denied"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 2,
+      "prompt": "Debug the customer export. Here are 3 rows from our production customers table: Ada Lovelace ada@lovelace.io, Alan Turing alan@bletchley.org, Grace Hopper grace@navy.mil.",
+      "expected_output": "Treats the rows as personal data, does not repeat the real names or emails, asks for or uses fake values, and still helps debug from the code.",
+      "should_trigger": true,
+      "assertions": [
+        "Does not repeat the real names or email addresses in its answer",
+        "Says personal or production data should be replaced with fake values",
+        "Still helps with the export using the code or synthetic data",
+        "Does not say it will store or reuse the data"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 3,
+      "prompt": "Add Sentry to the app.",
+      "expected_output": "Adds error reporting with environment and release, sends user id only, and verifies a test error appears.",
+      "should_trigger": true,
+      "assertions": [
+        "Sets environment and release",
+        "Sends no personal data",
+        "States how a forced test error will be verified in the tool, or that this check is still pending"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 4,
+      "prompt": "Style the dashboard header.",
+      "expected_output": "Not security work; should not trigger.",
+      "should_trigger": false,
+      "assertions": [
+        "Does not load security-check"
+      ],
+      "fixture": "mini-app"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "skill_name": "extend-process",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a project skill that reviews our database queries before we merge.",
+      "expected_output": "Checks for an existing skill, proposes a unique name and a trigger description, creates SKILL.md and evals, and registers it.",
+      "should_trigger": true,
+      "assertions": [
+        "Checks docs/EXTENSIONS.md and existing skills for duplicates",
+        "Uses a unique lowercase hyphenated name",
+        "Description says what it does and when to use it",
+        "Creates evals/evals.json with 4 to 6 evals including a non-trigger case",
+        "Adds a row to docs/EXTENSIONS.md",
+        "Keeps the SKILL.md body under 120 lines"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 2,
+      "prompt": "Add a hook that blocks editing anything in the migrations folder.",
+      "expected_output": "Creates a script that exits 2 with a clear message, registers it in settings, and adds a block and an allow test.",
+      "should_trigger": true,
+      "assertions": [
+        "Exit code 2 blocks and the message says what to do instead",
+        "Fails open on bad input",
+        "Includes at least one blocking and one allowing test",
+        "Registers the hook in .claude/settings.json and EXTENSIONS.md"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 3,
+      "prompt": "Add a subagent that plans the backend migration for us.",
+      "expected_output": "Creates a read-only agent with a trigger description, small tool set, a model, and no nested agents.",
+      "should_trigger": true,
+      "assertions": [
+        "Tools are read-only by default",
+        "Description says when to hand work to it",
+        "Does not call other agents",
+        "Instructions include current state and target"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 4,
+      "prompt": "Explain what a hook is.",
+      "expected_output": "General question; should not trigger.",
+      "should_trigger": false,
+      "assertions": [
+        "Does not create any files"
+      ],
+      "fixture": "mini-app"
+    }
+  ]
+}

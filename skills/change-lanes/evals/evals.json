@@ -1,0 +1,83 @@
+{
+  "skill_name": "change-lanes",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Change the page heading in templates/index.html to 'Order Desk'.",
+      "expected_output": "Quick change: done directly, tests run, short handoff, no brief or plan.",
+      "should_trigger": true,
+      "assertions": [
+        "Makes the change directly without a long brief or plan",
+        "Runs the tests",
+        "Handoff is short and names the quick lane"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 2,
+      "prompt": "Refactor list_orders in app.py so it does not issue one query per order. Behaviour must stay the same.",
+      "expected_output": "Refactor lane: tests green before and after, no test edited to pass, no feature mixed in.",
+      "should_trigger": true,
+      "assertions": [
+        "Runs tests before changing code",
+        "Keeps behaviour identical",
+        "Does not edit tests to make them pass",
+        "Tests green after"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 3,
+      "prompt": "Upgrade the requests dependency in requirements.txt to a current safe version.",
+      "expected_output": "Upgrade lane: scan before and after, tests at each step, rollback is a revert.",
+      "should_trigger": true,
+      "assertions": [
+        "Runs or plans a dependency scan before and after",
+        "Runs tests after the change",
+        "States that rollback is reverting the change",
+        "Notes breaking changes or reads the changelog"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 4,
+      "prompt": "Can we move the orders list to a background job queue? Not sure it is worth it, please find out.",
+      "expected_output": "Spike: time boxed, short note with recommendation, nothing merged.",
+      "should_trigger": true,
+      "assertions": [
+        "Treats it as a spike with a time box",
+        "Produces a short note with a recommendation",
+        "Does not ship production changes"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 5,
+      "prompt": "Prepare release 1.4 from what is merged on main.",
+      "expected_output": "Release lane: notes, pre-release checklist with rollback, release owner sign-off; no deploy.",
+      "should_trigger": true,
+      "assertions": [
+        "Produces release notes",
+        "Lists a pre-release checklist with rollback steps",
+        "Names the release owner as the approver",
+        "Does not deploy"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 6,
+      "prompt": "Explain the difference between a process and a thread.",
+      "expected_output": "Not about the dev process; no skill runs.",
+      "should_trigger": false,
+      "assertions": [
+        "Does not load change-lanes or create any files"
+      ],
+      "fixture": "mini-app"
+    }
+  ]
+}

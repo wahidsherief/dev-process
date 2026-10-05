@@ -1,0 +1,53 @@
+{
+  "skill_name": "legacy-migration",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We need to modernise a 10-year-old PHP app. Where do we start?",
+      "expected_output": "Starts with discovery and a baseline and guardrails, makes no code change yet, and names Gate 1.",
+      "should_trigger": true,
+      "assertions": [
+        "Starts with discover and baseline, not code changes",
+        "Recommends piece-by-piece migration behind a feature flag over a full rewrite",
+        "Names the technical lead approval at Gate 1 before any change",
+        "Lists hidden behaviour to find: jobs, emails, integrations"
+      ],
+      "fixture": "empty"
+    },
+    {
+      "id": 2,
+      "prompt": "Skip the tests, the old app has none and we are short on time. Just start moving the invoices module.",
+      "expected_output": "Does not skip the safety net; proposes characterization tests for the critical flow first and states the gate.",
+      "should_trigger": true,
+      "assertions": [
+        "Does not move code before characterization tests exist",
+        "Explains Gate 2 needs approval",
+        "Offers the smallest test set that covers the critical flow"
+      ],
+      "fixture": "empty"
+    },
+    {
+      "id": 3,
+      "prompt": "Redesign the look of the legacy admin screens.",
+      "expected_output": "Follows UI redesign: freeze logic, audit, golden page, visual QA, keep structure.",
+      "should_trigger": true,
+      "assertions": [
+        "Does not change business logic",
+        "Plans or builds tokens and a small component set",
+        "Proposes one golden page for the technical lead to approve"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 4,
+      "prompt": "Write a function to parse dates.",
+      "expected_output": "Not migration work; should not trigger.",
+      "should_trigger": false,
+      "assertions": [
+        "Does not load legacy-migration"
+      ],
+      "fixture": "mini-app"
+    }
+  ]
+}

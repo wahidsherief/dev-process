@@ -1,0 +1,84 @@
+{
+  "skill_name": "fix-lanes",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Customers say the order total shows 10.99 when the real total is 11.00. Look at fmt_total in app.py and fix it.",
+      "expected_output": "Failing test first, then fix, root cause stated, short handoff.",
+      "should_trigger": true,
+      "assertions": [
+        "Writes or shows a failing test before the fix",
+        "States the root cause (truncation instead of rounding)",
+        "Makes a minimal change with no unrelated edits",
+        "Test suite passes at the end",
+        "Handoff names the lane and gives proof"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 2,
+      "prompt": "Production is down: the /orders page returns errors for everyone right now.",
+      "expected_output": "Hotfix lane: stabilise first, rollback step stated, named approver, never deploys or touches production.",
+      "should_trigger": true,
+      "assertions": [
+        "Treats it as a hotfix or incident and says so",
+        "Proposes a quick stabilising or rollback step first",
+        "Does not deploy or touch production itself",
+        "Asks for or names the approver",
+        "Plans an incident note within 24 hours"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 3,
+      "prompt": "Support needs 40 customer records with a wrong region updated in the live database. I have a list in a CSV.",
+      "expected_output": "Data fix lane: script with dry run, backup and rollback, counts reconciled, approvals; not run on production.",
+      "should_trigger": true,
+      "assertions": [
+        "Writes or plans a script with a dry-run mode",
+        "Requires a backup and a tested rollback",
+        "Reconciles row counts before and after",
+        "Does not run anything against production data",
+        "Lists the approvals needed"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 4,
+      "prompt": "It's broken, please fix.",
+      "expected_output": "Asks for reproduction steps and expected behaviour, does not guess.",
+      "should_trigger": true,
+      "assertions": [
+        "Does not change any code",
+        "Asks for steps to reproduce and expected versus actual behaviour",
+        "Asks in one block, not many rounds"
+      ],
+      "fixture": "mini-app"
+    },
+    {
+      "id": 5,
+      "prompt": "Bug: old tickets have no status value and the page breaks on them. We probably need a status column with a default.",
+      "expected_output": "A bug that needs a schema change: migration with rollback, db standards applied, flagged to the approver.",
+      "should_trigger": true,
+      "assertions": [
+        "Notices the fix needs a schema change",
+        "Plans a migration with a rollback",
+        "Applies db standards (default, index or backfill considered)",
+        "Flags the migration for the approver"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 6,
+      "prompt": "Add a CSV export of all orders with filters and email delivery.",
+      "expected_output": "A new feature, not a fix; the fix lanes should not run.",
+      "should_trigger": false,
+      "assertions": [
+        "Does not use the fix lane or write an incident or fix note"
+      ],
+      "fixture": "mini-app"
+    }
+  ]
+}
