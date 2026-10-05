@@ -16,7 +16,7 @@ For: a small UI tweak, copy or style change, config change, or small enhancement
 1. One acceptance line ("the button says Add customer and is green"). No brief, no plan.
 2. Make the change. Apply only the standard for the area touched (`ui-check` for UI: tokens not hard-coded values, both themes, 360 and 1280 px).
 3. Add a test if there is logic.
-4. Short check, in the handoff: acceptance line met; tests pass; no hard-coded value or secret; for UI, the screenshots taken or the list of screenshots needed (light and dark at 360 and 1280 px).
+4. Short check, in the summary: acceptance line met; tests pass; no hard-coded value or secret; for UI, the screenshots taken or the list of screenshots needed (light and dark at 360 and 1280 px).
 5. Memory note only if there is a decision or gotcha worth keeping (eight lines at most). Otherwise none.
 
 If it grows past the limits, say so and switch to the full flow.
@@ -53,19 +53,16 @@ If it grows past the limits, say so and switch to the full flow.
 4. Stop: the release owner signs off. Claude never deploys.
 5. After release: a watch period for errors and latency, then close the release.
 
-## Handoff
+## Summary
 
-Always end with this handoff, under 14 lines. The first line must name the lane (quick change, refactor, upgrade, spike or release):
+End with the short summary from `dev-process/references/summary-resume.md`, with the lane named first (quick change, refactor, upgrade, spike or release):
 
 ```
-Lane: <lane>   Result: <done | needs you>
-Did: <one or two lines>
-Applied automatically: <one line, with numbers>
+Lane: <lane>
+Checked:  Changed:  How:
 Proof: <what was run and the result: tests before -> after, scan before -> after>
-Skipped: <standards or checks not applied, with a reason> or "none"
-Noticed, not changed: <existing non-compliance nearby> or "none"
-Needs you: <only real items> or "nothing"
-PR: <ready-to-paste title and description>
+Standards applied:  Standards skipped (reason):  Noticed, not changed (only if useful):
+Cost: Low | Medium | High     Next:
 ```
 
 Proof must show output, not a claim. For a refactor, run the tests first, state the result ("baseline: 1 passed") and run them again after. For an upgrade, run the dependency scan before and after, or say exactly which scanner is missing. For a release, include the checklist with a rollback line. Do not stage or commit generated files such as `__pycache__`.

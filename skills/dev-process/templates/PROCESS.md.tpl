@@ -10,7 +10,7 @@ Standards: see `.devprocess/config.json`. Commands for lint, tests and scans are
 - Acceptance criteria (full lane; one line for others):
   1.
 - Plan (a few lines, full lane only):
-- Status: <understand | build | verify | handoff>
+- Status: <understand | build | verify | summary>
 
 ## Done
 <!-- One line per finished task: date, lane, PR link, memory note path. -->

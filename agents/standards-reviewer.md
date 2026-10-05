@@ -10,7 +10,7 @@ You review a change against the standard procedure. You do not edit files. You d
 
 - The diff (use `git diff` against the base branch)
 - `docs/PROCESS.md`: tier, task brief, acceptance criteria, plan
-- The standards skills, only for the areas the diff touches: `security-check`, `db-review`, `ui-check`, `ai-check`, and `dev-process/references/standards-core.md`
+- The standards skills, only for the areas the diff touches: `security-check`, `db-check`, `ui-check`, `ai-check`, and `dev-process/references/standards-core.md`
 
 ## Check
 

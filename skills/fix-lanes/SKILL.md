@@ -28,7 +28,7 @@ Severity: **S1** outage, data loss or security exposure. **S2** a major feature 
 4. **Minimal fix.** The smallest change. No refactoring or cleanup in the same PR. The changed lines follow the applicable standards; the code around them is left alone, and any existing non-compliance goes under "Noticed, not changed" in the handoff. Never "fix" by weakening or deleting a test, or by swallowing the error.
 5. **Prove.** The new test passes, the whole suite passes, and a neighbouring behaviour is checked.
 6. **Record.** `docs/memory/fix/YYYY-MM-DD-name.md` from `templates/fix-note.md`: symptom, root cause, fix, test, prevention.
-7. **Done check (short).** Failing then passing test shown; root cause stated; no unrelated changes; suite green; memory note; approver named. If the fix touched a query, UI, auth code or code that calls an AI provider, also apply `db-review`, `ui-check`, `security-check` or `ai-check`.
+7. **Done check (short).** Failing then passing test shown; root cause stated; no unrelated changes; suite green; memory note; approver named. If the fix touched a query, UI, auth code or code that calls an AI provider, also apply `db-check`, `ui-check`, `security-check` or `ai-check`.
 
 Expected size under about 100 changed lines. Larger: say why, or split.
 
@@ -55,22 +55,19 @@ Claude never deploys, rolls back or touches production itself. It prepares the s
 
 Claude never runs a data fix against production.
 
-## Handoff
+## Summary
 
-Always end with this, under 14 lines. The first line names the lane (bug fix, hotfix or data fix):
+End with the short summary from `dev-process/references/summary-resume.md`, with the lane named first (bug fix, hotfix or data fix; add S1, S2 or S3):
 
 ```
-Lane: <lane> (S1|S2|S3)   Result: <done | needs you>
-Did: <one or two lines, including the root cause>
-Applied automatically: <one line, with numbers>
+Lane: <lane> (S1|S2|S3)
+Checked:  Changed:  How: <include the root cause>
 Proof: <the failing test output, then the passing output; suite result>
-Skipped: <standards or checks not applied, with a reason> or "none"
-Noticed, not changed: <existing non-compliance nearby> or "none"
-Needs you: <approver, rollback or deploy step, anything for production> or "nothing"
-PR: <ready-to-paste title and description>
+Standards applied:  Standards skipped (reason):  Noticed, not changed (only if useful):
+Cost: Low | Medium | High     Next: <approver, rollback or deploy step, production items>
 ```
 
-Proof shows the actual failing run first (paste the one-line failure), then the passing run. Do not stage or commit generated files such as `__pycache__`. A hotfix handoff also lists the incident note due within 24 hours. A data fix handoff lists the dry-run counts and the rollback script.
+Proof shows the actual failing run first (paste the one-line failure), then the passing run. Do not stage or commit generated files such as `__pycache__`. A hotfix summary also lists the incident note due within 24 hours. A data fix summary lists the dry-run counts and the rollback script. Offer PR text only when the next step is opening the PR.
 
 ## Always stop for a human
 

@@ -1,6 +1,6 @@
 ---
 name: dev-process
-description: 'Runs the team development process behind the scenes for any development task: new feature, small change, bug, production issue, refactor, upgrade, migration or release. Use when a developer describes work to do in a project set up with this process (docs/PROCESS.md exists), or runs init or status.'
+description: 'Runs the team development process behind the scenes for any development task: new feature, small change, bug, production issue, refactor, upgrade, migration or release. Use when a developer describes work to do in a project set up with this process (docs/PROCESS.md exists), or runs init, analyze, summary, status, resume or patterns.'
 ---
 
 # dev-process
@@ -9,16 +9,16 @@ The developer describes the work in plain words. You do the rest: pick the lane,
 
 ## What the developer sees
 
-- They type the task, nothing else. No commands, no modes.
-- Optional commands: `init` (once per project) and `status` (where is the task).
+- They type the task. No separate start step, no modes, and they are never asked to choose a lane.
+- Optional commands (namespaced, for example `/dev-process:init`): `init` (once per project; prepares it and continues the current task), `analyze` (project and standards report, on request), `status`, `summary`, `resume` (after `/clear`), `patterns`. Use Claude Code's own `/clear`.
 - You ask **at most one short question block**, only when a wrong guess is costly, each with your recommended answer. Never ask what the repo can answer.
 - You stop for a human only at the points in "Stops".
-- You finish with the handoff (below).
+- You finish every task with the short summary (below).
 
 ## The hidden flow
 
 1. **Understand.** Read `docs/PROCESS.md` (tier, current task), `CLAUDE.md`, and search `docs/memory/` for related notes. Read code only for the area touched.
-2. **Pick the lane and size.** Say the lane in one line.
+2. **Pick the lane and size.** Automatically, from the request and the code. Never ask the developer to choose. If unsure, take the lighter lane that fits, say so, and move up if the work grows. Say the lane in one line.
 
 | Work | Lane | Details |
 |---|---|---|
@@ -37,23 +37,20 @@ If a quick change grows past its limits, say so and switch to the full flow.
 
 3. **Brief** (Full flow only). Goal, out of scope, numbered acceptance criteria. Always draft the criteria yourself with proposed answers. Skip the brief for the other lanes: one acceptance line is enough.
 4. **Plan** (Full flow, hotfix actions, data fix). Short: tables and indexes, settings, log events, cache keys, tests, size. Show it and wait only for new or large work. Otherwise show a two-line summary and continue.
-5. **Build.** Only what the plan says, with tests. Apply the standards for the areas touched, without asking (`references/autonomy.md`): call `security-check`, `db-review`, `ui-check`, `ai-check` as the work touches them.
+5. **Build.** Only what the plan says, with tests. If the task clearly matches an Approved or Active pattern in `docs/PATTERNS.md`, reuse it (`references/patterns.md`). Apply the standards for the areas touched, without asking (`references/autonomy.md`): call `security-check`, `db-check`, `ui-check`, `ai-check` as the work touches them.
 6. **Verify.** Run lint, tests and scans (hooks already run them after edits). Run the `standards-reviewer` agent **only** when the tier is Full and the change is over about 80 lines or touches authentication, permissions, migrations or money. Otherwise review it yourself against the lane's short check. Gather the proof yourself.
 7. **Record.** Update `docs/PROCESS.md` (short). Write the memory note when the lane calls for one (`references/04-done-and-memory.md`).
-8. **Handoff.** The summary below. The developer opens the PR; the approver approves.
+8. **Summary.** The short summary below. The developer opens the PR; the approver approves.
 
-## Handoff (always this shape, under 14 lines)
+## Short summary after every task (always this shape)
 
 ```
-Lane: <lane>   Result: <done | needs you>
-Did: <one or two lines>
-Applied automatically: <one line each, with the numbers: queries before -> after, index/plan check, cache key and TTL>
-Proof: <tests, scans, screenshots taken>
-Skipped: <standards or checks not applied, each with a one-line reason> or "none"
-Noticed, not changed: <existing non-compliance seen nearby, one line each> or "none"
-Needs you: <only real items, for example "Screenshots: Customers x dark x 360, 1280 px"> or "nothing"
-PR: <ready-to-paste title and description with the checklist filled in>
+Lane:  Checked:  Changed:  How:  Proof:
+Standards applied:  Standards skipped (reason):  Noticed, not changed (only if useful):
+Cost: Low | Medium | High     Next:
 ```
+
+One line each, no repetition. Cost is a judgement of context used, never an exact token count. Details, and `summary`, `status` and `resume`: `references/summary-resume.md`.
 
 ## Stops (human decides)
 
@@ -71,7 +68,7 @@ PR: <ready-to-paste title and description with the checklist filled in>
 5. Log every critical action and report every error.
 6. Never mark something done without proof. N/A only with a written reason.
 7. Never write outside the plan without saying so.
-8. Standards apply to the code this task changes or adds. Do not rewrite surrounding code to meet them. Note nearby non-compliance in the handoff instead ("Noticed, not changed"). If the fix itself requires changing an area, the changed code follows the standard.
+8. Fix or build what was requested and apply the relevant standards to the affected area. Do not bring unrelated existing code up to standard. Mention nearby technical debt only when useful ("Noticed, not changed"). If the fix itself requires changing an area, the changed code follows the standard.
 
 Tier: rules tagged [L] apply in the Light tier and the Full tier; the rest apply to Full only. Read it from `docs/PROCESS.md`.
 
@@ -83,9 +80,11 @@ Tier: rules tagged [L] apply in the Light tier and the Full tier; the rest apply
 - One reviewer pass at most, and only when the rule in step 6 says so. Agents do not call agents.
 - Memory notes: eight lines for a quick change or a fix, twenty at most for anything else.
 
-## init and status
+## Commands
 
-- `init`: read `references/01-init.md`. Ask the setup questions in one message.
-- `status`: print the task, lane, step, what is done, and what needs the developer. Five lines.
+- `init`: `references/01-init.md`. Prepares the project, then starts the current task. No project scan.
+- `analyze`: `references/analyze.md`. The only place the whole project and its standards are scanned, and only on request. Reports ✓ Present / ⚠ Partial / ✗ Missing / — N/A. Fixes nothing.
+- `summary`, `status`, `resume`: `references/summary-resume.md`.
+- `patterns`: `references/patterns.md`.
 
 Add a project skill, hook or agent: skill `extend-process`.

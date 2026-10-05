@@ -42,16 +42,17 @@
     },
     {
       "id": 4,
-      "prompt": "Set up the dev process for this project. It is an empty folder: no git repo, no package files.",
-      "expected_output": "Asks tier, type, stack, commands and approver in one message (or states defaults); creates the project files without overwriting any existing file.",
+      "prompt": "Set up the dev process for this project, then fix the typo in the page heading (it says Custmers). It is an existing small app.",
+      "expected_output": "Prepares the project with minimal questions or stated defaults, does not scan the whole project, then continues with the heading fix.",
       "should_trigger": true,
       "assertions": [
-        "Asks the setup questions in one message, or states the defaults it chose when nobody can answer",
-        "Creates CLAUDE.md, docs/PROCESS.md, docs/memory folders, PR template, .devprocess/config.json",
-        "Does not overwrite existing files",
-        "Ends with a short summary and what to do next"
+        "Asks the setup questions in one message, or states the defaults it chose",
+        "CLAUDE.md, docs/PROCESS.md and .devprocess/config.json exist after setup, and no existing file was overwritten",
+        "Does not map or scan the whole project and does not create docs/BASELINE.md or docs/ARCHITECTURE.md",
+        "Continues with the heading fix after setup",
+        "Does not ask the developer to choose a lane"
       ],
-      "fixture": "empty",
+      "fixture": "mini-app",
       "autonomous": true
     },
     {
@@ -75,6 +76,34 @@
         "Does not touch production"
       ],
       "fixture": "mini-app"
+    },
+    {
+      "id": 7,
+      "prompt": "Analyze this project against our frontend and backend standards.",
+      "expected_output": "A short table with Present, Partial, Missing or N/A per standard, each marked as current task, project gap or unrelated; no code changed.",
+      "should_trigger": true,
+      "assertions": [
+        "Uses the marks Present, Partial, Missing or N/A for each standard",
+        "Marks each row as current task, project gap or unrelated",
+        "Does not edit any source code",
+        "Says the result is sample-based or limited",
+        "Saves or presents a compact table, not a long essay"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 8,
+      "prompt": "Show me the approved patterns for modal.",
+      "expected_output": "Lists matching Approved or Active patterns from docs/PATTERNS.md, or says there are none; does not search the codebase or invent patterns.",
+      "should_trigger": true,
+      "assertions": [
+        "Reads docs/PATTERNS.md or says it does not exist or is empty",
+        "Does not invent a pattern",
+        "Does not list Candidate or Deprecated patterns by default"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
     }
   ]
 }

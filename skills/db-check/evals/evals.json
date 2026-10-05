@@ -1,5 +1,5 @@
 {
-  "skill_name": "db-review",
+  "skill_name": "db-check",
   "evals": [
     {
       "id": 1,
@@ -49,7 +49,7 @@
       "expected_output": "Not backend work; should not trigger.",
       "should_trigger": false,
       "assertions": [
-        "Does not load db-review"
+        "Does not load db-check"
       ],
       "fixture": "mini-app"
     }

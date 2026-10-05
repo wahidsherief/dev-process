@@ -44,7 +44,7 @@ Tags: **[L]** applies in Light and Full. No tag: Full only.
 - [L] Tests pass, reviewer report attached when required, approver named, memory note saved
 - [L] Every acceptance criterion in the brief is met, with proof
 
-Only the items for the areas touched need proof. Write the result in the handoff and the PR description, for example `9 of 12: 7 proven, 2 N/A (reasons)`. If an item is open, list exactly what would close it.
+Only the items for the areas touched need proof. Write the result in the summary and the PR description, for example `9 of 12: 7 proven, 2 N/A (reasons)`. If an item is open, list exactly what would close it.
 
 ## Memory note
 

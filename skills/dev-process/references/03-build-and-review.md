@@ -15,6 +15,6 @@
 2. Run the `standards-reviewer` agent **only** when both are true: the tier is Full, and the diff is over about 80 lines or touches authentication, permissions, migrations or money. For everything else, check the diff yourself against the lane's short check.
 3. Fix every blocker and major finding. For each one that stays, say why.
 4. Re-run until clean. One reviewer pass; do not loop the agent.
-5. Put the reviewer verdict in the handoff, one line, with the report path if there is one.
+5. Put the reviewer verdict in the summary, one line, with the report path if there is one.
 
 Do not nest agents.

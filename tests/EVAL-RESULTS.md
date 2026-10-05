@@ -18,7 +18,7 @@ Each eval runs a prompt with the plugin in a fresh copy of `tests/fixtures/mini-
 
 ## Still weak (needs a human look in the pilot)
 
-- `db-review`: on "add an endpoint that lists orders" it fixes the N+1 but sometimes skips pagination, the index check and the query-count test. On caching it names a TTL but not always a key pattern.
+- `db-check`: on "add an endpoint that lists orders" it fixes the N+1 but sometimes skips pagination, the index check and the query-count test. On caching it names a TTL but not always a key pattern.
 - `ui-check`: sometimes leaves a literal colour outside the token block (shadows, overlays).
 - `extend-process`: when run non-interactively it sometimes asks questions instead of creating the files.
 - Headless runs cannot take screenshots or run a browser, so UI proof is only listed, not gathered.

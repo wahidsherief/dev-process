@@ -18,20 +18,20 @@ Describe the work in plain words, in the project repo:
 "Add an invoice export for finance"           -> full flow (brief, plan, build, verify)
 "The order total shows 10.99, should be 11"   -> bug fix: failing test first, then fix
 "Production orders page is down"              -> hotfix: stabilise, rollback, incident note
-"Change the heading to Order Desk"            -> quick change: do it, run tests, short handoff
+"Change the heading to Order Desk"            -> quick change: do it, run tests, short summary
 ```
 
 Only two optional commands exist: `/dev-process:dev-process init` (once per project) and `/dev-process:dev-process status`.
 
-Claude picks the lane, applies the standards itself, asks only when it must, and ends with a handoff of under 12 lines: lane and result, what it did, what was applied automatically (with numbers), proof, what it needs from the developer, and the PR.
+Claude picks the lane, applies the standards itself, asks only when it must, and ends every task with a short summary: lane, what was checked, what changed, how, proof, standards applied and skipped, a Low/Medium/High cost, and the next step.
 
 ## Lanes
 
 | Lane | When | What the developer sees |
 |---|---|---|
-| Full | New feature, large enhancement, new module | Brief, plan (confirm), build, verify, handoff |
-| Quick change | Small UI or copy change, under about 50 lines | Do it, tests, handoff |
-| Bug fix | Something behaves wrongly | Failing test, fix, root cause, handoff |
+| Full | New feature, large enhancement, new module | Brief, plan (confirm), build, verify, summary |
+| Quick change | Small UI or copy change, under about 50 lines | Do it, tests, summary |
+| Bug fix | Something behaves wrongly | Failing test, fix, root cause, summary |
 | Hotfix | Production issue (S1 to S3) | Stabilise, rollback step, named approver, incident note |
 | Data fix | Correct data in a live database | Script with dry run, backup, rollback, reconciled counts, approvals |
 | Refactor | Change structure, not behaviour | Tests green before and after |
@@ -46,11 +46,11 @@ Claude never deploys and never touches production.
 
 | Skill | Job |
 |---|---|
-| `dev-process` | Entry point: picks the lane, runs the flow, handoff. Orchestrates the others. |
+| `dev-process` | Entry point: picks the lane, runs the flow, summary. Orchestrates the others. |
 | `fix-lanes` | Bug fix, hotfix, data fix |
 | `change-lanes` | Quick change, refactor, upgrade, spike, release |
 | `security-check` | Auth, secrets, logging, audit, error reporting, prompt data |
-| `db-review` | API, database, ORM, migrations, cache, jobs, email |
+| `db-check` | API, database, ORM, migrations, cache, jobs, email |
 | `ui-check` | Tokens, density, dark/light, responsive, validation, toasts, fallback pages, accessibility |
 | `ai-check` | Settings, service layer, usage log, GBP/USD pricing, budgets, mock mode |
 | `legacy-migration` | Seven stages, four gates, risks, UI redesign |

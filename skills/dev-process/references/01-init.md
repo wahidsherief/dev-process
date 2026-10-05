@@ -1,8 +1,12 @@
-# init: one-time project setup
+# init: prepare the project, then start the task
 
-Run once per project. Ask as few questions as possible. Answer from the repo where you can.
+Run once per project. It prepares the project and then immediately continues the developer's current task. There is no separate start step. It never scans the whole project (that is `analyze`) and never asks the developer to choose a lane.
 
-## Questions (ask together, one message)
+If `init` runs in the middle of a task, or the developer wrote the task after it, keep that task: finish setup, then carry on with it from where it was. If there is no task, say the project is ready and stop.
+
+## Questions (ask together, one message, skip any you can answer from the repo)
+
+Defaults if nobody answers: Light tier, existing system, detected stack and commands, the developer as approver, no error reporting.
 
 1. Tier: Light (internal tools, prototypes, small fixes) or Full (customer-facing, user data, AI features)?
 2. Project type: new system, existing system, or legacy migration?
@@ -24,15 +28,16 @@ From `templates/`, adapt and write:
 | `.claude/settings.json` | `templates/settings.json.tpl`: deny rules and permissions |
 | `.devprocess/config.json` | commands for the hooks: `{"lint": "...", "test": "..."}` |
 | `.github/workflows/standards.yml` | `templates/standards.yml.tpl`, only if the repo uses GitHub. Otherwise tell the developer what the CI must run. |
-| `docs/BASELINE.md` | `templates/BASELINE.md` |
+| `docs/PATTERNS.md` | `templates/PATTERNS.md.tpl` |
+| `.gitignore` | add `.devprocess/summary.md` if it is not already ignored |
 
 Never overwrite an existing file. If one exists, show a diff and ask.
 
 ## Then
 
-- Existing or legacy project: run the baseline now (see the `legacy-migration` skill, stage 1). Do not change code.
-- New system: offer `design` before any slice.
-- Print a three-line summary of what was created and the next command.
+- Print one line on what was created. Then continue with the current task: pick its lane and run it as usual (see `SKILL.md`).
+- Do not run the baseline or read the whole project. If the developer wants the project and its standards analysed, they run `analyze`.
+- New system with a large first task: the full flow asks for a design page before the first slice.
 
 ## Plugins and tool servers (MCP)
 

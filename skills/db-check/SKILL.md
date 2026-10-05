@@ -1,9 +1,9 @@
 ---
-name: db-review
+name: db-check
 description: 'Apply and check the backend and database standards: N+1 queries, indexes, migrations, caching, background jobs, email, API design. Use when writing or reviewing API endpoints, ORM queries, schema or migrations, cache, queues, or email code, or when asked to optimize a slow query.'
 ---
 
-# db-review
+# db-check
 
 Backend and data standards. Apply them automatically while building. Do not ask the developer for rules you can apply yourself. [L] = Light and Full tiers; no tag = Full only.
 

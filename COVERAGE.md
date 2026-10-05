@@ -20,7 +20,7 @@ Every section of the Standard Procedure (V1) and where the plugin handles it. "G
 | 5 | Settings page | `standards-core.md`; `autonomy.md` | Guides + reviewed |
 | 5 | Test environment | `standards-core.md` | Guides |
 | 6 | Frontend standards (all 17 points) | skill `ui-check` | Guides + reviewed |
-| 7 | Backend standards (all points) | skill `db-review` | Guides + reviewed |
+| 7 | Backend standards (all points) | skill `db-check` | Guides + reviewed |
 | 8 | AI-integrated systems | skill `ai-check` | Guides + reviewed |
 | 9 | Legacy migration: approaches, 7 stages, 4 gates, risks, UI redesign | skill `legacy-migration`; `templates/PROCESS.md.tpl` (migration table) | Guides; human gates |
 | 10 | Done check (12 items) | `references/04-done-and-memory.md`; `templates/pull_request_template.md` | Guides + CI checks the PR box |
@@ -30,7 +30,9 @@ Every section of the Standard Procedure (V1) and where the plugin handles it. "G
 | new | Skill evals | `skills/*/evals/evals.json`; `tests/run-evals.py` | Test suite for each skill |
 | new | Lanes for non-feature work: bug fix, hotfix (S1 to S3), data fix | skill `fix-lanes`; `skills/fix-lanes/templates/`; CI job `fix-has-test` in `templates/standards.yml.tpl` | Guides; Claude never deploys or touches production |
 | new | Lanes for quick change, refactor, upgrade, spike, release | skill `change-lanes`; `skills/change-lanes/templates/` | Guides; release owner signs off |
-| new | Simple developer interface: type the task, lane picked automatically, handoff under 12 lines | `SKILL.md` (lane table, handoff); `references/04-done-and-memory.md` (short checks by lane) | Guides |
+| new | Simple developer interface: type the task, lane picked automatically, short summary after every task | `SKILL.md` (lane table, handoff); `references/04-done-and-memory.md` (short checks by lane) | Guides |
+| new | Commands: init (then start the task), analyze, summary, status, resume | `commands/*.md`; `references/01-init.md`; `references/analyze.md`; `references/summary-resume.md` | Guides; analyze only on request |
+| new | Reusable approved patterns (Candidate, Approved, Active, Deprecated) | `references/patterns.md`; `templates/PATTERNS.md.tpl`; `docs/PATTERNS.md` | Guides; a human approves |
 | new | Token cost controls | `SKILL.md` (Keep it cheap); `references/03-build-and-review.md` (conditional reviewer) | Guides |
 | new | Requirement intake and acceptance criteria | `references/02-start-and-plan.md` | Guides. Not yet in the V1 document |
 | new | Autonomy: apply silently, ask only when needed, always stop for a human | `references/autonomy.md` | Guides. Not yet in the V1 document |
