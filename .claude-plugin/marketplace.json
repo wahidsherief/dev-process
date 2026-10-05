@@ -1,5 +1,6 @@
 {
   "name": "dev-process",
+  "description": "A stack-agnostic, AI-assisted development process for Claude Code teams.",
   "owner": {
     "name": "Wahidul Alam"
   },
