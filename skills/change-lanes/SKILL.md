@@ -57,12 +57,18 @@ If it grows past the limits, say so and switch to the full flow.
 
 End with the short summary from `dev-process/references/summary-resume.md`, with the lane named first (quick change, refactor, upgrade, spike or release):
 
-```
-Lane: <lane>
-Checked:  Changed:  How:
-Proof: <what was run and the result: tests before -> after, scan before -> after>
-Standards applied:  Standards skipped (reason):  Noticed, not changed (only if useful):
-Cost: Low | Medium | High     Next:
-```
+Show it as a two-column markdown table (Item | Result), never a code block. One short phrase per cell, 12 words at most:
+
+| Item | Result |
+|---|---|
+| Lane | <lane> |
+| Task type | memory folder: feature (quick change), refactor (refactor, upgrade), fix (security patch) or decision (spike, release) |
+| Issue | what was wrong or requested, and the impact |
+| Fix | how it was done, files touched, and the proof: <tests before -> after, scan before -> after> |
+| Standards | applied; skipped (reason) |
+| Noticed, not changed | (only if useful) |
+| Memory | docs/memory/<task type>/YYYY-MM-DD-name.md (or "none") |
+| Token cost | Low / Medium / High |
+| Guide | next step for the developer |
 
 Proof must show output, not a claim. For a refactor, run the tests first, state the result ("baseline: 1 passed") and run them again after. For an upgrade, run the dependency scan before and after, or say exactly which scanner is missing. For a release, include the checklist with a rollback line. Do not stage or commit generated files such as `__pycache__`.

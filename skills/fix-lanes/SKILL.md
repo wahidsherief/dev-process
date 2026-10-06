@@ -59,13 +59,19 @@ Claude never runs a data fix against production.
 
 End with the short summary from `dev-process/references/summary-resume.md`, with the lane named first (bug fix, hotfix or data fix; add S1, S2 or S3):
 
-```
-Lane: <lane> (S1|S2|S3)
-Checked:  Changed:  How: <include the root cause>
-Proof: <the failing test output, then the passing output; suite result>
-Standards applied:  Standards skipped (reason):  Noticed, not changed (only if useful):
-Cost: Low | Medium | High     Next: <approver, rollback or deploy step, production items>
-```
+Show it as a two-column markdown table (Item | Result), never a code block. One short phrase per cell, 12 words at most:
+
+| Item | Result |
+|---|---|
+| Lane | <lane> (S1/S2/S3) |
+| Task type | memory folder: fix (bug fix, data fix) or incident (hotfix) |
+| Issue | what was wrong, the impact and the root cause |
+| Fix | how it was fixed, files touched, and the proof: <failing test output, then passing output; suite result> |
+| Standards | applied; skipped (reason) |
+| Noticed, not changed | (only if useful) |
+| Memory | docs/memory/<task type>/YYYY-MM-DD-name.md (or "none") |
+| Token cost | Low / Medium / High |
+| Guide | <approver, rollback or deploy step, production items> |
 
 Proof shows the actual failing run first (paste the one-line failure), then the passing run. Do not stage or commit generated files such as `__pycache__`. A hotfix summary also lists the incident note due within 24 hours. A data fix summary lists the dry-run counts and the rollback script. Offer PR text only when the next step is opening the PR.
 

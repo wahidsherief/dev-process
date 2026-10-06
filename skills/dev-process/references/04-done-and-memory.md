@@ -48,17 +48,19 @@ Only the items for the areas touched need proof. Write the result in the summary
 
 ## Memory note
 
-Draft it in the same PR. Location: `docs/memory/<category>/YYYY-MM-DD-short-name.md`.
+Required for every lane except a trivial quick change. Write the file before the summary, in the same PR; a Stop hook (`scripts/memory-check.sh`) asks for it once if files changed and no note exists. Location: `docs/memory/<category>/YYYY-MM-DD-short-name.md`.
 
-| Folder | Use |
-|---|---|
-| feature | A new capability delivered |
-| fix | A bug or issue resolved. Record the root cause, not only the patch. |
-| refactor | An internal change with no behavior change; non-security upgrades |
-| migration | A legacy slice or data moved |
-| decision | Design records and spike results |
-| incident | A production problem, with cause and prevention |
+| Folder | Use | Task types |
+|---|---|---|
+| feature | A new capability delivered | feature, quick change |
+| fix | A bug or issue resolved. Record the root cause, not only the patch. | bug fix, data fix, security patch |
+| refactor | An internal change with no behavior change; non-security upgrades | refactor, upgrade |
+| migration | A legacy slice or data moved | migration |
+| decision | Design records and spike results | spike, release |
+| incident | A production problem, with cause and prevention | hotfix |
 
-Length: eight lines for a quick change or a fix, twenty at most otherwise. Content: what and why; what changed; decisions and trade-offs; how verified; gotchas; PR link. Skip it for a trivial quick change with nothing worth keeping.
+The **Task type** in every summary table is the folder name above, so the summary and the memory note use the same word. The summary also shows the note's path in its **Memory** row.
+
+Length: eight lines for a quick change or a fix, twenty at most otherwise. Content: what and why; what changed; decisions and trade-offs; how verified; gotchas; PR link. Skip it only for a trivial quick change with nothing worth keeping, and say "Memory: none (trivial)" in the summary.
 
 Before planning any task, search `docs/memory/` for related notes.

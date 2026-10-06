@@ -1,4 +1,4 @@
-# dev-process (v1.4.1)
+# dev-process (v1.4.2)
 
 AI-assisted development standard procedure as a Claude Code plugin. Stack-agnostic. The developer types the task; the standards, proof and notes happen behind the scenes.
 

@@ -38,18 +38,26 @@ A quick change that grows past its limits switches to the full flow; say so.
 4. **Plan** (full flow, hotfix actions, data fix). Short: tables and indexes, settings, log events, cache keys, tests, size. Wait for approval only for new or large work; otherwise show two lines and continue.
 5. **Build.** Only what the plan says, with tests. Reuse an Approved or Active pattern from `docs/PATTERNS.md` when the task clearly matches (`references/patterns.md`). Apply the standards for the areas touched without asking (`references/autonomy.md`): `security-check`, `db-check`, `ui-check`, `ai-check`.
 6. **Verify.** Run lint, tests and scans (hooks run them after edits). Check that every critical action you added has a log or audit line (`security-check`). Run the `standards-reviewer` agent **only** when the task's standard is Risk and the change is over about 80 lines or touches authentication, permissions, migrations or money; otherwise review against the lane's short check yourself. Gather the proof yourself.
-7. **Record.** Update `docs/PROCESS.md` (short). Write the memory note when the lane calls for one (`references/04-done-and-memory.md`).
+7. **Record.** Update `docs/PROCESS.md` (short). Write the memory note into `docs/memory/<task type>/` **before** the summary. It is required for every lane; the only exception is a trivial quick change with nothing worth keeping, shown as "Memory: none (trivial)" (`references/04-done-and-memory.md`). The summary's Memory row must show the real path.
 8. **Summary.** The developer opens the PR; the approver approves.
 
 ## Summary after every task
 
-```
-Lane:  Checked:  Changed:  How:  Proof:
-Standards applied:  Standards skipped (reason):  Noticed, not changed (if useful):
-Cost: Low | Medium | High     Next:
-```
+Show it as a two-column markdown table, never a code block:
 
-One line each, nothing the diff already shows. Cost is a judgement of context used, never an exact token count (definitions: `references/summary-resume.md`).
+| Item | Result |
+|---|---|
+| Lane | |
+| Task type | memory folder: feature, fix, refactor, migration, decision or incident (`references/04-done-and-memory.md`) |
+| Issue | what was wrong or requested, and the impact |
+| Fix | how it was resolved, files touched, and the proof it works |
+| Standards | applied; skipped (reason) |
+| Noticed, not changed | (only if useful) |
+| Memory | docs/memory/<task type>/YYYY-MM-DD-name.md (or "none") |
+| Token cost | Low / Medium / High |
+| Guide | next step for the developer |
+
+Each cell is one short phrase, 12 words at most, no sub-lists, nothing the diff already shows. Cost is a judgement of context used, never an exact token count (definitions: `references/summary-resume.md`).
 
 ## Stops (human decides)
 
