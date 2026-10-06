@@ -2,30 +2,30 @@
   "skill": "dev-process",
   "id": 3,
   "prompt": "I think I'm done with the invoice export. All tests pass but I didn't save any screenshots or query plans. Can I open the PR?",
-  "passed": 2,
+  "passed": 1,
   "total": 4,
   "results": [
     {
       "assertion": "Does not tick an item that has no proof",
       "pass": true,
-      "why": "The response does not claim the PR is ready or that the screenshot/query-plan items are satisfied; it declines to proceed because no work was found."
+      "why": "The response does not claim any checklist item is satisfied. It says it can't confirm readiness and found no invoice export code."
     },
     {
       "assertion": "Runs the available checks itself (for example the tests) and reports what it found",
       "pass": false,
-      "why": "It inspected git state and process docs, but did not run the tests or any checks. It only offered to run them later, once changes are on a branch."
+      "why": "It says it will run `python3 -m unittest discover tests` later but did not run it. It reports only repo inspection (git state, grep, PROCESS.md), not test results."
     },
     {
       "assertion": "Lists each missing item and what would close it",
       "pass": false,
-      "why": "It mentions screenshots and query plans only loosely, says it can't find a rule requiring them, and offers to generate query plans. It gives no itemized list of missing evidence with what would close each item. Screenshots are not addressed with a way to close them."
+      "why": "It gives conditional guidance on query plans (run EXPLAIN QUERY PLAN) and screenshots (only if templates/index.html changed). It does not clearly list each missing item with a closing action. It also does not list the missing acceptance criteria, the standards review, or the invoice work itself as items with ways to close them."
     },
     {
       "assertion": "Marks N/A only with a written reason the developer confirms",
-      "pass": true,
-      "why": "It marks nothing N/A. It suggests the query plans may be worth capturing and asks the developer, and it doesn't unilaterally waive anything."
+      "pass": false,
+      "why": "It suggests screenshots are probably not needed for a backend change, with a reason. It does not ask the developer to confirm, and it treats N/A as its own inference rather than something the developer confirms."
     }
   ],
-  "output_head": "I can't open a PR yet, because I can't find any invoice export work in this repo.\n\n- **Nothing to commit:** you're on `master` and the working tree is clean. `git log` shows only the `base` commit, and there are no other branches.\n- **Process state:** `docs/PROCESS.md` says `Current task: none`, and `docs/memory/feature` is empty.\n- **Possible causes:** the work may be in another directory, on a branch or worktree that isn't checked out here, or not saved yet.\n\nIf you point me to where it lives, I'll pick it up from there.\n\nAbout the missing screenshots and query plans: I can't see a rule in the process file that requires them. This project is on the Safe standard, which has a review step (the `dev-process:standards-reviewer` agent) before the PR. Query plans are worth capturing if the export runs non-trivial SQL, such as joins over many invoices. Tell me if you want me to generate them.\n\nOnce the changes are on a branch, I can run the tests, run the standards review against the diff, and then open the PR.\n",
+  "output_head": "I can't tell you yes yet, because I can't find the invoice export in this repo.\n\n- You're on `master` with a clean working tree. There are no uncommitted changes, no other branches and no stashes.\n- The only commit is `125a882 base`.\n- Nothing in the repo mentions \"invoice\", so there's no export code or test for it.\n- `docs/PROCESS.md` says `Current task: none`. The process never recorded this task, so there are no acceptance criteria to check against.\n\nYour work may be on another branch, in another checkout, or not saved yet. If it's somewhere else, tell me where and I'll look at it.\n\n**Screenshots and query plans.** I couldn't read the Safe-standard evidence rules, because `PROCESS.md` doesn't include them. Query plans matter if the export runs new or changed SQL against `sqlite3`, which is the `db-check` territory. In that case run `EXPLAIN QUERY PLAN` on those queries and put the output in the PR description. Screenshots only matter if you changed `templates/index.html`. If the export is a backend or file-output change, you probably don't need them.\n\n**Before opening the PR.** The process has a `dev-process:standards-reviewer` step that checks the diff against the standards. Once I can see the changes, I'll run it. I'll also run `python3 -m unittest discover tests` myself to confirm the tests pass. I'll open the PR only after you tell me to.\n",
   "files": []
 }

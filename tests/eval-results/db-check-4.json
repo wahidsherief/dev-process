@@ -1,0 +1,16 @@
+{
+  "skill": "db-check",
+  "id": 4,
+  "prompt": "Change the button colour on the login page.",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "assertion": "Does not load db-check",
+      "pass": true,
+      "why": "The response shows no loading or invocation of a db-check skill; it only asks clarifying questions about the button and colour."
+    }
+  ],
+  "output_head": "I haven't changed anything yet, because the repo has no login page. `templates/index.html` is the only template, and its one button is \"New customer\" on the Customers page. That button is `.btn`, currently `#0057ff` (blue) on white.\n\nTwo things I need from you:\n1. **Which button do you mean?** Is it the `.btn` \"New customer\" button, or a login page that lives on another branch or hasn't been added yet?\n2. **What colour should it be?** A hex value or a name like \"green\" works. If you have design tokens, tell me which one to use.\n\nOnce you answer, this is a quick change of about one line in the `.btn` rule. I'll run the tests with `python3 -m unittest discover tests` and list the light/dark and 360/1280 px screenshots still needed.\n",
+  "files": []
+}

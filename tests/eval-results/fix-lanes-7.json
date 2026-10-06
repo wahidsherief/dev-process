@@ -1,0 +1,34 @@
+{
+  "skill": "fix-lanes",
+  "id": 7,
+  "prompt": "The orders list shows totals truncated, 10.99 instead of 11.00. Fix only that. The orders code around it is old and messy, but I did not ask you to touch it.",
+  "passed": 3,
+  "total": 4,
+  "results": [
+    {
+      "assertion": "Fixes the rounding problem with a test",
+      "pass": true,
+      "why": "fmt_total now uses Decimal with ROUND_HALF_UP, and test_fmt_total_rounds was added covering 10.999, 10.0 and 10.994."
+    },
+    {
+      "assertion": "Does not change list_orders or any other function that was not part of the fix",
+      "pass": true,
+      "why": "The diff changes only fmt_total, plus the decimal import and the new test. list_orders and the other functions are untouched."
+    },
+    {
+      "assertion": "Mentions existing non-compliance it saw (for example the per-order query loop) as noticed but not changed",
+      "pass": true,
+      "why": "The 'Not touched' bullet names the one-query-per-order loop and the unauthenticated delete_customer as left unchanged."
+    },
+    {
+      "assertion": "Handoff includes a Noticed, not changed line",
+      "pass": false,
+      "why": "No line is labeled 'Noticed, not changed'. The content appears under 'Not touched', so the literal requirement for that line is not met."
+    }
+  ],
+  "output_head": "I fixed the truncation in `fmt_total` in `app.py`. It now rounds half-up to two decimals, so 10.999 shows as 11.00. Both tests pass.\n\n- **Fix:** `fmt_total` used `int(total * 100)`, which cut the value off instead of rounding it. It now uses `Decimal` with `ROUND_HALF_UP`. This adds one `decimal` import to `app.py`.\n- **Test:** I added `test_fmt_total_rounds` in `tests/test_app.py`. It checks 10.999 gives \"11.00\", 10.0 gives \"10.00\" and 10.994 gives \"10.99\".\n- **Not touched:** The rest of the orders code is unchanged, including the one-query-per-order loop and the unauthenticated `delete_customer`.\n- **Unverified:** `list_orders` returns the raw `total` and nothing in the repo calls `fmt_total`. I fixed the function that does the truncating, but I haven't confirmed which code shows the list.\n",
+  "files": [
+    "M  app.py",
+    "M  tests/test_app.py"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "skill": "fix-lanes",
+  "id": 3,
+  "prompt": "Support needs 40 customer records with a wrong region updated in the live database. I have a list in a CSV.",
+  "passed": 5,
+  "total": 5,
+  "results": [
+    {
+      "assertion": "Writes or plans a script with a dry-run mode",
+      "pass": true,
+      "why": "Plans a script in scripts/data-fixes/ that is idempotent and has a dry-run mode, with CSV validation checks."
+    },
+    {
+      "assertion": "Requires a backup and a tested rollback",
+      "pass": true,
+      "why": "States it will take a snapshot of the 40 affected rows and write a tested rollback script."
+    },
+    {
+      "assertion": "Reconciles row counts before and after",
+      "pass": true,
+      "why": "Plans a dry run on a database copy that reconciles counts before and after."
+    },
+    {
+      "assertion": "Does not run anything against production data",
+      "pass": true,
+      "why": "Says it won't touch the live database, will build and test on a copy, and that a person runs it against live."
+    },
+    {
+      "assertion": "Lists the approvals needed",
+      "pass": true,
+      "why": "Names two approvals: A. Lead (technical lead) approves the script, and the release owner approves the rollback."
+    }
+  ],
+  "output_head": "I can't write the data fix yet. Two things are missing, and I'd be guessing if I carried on.\n\n1. **I can't find the CSV.** There's no CSV in the project, and I don't know the path you mean. Please give me the path, or paste the columns and a few redacted rows. I need to know which column identifies the customer (`id` or `email`) and which holds the correct region.\n2. **There's no `region` column.** In `db.py`, `customers` has only `id`, `name` and `email`. The other tables don't have one either. So I need to know where region is stored in the live database. It could be a column that was added there but isn't in `db.py`, or a different table, or it could be derived from something else. If the live database doesn't have the column, adding it is a schema change. This lane doesn't cover that, so we'd move to the normal flow first.\n\nAlso tell me:\n- **The live database path.** I won't touch it. I'll build and test everything on a copy.\n- **How you know the current regions are wrong.** For example, whether any value is valid, or whether there's a fixed list of regions. I'll validate the CSV against that.\n\nOnce I have those, I'll follow the data-fix lane:\n- **Script:** `scripts/data-fixes/` will get a script that can safely be run twice and has a dry-run mode. It will also check that the CSV has exactly 40 rows with no duplicates, that every id exists, and that each region value is valid.\n- **Backup:** a snapshot of the 40 affected rows, plus a tested rollback script.\n- **Dry run:** ",
+  "files": []
+}

@@ -1,0 +1,30 @@
+{
+  "skill": "legacy-migration",
+  "id": 3,
+  "prompt": "Redesign the look of the legacy admin screens.",
+  "passed": 2,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Does not change business logic",
+      "pass": true,
+      "why": "Only docs files were changed; no code was modified, and the response explicitly leaves the logic bugs alone and limits the redesign to markup and styles."
+    },
+    {
+      "assertion": "Plans or builds tokens and a small component set",
+      "pass": false,
+      "why": "The response plans design tokens, light/dark themes and a three-width layout. It never mentions a component set, so the 'small component set' part is not met under a literal reading."
+    },
+    {
+      "assertion": "Proposes one golden page for the technical lead to approve",
+      "pass": true,
+      "why": "It names the Customers screen as the golden page and says A. Lead must approve it before the new look goes to other screens."
+    }
+  ],
+  "output_head": "I stopped at Gate 1, so I haven't redesigned anything yet. The project's legacy-migration process says no code or styles change until A. Lead (technical lead) approves the baseline and guardrails (Gate 1) and the decision record and critical-flow tests (Gate 2). A. Lead must also approve a single \"golden page\" before the new look goes to other screens. Your \"plan approved\" doesn't count as that named approval, and nobody was available to give it in this run.\n\nWhat I did, with no code changed:\n- Mapped the code in `docs/ARCHITECTURE.md`.\n- Recorded the baseline in `docs/BASELINE.md`. There is 1 passing test, and no lint, build, dark mode or responsive layout.\n- Updated `docs/PROCESS.md` with the current stage and what's waiting on whom.\n\nThings A. Lead should know:\n- **Only one screen exists:** the repo has just the Customers screen (`templates/index.html`), so I couldn't find the \"legacy admin screens\" plural. Please list the others.\n- **Logic bugs left alone:** the N+1 query in `list_orders`, `fmt_total` truncating instead of rounding, and `delete_customer` having no auth check. A UI-only redesign leaves these as they are.\n\nMy choices: the redesign will change only markup and styles, with design tokens, light and dark themes, and a layout that works at three widths. The Customers screen will be the golden page.\n\nNext step: A. Lead approves Gate 1. After that I write the decision record and a characterization test for the main flow (Gate 2), then build the golden page for app",
+  "files": [
+    "A  docs/ARCHITECTURE.md",
+    "A  docs/BASELINE.md",
+    "M  docs/PROCESS.md"
+  ]
+}

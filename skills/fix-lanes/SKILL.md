@@ -1,6 +1,6 @@
 ---
 name: fix-lanes
-description: 'Handle bugs, production issues and one-off data fixes in the right lane: bug fix (reproduce, failing test, root cause, minimal fix), hotfix (stabilise, expedited approval, incident note), data fix (script, dry run, backup, approval). Use when something is broken, a bug is reported, production is down or degraded, an incident happens, or data in production must be corrected.'
+description: 'Bug fix (failing test, root cause, minimal fix), hotfix (stabilise, approval, incident note) and data fix (dry run, backup, approval) lanes. Use when something is broken, a bug is reported, production is down or degraded, or production data must be corrected.'
 ---
 
 # fix-lanes

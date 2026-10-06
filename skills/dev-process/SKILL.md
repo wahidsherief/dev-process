@@ -1,63 +1,62 @@
 ---
 name: dev-process
-description: 'Runs the team development process behind the scenes for any development task: new feature, small change, bug, production issue, refactor, upgrade, migration or release. Use when a developer describes work to do in a project set up with this process (docs/PROCESS.md exists), or runs init, analyze, summary, status, resume or patterns.'
+description: 'Runs the team development process behind the scenes for any development task (feature, change, bug, production issue, refactor, upgrade, migration, release). Use when a developer describes work in a project with docs/PROCESS.md, or runs init, analyze, summary, status, resume, patterns or token-report.'
 ---
 
 # dev-process
 
-The developer describes the work in plain words. You do the rest: pick the lane, apply the standards, run the checks, gather the proof, write the notes and hand back one short summary. The developer should have to do as little as possible. The rules stay strict underneath.
+The developer describes the work in plain words. You pick the lane, apply the standards, run the checks, gather the proof, write the notes and hand back one short summary. Keep the developer's effort low and the rules strict.
 
 ## What the developer sees
 
-- They type the task. No separate start step, no modes, and they are never asked to choose a lane.
-- Optional commands (namespaced, for example `/dev-process:init`): `init` (once per project; prepares it and continues the current task), `analyze` (project and standards report, on request), `status`, `summary`, `resume` (after `/clear`), `patterns`. Use Claude Code's own `/clear`.
-- You ask **at most one short question block**, only when a wrong guess is costly, each with your recommended answer. Never ask what the repo can answer.
-- You stop for a human only at the points in "Stops".
-- You finish every task with the short summary (below).
+- They type the task. No modes, and they are never asked to choose a lane or a standard.
+- Optional commands (`/dev-process:<name>`): `init`, `analyze`, `status`, `summary`, `resume` (after `/clear`), `patterns`, `token-report`. Details under "Commands".
+- You ask at most **one short question block**, only when a wrong guess is costly, each with your recommended answer. Never ask what the repo can answer.
+- You stop for a human only at "Stops". Every task ends with the short summary.
 
-## The hidden flow
+## Flow
 
-1. **Understand.** Read `docs/PROCESS.md` (standard, current task), `CLAUDE.md`, and search `docs/memory/` for related notes. Read code only for the area touched.
-2. **Pick the lane and size.** Automatically, from the request and the code. Never ask the developer to choose. If unsure, take the lighter lane that fits, say so, and move up if the work grows. Say the lane in one line.
+1. **Understand.** Read `docs/PROCESS.md` (standard, current task) and `CLAUDE.md`; search `docs/memory/` for related notes. Read code only for the area touched.
+2. **Pick the lane.** Automatically, from the request and the code. If unsure, take the lighter lane that fits, say so, and move up if the work grows. Say the lane and the areas touched (UI, API, data, AI, jobs) in one line.
 
 | Work | Lane | Details |
 |---|---|---|
-| New feature, large enhancement, new module | Full flow | below, and `references/02-start-and-plan.md` |
-| Small change (about 50 lines or less, no database, permission or dependency change), small enhancement, copy or style tweak | Quick | skill `change-lanes` |
-| Bug (not urgent) | Bug fix | skill `fix-lanes` |
-| Production issue, outage, incident | Hotfix | skill `fix-lanes` |
-| One-off production data correction | Data fix | skill `fix-lanes` |
-| Internal cleanup, no behavior change | Refactor | skill `change-lanes` |
-| Library upgrade or security patch | Upgrade | skill `change-lanes` |
-| "Can we...?" investigation | Spike | skill `change-lanes` |
-| Release | Release | skill `change-lanes` |
-| Move or modernize an older system, redesign its UI | Migration | skill `legacy-migration` |
+| New feature, large enhancement, new module | Full flow | below; `references/02-start-and-plan.md` |
+| Small change (about 50 lines or less, no database, permission or dependency change), copy or style tweak | Quick | `change-lanes` |
+| Bug (not urgent) | Bug fix | `fix-lanes` |
+| Production issue, outage, incident | Hotfix | `fix-lanes` |
+| One-off production data correction | Data fix | `fix-lanes` |
+| Internal cleanup, no behavior change | Refactor | `change-lanes` |
+| Library upgrade or security patch | Upgrade | `change-lanes` |
+| "Can we...?" investigation | Spike | `change-lanes` |
+| Release | Release | `change-lanes` |
+| Move or modernize an older system, redesign its UI | Migration | `legacy-migration` |
 
-If a quick change grows past its limits, say so and switch to the full flow.
+A quick change that grows past its limits switches to the full flow; say so.
 
-3. **Brief** (Full flow only). Goal, out of scope, numbered acceptance criteria. Always draft the criteria yourself with proposed answers. Skip the brief for the other lanes: one acceptance line is enough.
-4. **Plan** (Full flow, hotfix actions, data fix). Short: tables and indexes, settings, log events, cache keys, tests, size. Show it and wait only for new or large work. Otherwise show a two-line summary and continue.
-5. **Build.** Only what the plan says, with tests. If the task clearly matches an Approved or Active pattern in `docs/PATTERNS.md`, reuse it (`references/patterns.md`). Apply the standards for the areas touched, without asking (`references/autonomy.md`): call `security-check`, `db-check`, `ui-check`, `ai-check` as the work touches them.
-6. **Verify.** Run lint, tests and scans (hooks already run them after edits). Check that every critical action you added has a log or audit line (see `security-check`). Run the `standards-reviewer` agent **only** when the task's standard is Risk and the change is over about 80 lines or touches authentication, permissions, migrations or money. Otherwise review it yourself against the lane's short check. Gather the proof yourself.
+3. **Brief** (full flow only). Goal, out of scope, numbered acceptance criteria. Draft the criteria yourself with proposed answers. Save it to `docs/PROCESS.md` and show it with the lane, areas touched, the standards that apply and any N/A rule with a one-line reason (`references/02-start-and-plan.md`). Other lanes need one acceptance line.
+4. **Plan** (full flow, hotfix actions, data fix). Short: tables and indexes, settings, log events, cache keys, tests, size. Wait for approval only for new or large work; otherwise show two lines and continue.
+5. **Build.** Only what the plan says, with tests. Reuse an Approved or Active pattern from `docs/PATTERNS.md` when the task clearly matches (`references/patterns.md`). Apply the standards for the areas touched without asking (`references/autonomy.md`): `security-check`, `db-check`, `ui-check`, `ai-check`.
+6. **Verify.** Run lint, tests and scans (hooks run them after edits). Check that every critical action you added has a log or audit line (`security-check`). Run the `standards-reviewer` agent **only** when the task's standard is Risk and the change is over about 80 lines or touches authentication, permissions, migrations or money; otherwise review against the lane's short check yourself. Gather the proof yourself.
 7. **Record.** Update `docs/PROCESS.md` (short). Write the memory note when the lane calls for one (`references/04-done-and-memory.md`).
-8. **Summary.** The short summary below. The developer opens the PR; the approver approves.
+8. **Summary.** The developer opens the PR; the approver approves.
 
-## Short summary after every task (always this shape)
+## Summary after every task
 
 ```
 Lane:  Checked:  Changed:  How:  Proof:
-Standards applied:  Standards skipped (reason):  Noticed, not changed (only if useful):
+Standards applied:  Standards skipped (reason):  Noticed, not changed (if useful):
 Cost: Low | Medium | High     Next:
 ```
 
-One line each, no repetition. Cost is a judgement of context used, never an exact token count. Details, and `summary`, `status` and `resume`: `references/summary-resume.md`.
+One line each, nothing the diff already shows. Cost is a judgement of context used, never an exact token count (definitions: `references/summary-resume.md`).
 
 ## Stops (human decides)
 
 - The plan, for new or large work
 - Approval of a PR; hotfix approval; migration gates; release sign-off
 - Anything destructive or hard to undo; anything against production
-- Red-class data (see `references/01-init.md`)
+- Red-class data (`references/01-init.md`)
 
 ## Hard rules
 
@@ -72,24 +71,23 @@ One line each, no repetition. Cost is a judgement of context used, never an exac
 
 ## Standard: Safe or Risk (never asked)
 
-- **Safe** (the default) applies rules tagged `[S]`. **Risk** applies every rule: `[S]` plus the untagged ones. Risk is Safe plus extras.
-- The project standard is stored once in `docs/PROCESS.md` (`Standard:`). `init` sets Safe. Do not ask the developer; they can say "set this project to Risk" at any time.
-- **Task risk is temporary.** If a task touches payments or money, customer or personal data, authentication or permissions, or migrations, treat that task as Risk: apply the untagged rules to the changed code and allow the reviewer. The project standard does not change. Say it in the summary, and suggest "set the project to Risk?" at most once.
-- AI provider calls apply the `[S]` AI rules (data rules, spend cap, usage log) in a Safe project. The rest of `ai-check` applies when the standard is Risk.
+- **Safe** (default) applies rules tagged `[S]`. **Risk** applies every rule (`[S]` plus untagged). Stored once in `docs/PROCESS.md` (`Standard:`); `init` sets Safe. The developer can say "set this project to Risk" at any time.
+- **Task risk is temporary.** A task touching payments or money, customer or personal data, authentication or permissions, or migrations is treated as Risk for that task: apply the untagged rules to the changed code and allow the reviewer. The project standard does not change. Say so in the summary; suggest "set the project to Risk?" at most once.
+- AI provider calls in a Safe project apply the `[S]` AI rules (data rules, spend cap, usage log). The rest of `ai-check` applies in Risk.
 
 ## Keep it cheap
 
-- Load only what the task needs: one lane skill, only the standards skills for the areas touched, only the reference for the step you are on.
-- Do not re-read files you have read. Do not paste whole files into answers: summarize and use diffs.
-- Keep `docs/PROCESS.md` under about 40 lines per task and update it at the end of a step, not after every edit.
-- One reviewer pass at most, and only when the rule in step 6 says so. Agents do not call agents.
-- Memory notes: eight lines for a quick change or a fix, twenty at most for anything else.
+- Load one lane skill, only the standards skills for the areas touched, and only the reference for the current step.
+- Do not re-read files or paste whole files: summarize, use diffs.
+- `docs/PROCESS.md` stays under about 40 lines per task, updated at the end of a step. Memory notes: 8 lines for a quick change or fix, 20 at most otherwise.
+- One reviewer pass at most. Agents do not call agents.
 
 ## Commands
 
 - `init`: `references/01-init.md`. Prepares the project, then starts the current task. No project scan.
-- `analyze`: `references/analyze.md`. Light by default; `deep` maps once, then re-checks only what changed; `deep --full` re-maps. Only on request. Saves a timestamped report in `docs/analysis/`. Reports ✓ Present / ⚠ Partial / ✗ Missing / — N/A. Fixes nothing.
+- `analyze`: `references/analyze.md`. Light by default; `deep` and `deep --full` map more. Only on request. Fixes nothing.
 - `summary`, `status`, `resume`: `references/summary-resume.md`.
 - `patterns`: `references/patterns.md`.
+- `token-report`: `references/token-report.md`. Reads recorded runs; builds nothing.
 
 Add a project skill, hook or agent: skill `extend-process`.

@@ -1,6 +1,6 @@
 ---
 name: security-check
-description: 'Apply and check security, secrets, logging, audit and error-reporting standards. Use when touching authentication, authorization, input handling, secrets, config, logging, audit trails, error reporting, dependencies, or when asked for a security review.'
+description: 'Security, secrets, logging, audit and error-reporting standards. Use when touching authentication, authorization, input handling, secrets, config, logging, audit, error reporting or dependencies, or for a security review.'
 ---
 
 # security-check

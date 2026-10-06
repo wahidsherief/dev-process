@@ -1,0 +1,39 @@
+{
+  "skill": "fix-lanes",
+  "id": 1,
+  "prompt": "Customers say the order total shows 10.99 when the real total is 11.00. Look at fmt_total in app.py and fix it.",
+  "passed": 4,
+  "total": 5,
+  "results": [
+    {
+      "assertion": "Writes or shows a failing test before the fix",
+      "pass": true,
+      "why": "The response says the added test \"failed before the change and passes now,\" which claims red-before-green. The diff only shows the test and fix, not the failing output, so the proof is a claim rather than shown output."
+    },
+    {
+      "assertion": "States the root cause (truncation instead of rounding)",
+      "pass": true,
+      "why": "It states that the old code truncated with `int(total * 100) / 100`, so 10.999 showed as 10.99."
+    },
+    {
+      "assertion": "Makes a minimal change with no unrelated edits",
+      "pass": true,
+      "why": "The diff is one changed line in app.py, plus an import that line needs, and a test. Nothing unrelated was edited."
+    },
+    {
+      "assertion": "Test suite passes at the end",
+      "pass": true,
+      "why": "The response states \"All tests pass.\" No test output is included."
+    },
+    {
+      "assertion": "Handoff names the lane and gives proof",
+      "pass": false,
+      "why": "The handoff never names a lane or process, such as bugfix or TDD. Its proof is only a prose claim that the test failed before and passes now, with no command output or pasted results."
+    }
+  ],
+  "output_head": "I fixed `fmt_total` in `app.py`. It was truncating (`int(total * 100) / 100`), so a total like 10.999 showed as 10.99. It now rounds to two decimals, so 10.999 shows as 11.00. All tests pass.\n\nI used `Decimal` with round-half-up, so 0.125 becomes 0.13. Plain `round()` would have given 0.12. I haven't committed anything.\n\nThe fix is a one-line change in `app.py`. I also added a test in `tests/test_app.py` covering 10.999, 11.0, 10.994 and 0.125. It failed before the change and passes now.\n\nNothing in the repo calls `fmt_total`, so I didn't check how customers actually see the total. If another path shows it, that path may need the same fix.\n",
+  "files": [
+    "M  app.py",
+    "M  tests/test_app.py"
+  ]
+}

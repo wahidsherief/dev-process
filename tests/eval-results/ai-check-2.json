@@ -8,19 +8,19 @@
     {
       "assertion": "Key is masked in the UI",
       "pass": true,
-      "why": "The response says the settings page should show a masked API key, only the last 4 characters, and never write the key to a plain database column."
+      "why": "The response says that if a settings page is added, it should show only that the key is set plus a masked tail such as \u2022\u2022\u2022\u2022abcd."
     },
     {
       "assertion": "Stored encrypted or in a secret store",
       "pass": true,
-      "why": "It recommends an environment variable set from the host's secret store, or fetching the key from a secret store such as a cloud secret manager or Vault. It also says to avoid plaintext in the database and cites the standard's 'encrypted or secret store' rule."
+      "why": "The response recommends an environment variable or secret manager. It also says that a key editable in the UI must be encrypted before it goes into sqlite, with the encryption key held outside the database."
     },
     {
       "assertion": "Never in code or logs",
       "pass": true,
-      "why": "It says not to put the key in code or git. It also says never to log the key or include it in error messages, and to keep it out of the usage log and prompts."
+      "why": "The response says not to put the key in the code. It also says to keep the key out of logs, error messages and prompts, and that the usage log must never include it."
     }
   ],
-  "output_head": "Don't put it in the code, in git, or as plaintext in the sqlite database. The project's AI standard (`ai-check`) says to store the key encrypted or in a secret store.\n\nPython's standard library has no encryption, so the practical options are:\n\n1. **Environment variable (recommended).** Read it with `os.environ[\"AI_API_KEY\"]` in the single AI service layer. In production, set it from your host's secret store. Locally, use an untracked `.env` or a shell export. Add any `.env` file to `.gitignore`.\n2. **Secret store.** If you have one (cloud secret manager, Vault), fetch the key from there at startup. This is the better choice if you need to rotate keys or need an audit trail.\n3. **Settings page.** The standard wants a settings page with provider, model, limits, mock mode and a masked API key. The page should show only the last 4 characters. It should write the key to the secret store, or show whether the env var is set. It should never write the key to a plain database column.\n\nOther rules that apply:\n- Never log the key or include it in error messages.\n- Keep the key out of the usage log and out of prompts.\n- Mock mode should run without a key, so tests and local dev never need a real one.\n\nI haven't looked at the repo yet. If you'd like, I can check how config is currently loaded and add this to the AI service layer, with the masked settings field and mock mode.\n",
+  "output_head": "Don't put it in the code or in plaintext in the database. The project's AI standard says to store the key encrypted or in a secret store.\n\nFor this app (Python standard library, sqlite3), I'd do this:\n\n1. **Read it from an environment variable**, e.g. `AI_API_KEY`, using `os.environ` in the one AI service module. This is the simplest option that meets the standard. Set the variable in your deployment environment or secret manager.\n2. **For local development**, keep it in a `.env` file or your shell profile. Make sure `.env` is in `.gitignore` so it can't be committed.\n3. **Don't store it in the settings table.** The standard calls for a settings page with a masked key field. If you add one, the key should still live in the environment or a secret store, and the page should show only that it is set and a masked tail such as `\u2022\u2022\u2022\u2022abcd`. If you need it editable in the UI, it must be encrypted before it goes into sqlite, and that needs an encryption key held outside the database.\n4. **Keep it out of logs, error messages and prompts.** The usage log should record model, tokens, cost, feature, user and time, but never the key.\n5. **Add a mock mode** that works with no key, so tests and local runs never need a real one.\n\nIf you'd like, I can add the config loader and the service-layer stub with mock mode. I haven't looked at the codebase yet, so I'd check what already exists first.\n",
   "files": []
 }

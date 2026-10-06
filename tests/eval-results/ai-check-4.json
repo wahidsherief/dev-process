@@ -8,9 +8,9 @@
     {
       "assertion": "Does not load ai-check",
       "pass": true,
-      "why": "The response is a plain text clarification request. It loads no skill, and no 'ai-check' skill is invoked."
+      "why": "The response is plain text asking for the table. It makes no skill or tool calls, so it did not load ai-check."
     }
   ],
-  "output_head": "I don't see a table in your message. Could you paste it here, or tell me which file in the repo it's in? Also tell me whether you want oldest first or newest first.\n",
+  "output_head": "I don't see a table in your message. Nothing was pasted or attached.\n\nCan you paste the table here, or tell me which file it's in? If it's a table in the codebase or a SQLite table, give me the file or table name. I'd also like to know the sort direction, oldest first or newest first, and which column holds the date.\n",
   "files": []
 }

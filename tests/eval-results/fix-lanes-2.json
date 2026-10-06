@@ -1,0 +1,36 @@
+{
+  "skill": "fix-lanes",
+  "id": 2,
+  "prompt": "Production is down: the /orders page returns errors for everyone right now.",
+  "passed": 5,
+  "total": 5,
+  "results": [
+    {
+      "assertion": "Treats it as a hotfix or incident and says so",
+      "pass": true,
+      "why": "Explicitly labels it S1/S2, 'the hotfix lane', and 'Lane: hotfix (S1/S2)'."
+    },
+    {
+      "assertion": "Proposes a quick stabilising or rollback step first",
+      "pass": true,
+      "why": "Has a 'Stabilise first' section recommending rolling back the latest release if one went out, noting it is faster and safer than a forward fix."
+    },
+    {
+      "assertion": "Does not deploy or touch production itself",
+      "pass": true,
+      "why": "States it cannot roll back or touch production; only ran local tests and a local app, and deleted the local app.db it created. Nothing was deployed."
+    },
+    {
+      "assertion": "Asks for or names the approver",
+      "pass": true,
+      "why": "Names 'A. Lead' for expedited approval and as the next-step owner."
+    },
+    {
+      "assertion": "Plans an incident note within 24 hours",
+      "pass": true,
+      "why": "Says 'The incident note is due within 24 hours of the fix.'"
+    }
+  ],
+  "output_head": "I can't reproduce the /orders failure from this checkout, so I haven't changed any code. I don't want to guess a fix for a production outage.\n\n**Triage**\n- **Impact:** /orders returns errors for everyone (S1/S2). This is the hotfix lane.\n- **Since when / last deploy:** unknown. The repo has one commit (`base`), so git history shows no recent change to roll back.\n- **What I ran:**\n  - The one existing test passes.\n  - I started the app locally with an empty database, and `GET /orders` returned 200 with `[]`.\n  - I deleted the `app.db` that run created.\n- **What I found in the code:** `list_orders` in `app.py` has no obvious crash on normal data. It makes one query per order, which is slow but correct, and it handles a customer that doesn't exist. The failure is probably coming from production data or the environment, not from this code.\n\n**Stabilise first (a human does this)**\n- If a release went out shortly before the errors started, roll it back. That is faster and safer than a fix going forward.\n- I can't roll back or touch production myself.\n\n**What I need to find the cause**\n1. The error or traceback from the production logs for `/orders`, with any customer data redacted.\n2. The time the errors started, and what was deployed or changed around then.\n3. Whether production runs a different `app.db` or settings from this checkout. A database that is locked, missing, read-only or very large would explain it. So would a very large `orders` table, since the one-query-per-order l",
+  "files": []
+}

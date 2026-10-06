@@ -33,6 +33,7 @@ Every section of the Standard Procedure (V1) and where the plugin handles it. "G
 | new | Simple developer interface: type the task, lane picked automatically, short summary after every task | `SKILL.md` (lane table, handoff); `references/04-done-and-memory.md` (short checks by lane) | Guides |
 | new | Commands: init (then start the task), analyze, summary, status, resume | `commands/*.md`; `references/01-init.md`; `references/analyze.md`; `references/summary-resume.md` | Guides; analyze only on request |
 | new | Reusable approved patterns (Candidate, Approved, Active, Deprecated) | `references/patterns.md`; `templates/PATTERNS.md.tpl`; `docs/PATTERNS.md` | Guides; a human approves |
+| new | Token report: overhead vs efficiency, with a verdict | `commands/token-report.md`; `scripts/token-record.py`; `scripts/token-report.py`; `references/token-report.md` | Reads recorded runs only; nothing is invented |
 | new | Token cost controls | `SKILL.md` (Keep it cheap); `references/03-build-and-review.md` (conditional reviewer) | Guides |
 | new | Requirement intake and acceptance criteria | `references/02-start-and-plan.md` | Guides. Not yet in the V1 document |
 | new | Autonomy: apply silently, ask only when needed, always stop for a human | `references/autonomy.md` | Guides. Not yet in the V1 document |

@@ -1,6 +1,6 @@
 ---
 name: change-lanes
-description: 'Handle everyday non-feature work in a light lane: quick change (small UI tweak, copy, config, small enhancement), refactor with no behavior change, dependency upgrade or security patch, time-boxed spike or investigation, and release preparation with release notes. Use for small changes, tweaks, cleanups, upgrades, "can we...?" questions and releases.'
+description: 'Quick change, refactor (no behavior change), upgrade or security patch, spike and release lanes. Use for small changes, tweaks, cleanups, dependency upgrades, "can we...?" questions and releases.'
 ---
 
 # change-lanes

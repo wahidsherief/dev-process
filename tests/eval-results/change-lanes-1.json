@@ -1,0 +1,28 @@
+{
+  "skill": "change-lanes",
+  "id": 1,
+  "prompt": "Change the page heading in templates/index.html to 'Order Desk'.",
+  "passed": 2,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Makes the change directly without a long brief or plan",
+      "pass": true,
+      "why": "The diff is a single-line change and the response shows no lengthy brief or plan before it."
+    },
+    {
+      "assertion": "Runs the tests",
+      "pass": true,
+      "why": "The response states 'The test suite passes (1 test)', which indicates the tests were run."
+    },
+    {
+      "assertion": "Handoff is short and names the quick lane",
+      "pass": false,
+      "why": "The handoff is short, but it never names a 'quick lane' or any lane or process tier. It only describes the change and what was left unchanged."
+    }
+  ],
+  "output_head": "I changed the `<h1>` in `templates/index.html` from \"Customers\" to \"Order Desk\". I left the `<title>` (\"Mini app\") and the \"New customer\" button unchanged, since you only asked for the heading. The test suite passes (1 test).\n",
+  "files": [
+    "M  templates/index.html"
+  ]
+}

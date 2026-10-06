@@ -1,4 +1,4 @@
-# dev-process (v1.4)
+# dev-process (v1.4.1)
 
 AI-assisted development standard procedure as a Claude Code plugin. Stack-agnostic. The developer types the task; the standards, proof and notes happen behind the scenes.
 
@@ -30,6 +30,7 @@ Optional commands:
 | `/dev-process:summary`, `resume` | Save a short summary; pick up after `/clear` without rescanning. |
 | `/dev-process:status` | Where the current task stands. |
 | `/dev-process:patterns` | Approved reusable patterns (`docs/PATTERNS.md`). |
+| `/dev-process:token-report` | Token overhead versus using Claude without the plugin, rework and review rounds, and a verdict (WORTH IT, NOT YET WORTH IT, INSUFFICIENT DATA). Reads `.devprocess/token-runs.jsonl`; record runs with `scripts/token-record.py`. |
 
 If the plugin is installed in a project that is not set up, Claude does the task and offers `init` once.
 

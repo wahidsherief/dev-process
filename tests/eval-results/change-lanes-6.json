@@ -1,0 +1,16 @@
+{
+  "skill": "change-lanes",
+  "id": 6,
+  "prompt": "Explain the difference between a process and a thread.",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "assertion": "Does not load change-lanes or create any files",
+      "pass": true,
+      "why": "The response is a plain text explanation. There is no evidence of loading a change-lanes skill or creating any files, and the git status and diff are empty."
+    }
+  ],
+  "output_head": "A **process** is an independent running program with its own memory. A **thread** is a unit of execution inside a process that shares that process's memory with its sibling threads.\n\n| | Process | Thread |\n|---|---|---|\n| **Memory** | Own private address space | Shares the process's address space (heap, globals, open files) |\n| **Own state** | Memory, file descriptors, PID | Stack, registers, program counter |\n| **Creation cost** | Heavier (new address space, resources) | Lighter (reuses the parent's resources) |\n| **Context switch** | Slower (memory mappings change) | Faster (same address space) |\n| **Communication** | Needs IPC (pipes, sockets, shared memory, queues) | Direct, through shared variables |\n| **Isolation** | Strong. One process crashing usually doesn't affect others. | Weak. One thread crashing can take down the whole process. |\n| **Synchronization** | Rarely needed, since memory isn't shared | Needed (locks, etc.) to avoid race conditions |\n\n**Trade-off:** Processes are safer and more isolated but costlier to create and to communicate between. Threads are cheap and share data easily, but shared state invites race conditions and deadlocks.\n\n**Python note (relevant to your stack):** CPython's Global Interpreter Lock (GIL) lets only one thread run Python bytecode at a time. Threads therefore help with I/O-bound work, such as waiting on sqlite3 or network calls, but not CPU-bound work. For CPU-bound work, use `multiprocessing` or `concurrent.futures.ProcessPoolExe",
+  "files": []
+}

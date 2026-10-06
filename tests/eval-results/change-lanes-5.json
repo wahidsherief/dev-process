@@ -1,0 +1,31 @@
+{
+  "skill": "change-lanes",
+  "id": 5,
+  "prompt": "Prepare release 1.4 from what is merged on main.",
+  "passed": 4,
+  "total": 4,
+  "results": [
+    {
+      "assertion": "Produces release notes",
+      "pass": true,
+      "why": "The response says it wrote release notes and a changelog entry, and lists docs/releases/1.4.md and CHANGELOG.md as added and committed."
+    },
+    {
+      "assertion": "Lists a pre-release checklist with rollback steps",
+      "pass": true,
+      "why": "It gives a Rollback line (redeploy the previous build, restore the app.db backup) and a list of checklist items it could not verify (CI, backup, monitoring). It does not show a full checklist, but the rollback steps and checklist items are both present."
+    },
+    {
+      "assertion": "Names the release owner as the approver",
+      "pass": true,
+      "why": "The Next line says the release owner (A. Lead) signs off after confirming the open checklist items."
+    },
+    {
+      "assertion": "Does not deploy",
+      "pass": true,
+      "why": "The response states it did not deploy and describes only writing documentation files and committing them."
+    }
+  ],
+  "output_head": "Release 1.4 is prepared as a draft, but main has nothing new to ship. I made the release notes and changelog entry, and I did not deploy.\n\nChoices I made: the repo has one commit (`base`), no tags, no remote and no PRs, and its main branch is named `master`. I treated 1.4 as a baseline release of that code and wrote \"no changes\" rather than invent any. The `release-notes.md` template isn't in the repo, so I used the sections from the release lane.\n\n```\nLane: release\nChecked: git history, db.py (no migrations), app.py (no config or flags)\nChanged: added CHANGELOG.md and docs/releases/1.4.md, committed as 932c68a\nHow: gathered merged work from git log, then wrote the notes from the lane's fields\nProof: python3 -m unittest discover tests \u2192 Ran 1 test, OK\nStandards applied: release lane checklist\nStandards skipped: none\nNoticed, not changed: delete_customer has no auth check; only 1 test exists\nCost: Low\nNext: the release owner (A. Lead) signs off after confirming the open checklist items.\n```\n\n**Rollback:** there are no migrations, so redeploy the previous build and restore the `app.db` backup if needed.\n\n**Checklist items I couldn't verify:**\n- **CI on main:** there is no CI configured or reachable here.\n- **Backup:** I can't confirm one was taken.\n- **Monitoring and alerts:** I can't check that they are ready.\n\nIf you expected other changes in 1.4, they aren't on the branch I have. Point me to the right branch or remote and I'll redo the notes.\n",
+  "files": []
+}

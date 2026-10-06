@@ -1,0 +1,26 @@
+{
+  "skill": "change-lanes",
+  "id": 4,
+  "prompt": "Can we move the orders list to a background job queue? Not sure it is worth it, please find out.",
+  "passed": 2,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Treats it as a spike with a time box",
+      "pass": false,
+      "why": "The response calls itself a spike and only benchmarked without changing code. It never mentions a time box or time limit, so the time-box part is not met."
+    },
+    {
+      "assertion": "Produces a short note with a recommendation",
+      "pass": true,
+      "why": "It gives a short write-up that opens with a clear recommendation (don't move to a queue), followed by the reasoning and a suggested next step."
+    },
+    {
+      "assertion": "Does not ship production changes",
+      "pass": true,
+      "why": "The git status and diff are empty, and the response says no code was changed. The benchmark script is in the scratchpad."
+    }
+  ],
+  "output_head": "**Recommendation: no, don't move the orders list to a background job queue.** I changed no code, because this was a spike.\n\n- **It's a read, not a job.** `GET /orders` returns data the caller needs in that same response. A queue would turn it into submit, poll and fetch. That adds a job table, a worker process, result storage and expiry, and the client has to change too.\n- **The slowness isn't heavy work.** It's the per-order customer lookup in `list_orders` (`app.py:6-12`), which the code already labels \"known slow\". I benchmarked it on in-memory SQLite with 10,000 orders and 1,000 customers. The current code takes about 31 ms. A single `LEFT JOIN` takes about 10 ms and returns the same rows. Your real database and data size may differ, but the cost grows with the number of orders either way.\n- **A queue doesn't fit this app.** It's stdlib-only, with a single-threaded `HTTPServer` and no worker infrastructure.\n\n**Suggested next step:** replace the loop with the `LEFT JOIN`, which is a small quick-change. I'd also add an index on `orders.customer_id` if the table grows. Add pagination if the list gets large. Say if you want me to make the change.\n\n**Choices I made:** I treated this as a spike and only benchmarked, so the repo is unchanged. The benchmark script is in the scratchpad, not the project.\n",
+  "files": []
+}

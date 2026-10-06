@@ -1,0 +1,34 @@
+{
+  "skill": "db-check",
+  "id": 2,
+  "prompt": "The /orders page is slow. Find out why and fix it.",
+  "passed": 3,
+  "total": 4,
+  "results": [
+    {
+      "assertion": "Identifies the N+1 pattern",
+      "pass": true,
+      "why": "The response explicitly states `list_orders` had an N+1 query problem, with one SELECT on customers per order."
+    },
+    {
+      "assertion": "Gives the batched rewrite",
+      "pass": true,
+      "why": "It describes the fix as a single LEFT JOIN query of orders to customers, and the diff shows the rewritten code."
+    },
+    {
+      "assertion": "Reports query count before and after",
+      "pass": false,
+      "why": "It says the number of queries grew with the number of orders and is now one query. It gives no measured before and after counts, and says it didn't time it on real data."
+    },
+    {
+      "assertion": "Mentions the query plan or index check",
+      "pass": true,
+      "why": "It notes that `customers.id` is a primary key, so the join needs no new index or migration. That is an index check, though it doesn't mention a query plan."
+    }
+  ],
+  "output_head": "**Cause:** `list_orders` in `app.py` had an N+1 query problem. It ran one `SELECT` on `customers` for every order, so the number of queries grew with the number of orders.\n\n**Fix:** It now makes one query that joins `orders` to `customers` with a `LEFT JOIN`, ordered by order id. The response is unchanged, including `customer: null` when an order's customer doesn't exist. `customers.id` is a primary key, so the join needs no new index or migration.\n\n**Tests:** I added a test for an order whose customer is missing. Both tests pass with `python3 -m unittest discover tests`. I didn't time it on real data.\n\n**Choices:**\n- I kept the change to `/orders` only.\n- I left the other issues in `app.py` alone: `fmt_total` truncates instead of rounding, and `delete_customer` has no auth check.\n- I haven't committed anything.\n",
+  "files": [
+    "M  app.py",
+    "M  tests/test_app.py"
+  ]
+}

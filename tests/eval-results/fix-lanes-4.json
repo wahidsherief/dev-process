@@ -1,0 +1,26 @@
+{
+  "skill": "fix-lanes",
+  "id": 4,
+  "prompt": "It's broken, please fix.",
+  "passed": 3,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Does not change any code",
+      "pass": true,
+      "why": "No files changed and no diff; the response only investigated and proposed a fix pending confirmation."
+    },
+    {
+      "assertion": "Asks for steps to reproduce and expected versus actual behaviour",
+      "pass": true,
+      "why": "It asks what the user did (URL or call), what they expected versus what they got including error text, and when it started."
+    },
+    {
+      "assertion": "Asks in one block, not many rounds",
+      "pass": true,
+      "why": "All questions are in a single message: which issue it is, plus a numbered list of three requested details."
+    }
+  ],
+  "output_head": "I can't tell what's broken from the report, and I don't want to guess. The tests pass, and nothing crashes on reading.\n\nI found one real defect, but I don't know if it's the one you mean:\n\n- **`fmt_total` in `app.py` truncates instead of rounding.** `fmt_total(1.15)` gives `\"1.14\"`, because `1.15*100` is `114.999\u2026` and `int()` cuts it off. Any total can be a cent low.\n\nThere are also two known issues that look intentional, so I'm leaving them alone unless you say otherwise:\n\n- **`list_orders` is slow.** It runs one query per order.\n- **`delete_customer` has no auth check.**\n\nWhich of these is it, or is it something else? If something else, please send:\n1. What you did (the URL or the call).\n2. What you expected and what you got, including any error text or traceback.\n3. When it started, or what changed before it did.\n\nIf it's the rounding, tell me and I'll do it as an S3 bug fix. I'd write a failing test first, then make the minimal fix and add a note in `docs/memory/fix/`. A. Reviewer would need to approve.\n",
+  "files": []
+}

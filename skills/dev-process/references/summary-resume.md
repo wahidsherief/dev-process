@@ -1,25 +1,8 @@
 # Task summary, status and resume
 
-## Short summary after every task (automatic)
+## Cost wording (the shape is in `SKILL.md`)
 
-After each task, end with this, kept short. Say nothing that the code or diff already shows.
-
-```
-Lane: <lane>
-Checked: <what you looked at>
-Changed: <files or areas, one line>
-How: <how it was fixed or built, one or two lines>
-Proof: <tests run and result, screenshots, query numbers>
-Standards applied: <list>
-Standards skipped: <list with a one-line reason> or none
-Noticed, not changed: <only if useful> 
-Cost: <Low | Medium | High>
-Next: <next step, or "none">
-```
-
-Cost is a judgement of how much context the task used, not a token count. Never state an exact number unless Claude Code shows one. Low: a small change, few files read. Medium: several files, tests run, one standards skill. High: the full flow, many files, a reviewer run, or an analysis.
-
-Offer the PR title and description only when the next step is opening the PR.
+Cost is a judgement of context used, not a token count. Never state a number unless Claude Code shows one. Low: a small change, few files read. Medium: several files, tests run, one standards skill. High: the full flow, many files, a reviewer run, or an analysis. Offer the PR title and description only when the next step is opening the PR.
 
 ## status
 

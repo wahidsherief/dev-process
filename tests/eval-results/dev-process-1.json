@@ -2,35 +2,37 @@
   "skill": "dev-process",
   "id": 1,
   "prompt": "Add an invoice export so finance can download all invoices for a month.",
-  "passed": 3,
+  "passed": 5,
   "total": 5,
   "results": [
     {
       "assertion": "Writes a brief into docs/PROCESS.md with numbered acceptance criteria",
-      "pass": false,
-      "why": "The brief and numbered acceptance criteria appear only in the chat response. No file was written, and docs/PROCESS.md is never mentioned."
+      "pass": true,
+      "why": "The diff adds the brief to docs/PROCESS.md, and the Acceptance line is numbered 1) through 7)."
     },
     {
       "assertion": "Does not write or edit any source code before the brief is confirmed",
       "pass": true,
-      "why": "No files were changed, and the response says it will wait for the user's answer before writing code."
+      "why": "The only changed file is docs/PROCESS.md, and the response says no code has been written."
     },
     {
       "assertion": "Classifies the task (lane and areas touched)",
       "pass": true,
-      "why": "It gives the lane as Full flow (new feature) and rates the risk. It also names the areas touched: app.py, db.py, tests, and money/export data."
+      "why": "It states 'Lane: full flow (new feature). Areas: API and data.' Both the response and PROCESS.md include this."
     },
     {
       "assertion": "Lists applicable standards and any N/A rule with a one-line reason",
-      "pass": false,
-      "why": "It gives acceptance criteria that touch on standards such as rounding, logging, and escaping. It never lists the applicable standards as such, and it gives no N/A rules with one-line reasons."
+      "pass": true,
+      "why": "PROCESS.md has a Standards line: security-check and db-check apply, ui-check is N/A (no screen), and ai-check is N/A (no AI). The chat response only says 'The UI and AI standards don't apply.' without the reasons, but the written brief satisfies the assertion."
     },
     {
       "assertion": "Asks only questions it could not answer from the repo, with a recommended answer",
       "pass": true,
-      "why": "All three questions are things the repo cannot settle: what counts as an invoice, how access is controlled, and month boundaries. Each has a recommended answer listed first."
+      "why": "Both questions, what counts as an invoice and who can download it, are not answerable from the repo, since there is no invoices table and no auth. Each question comes with a recommended answer."
     }
   ],
-  "output_head": "**Lane:** Full flow (new feature). The standard is Safe, but I'll treat this task as Risk because it exports money data.\n\n**What I found**\n- There is no `invoices` table. The only money data is `orders` (`id`, `customer_id`, `total`, `created_at`).\n- The server has no authentication. Any caller of `GET /invoice-export` could download all financial data.\n- `fmt_total` truncates instead of rounding, so I won't reuse it for money.\n\n**Brief**\n- **Goal:** Finance downloads a CSV of all invoices for a chosen month.\n- **Out of scope:** UI beyond a link, PDF or Excel output, and scheduled or emailed exports.\n\n**Acceptance criteria**\n1. `GET /invoices/export?month=YYYY-MM` returns a CSV download with the columns `id, customer, total, created_at`.\n2. It includes every invoice in that month, with no pagination cap, and streams the rows.\n3. An invalid or missing `month` returns 400, and a month with no invoices returns a header-only CSV.\n4. Totals are rounded correctly to 2 decimals.\n5. The export uses one JOIN query, with an index on `created_at` and a test that fails if the query count grows.\n6. Each export writes a log line with the month and row count. It contains no customer data.\n7. Cells starting with `=`, `+`, `-` or `@` are escaped, so customer names can't inject spreadsheet formulas.\n\n**Plan:** I'd add `export_invoices(c, month)` and a `/invoices/export` route in `app.py`, plus an index on `orders(created_at)` in `db.py`. Tests go in `tests/test_app.py`: the month filter, empty",
-  "files": []
+  "output_head": "I read the code and drafted a brief, which I saved to `docs/PROCESS.md`. I haven't written any code yet because two things need your answer first.\n\n**Lane:** full flow (new feature). **Areas:** API and data. The UI and AI standards don't apply.\n\n**Brief**\n- **Goal:** finance downloads every invoice for a chosen month as a CSV.\n- **Endpoint:** `GET /invoices/export?month=YYYY-MM` returns the CSV as a file download.\n- **Behaviour:**\n  - A missing or malformed month returns 400.\n  - An empty month returns just the header row.\n  - Month boundaries are exact.\n  - Amounts are exact to 2 decimal places.\n  - The export runs as a single query.\n  - Each export is logged with the month and row count.\n- **Out of scope:** an auth system, PDF output, a UI page, and the existing `list_orders` N+1 and `fmt_total` truncation.\n- **Tests:** the behaviour above, plus a query-count check.\n\n**Questions**\n1. **What is an \"invoice\" here?** The database has no invoices table, only `customers`, `orders`, `tickets` and `settings`.\n   - **Recommended:** add a new `invoices` table (id, customer_id, amount, issued_at, status). It has an index on `issued_at`, and the export reads from it.\n   - **Alternative:** treat `orders` as invoices and export those by `created_at`. That is less work, but it may not be what finance means.\n2. **Who can download it?** The app has no authentication at all, and invoices are financial data.\n   - **Recommended:** require a shared token from a setting or environment variable,",
+  "files": [
+    "M  docs/PROCESS.md"
+  ]
 }

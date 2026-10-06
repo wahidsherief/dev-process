@@ -1,6 +1,6 @@
 ---
 name: extend-process
-description: 'Create a project skill, hook or subagent in the team''s structured format (unique name, trigger description, scope, evals or tests, registry entry). Use when a developer wants to add or change a skill, hook or agent for a project, for example "add a skill that reviews our queries" or "add a hook that blocks edits to the migrations folder".'
+description: 'Create a project skill, hook or subagent in the team format (name, trigger description, scope, evals or tests, registry entry). Use when a developer asks to add or change a skill, hook or agent, e.g. "add a skill that reviews our queries".'
 ---
 
 # extend-process

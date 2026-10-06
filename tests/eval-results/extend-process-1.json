@@ -1,0 +1,45 @@
+{
+  "skill": "extend-process",
+  "id": 1,
+  "prompt": "Add a project skill that reviews our database queries before we merge.",
+  "passed": 6,
+  "total": 6,
+  "results": [
+    {
+      "assertion": "Checks docs/EXTENSIONS.md and existing skills for duplicates",
+      "pass": true,
+      "why": "The response says it checked overlap with the existing `db-check` plugin skill and made this skill point to it instead of repeating it. The register file is new, which suggests there was no register to find. The diff doesn't show the check itself, but the response reports its result."
+    },
+    {
+      "assertion": "Uses a unique lowercase hyphenated name",
+      "pass": true,
+      "why": "The name `review-queries` is lowercase and hyphenated. It differs from `db-check`, the only other skill named."
+    },
+    {
+      "assertion": "Description says what it does and when to use it",
+      "pass": true,
+      "why": "The description says \"Pre-merge review of database queries in a diff or branch\" and then gives \"Use when asked to review, check or sign off queries...\" with example phrases."
+    },
+    {
+      "assertion": "Creates evals/evals.json with 4 to 6 evals including a non-trigger case",
+      "pass": true,
+      "why": "The file has 5 evals, and eval 4 has should_trigger false."
+    },
+    {
+      "assertion": "Adds a row to docs/EXTENSIONS.md",
+      "pass": true,
+      "why": "The new docs/EXTENSIONS.md has a table row for the skill with type, name, description, owner, date and PR."
+    },
+    {
+      "assertion": "Keeps the SKILL.md body under 120 lines",
+      "pass": true,
+      "why": "The whole SKILL.md is 30 lines."
+    }
+  ],
+  "output_head": "I added a `review-queries` project skill, but I haven't run its evals, so it isn't tested yet. The existing unit tests still pass. I assumed A. Lead as owner (the technical lead in CLAUDE.md), so change the register row if that's wrong.\n\n- **What it does:** it reviews only the queries a diff adds or changes, and edits nothing. It checks for SQL injection, N+1 loops, unbounded reads, missing indexes (using the real `EXPLAIN QUERY PLAN` output), unsafe writes, migrations and test coverage. It opens with a verdict (Ready, Ready with notes, or Not ready), followed by `file:line | severity | problem | fix` lines.\n- **Where:**\n  - `.claude/skills/review-queries/SKILL.md`\n  - `.claude/skills/review-queries/evals/evals.json` (5 evals: 3 should trigger, 1 should not, 1 edge case with an empty diff)\n  - `docs/EXTENSIONS.md`, a new register with one row for this skill; its PR column says \"pending\".\n- **Overlap with `db-check`:** that plugin skill sets the standards while you build. This one is the pre-merge check against them, so it points to `db-check` instead of repeating it.\n- **Next steps:** run the evals, then open a PR and fill in the PR link in the register. I haven't committed anything.\n",
+  "files": [
+    "A  .claude/skills/review-queries/SKILL.md",
+    "A  .claude/skills/review-queries/evals/evals.json",
+    "A  docs/EXTENSIONS.md"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "skill": "ui-check",
+  "id": 2,
+  "prompt": "Add a form for creating a customer with name, email and phone.",
+  "passed": 2,
+  "total": 4,
+  "results": [
+    {
+      "assertion": "Message beside the field after leaving it",
+      "pass": false,
+      "why": "Validation happens only on submit via the server. There is no blur/change handler, so no message appears after the user leaves a field."
+    },
+    {
+      "assertion": "Keeps entered data after a failed submit",
+      "pass": true,
+      "why": "On a non-ok response the code only fills in the error messages and returns. form.reset() runs only on success, so the entered values stay in the inputs."
+    },
+    {
+      "assertion": "Maps server errors to the right fields",
+      "pass": true,
+      "why": "The server returns an errors dict keyed by name, email and phone. The client uses the data-for attribute to put each message in the matching div under its field."
+    },
+    {
+      "assertion": "Uses a toast for success, not for field validation",
+      "pass": false,
+      "why": "Success shows 'Customer created.' in an inline #msg status div, not a toast. Field validation errors are inline, which is fine, but nothing uses a toast."
+    }
+  ],
+  "output_head": "The customer form is in and the tests pass (4 of 4). I haven't run the server or tried the form in a browser.\n\nChoices I made: all three fields are required, and email and phone are checked with simple format rules (phone is 7\u201320 digits, spaces, `+`, `(`, `)` or `-`). The form sits behind the existing \"New customer\" button.\n\n- **Database:** `db.py` now adds a `phone` column to `customers` if it's missing, so existing databases get it on the next start.\n- **Backend:** `app.py` has a new `POST /customers` that validates the input and saves the customer. It returns 201 with the new customer, or 400 with an error for each bad field. `GET /customers` returns the saved customers.\n- **Form:** `templates/index.html` shows the form with an error under each field. It adds the saved customer to the table and loads the existing customers when the page opens.\n- **Tests:** I added tests for creating a customer, for invalid input, and for adding `phone` to an old table.\n- **Existing test changed:** I edited the existing `test_list_orders` insert to name its columns, because the new `phone` column broke its three-value insert.\n",
+  "files": [
+    "M  app.py",
+    "M  db.py",
+    "M  templates/index.html",
+    "M  tests/test_app.py"
+  ]
+}

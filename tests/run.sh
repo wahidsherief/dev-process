@@ -127,5 +127,8 @@ echo '{"lint":"","test":""}' > "$tmp/.devprocess/config.json"
 bash scripts/post-edit.sh >/dev/null 2>&1; [ $? = 0 ] && ok "empty commands: skipped" || bad "empty"
 rm -rf "$tmp"
 
+echo "token-report"
+python3 tests/test-token-report.py >/dev/null 2>&1 && ok "token-record and token-report: none, insufficient, enough data, verdicts" || bad "token-report tests"
+
 [ $fail = 0 ] && echo "ALL PASS" || echo "FAILURES"
 exit $fail

@@ -1,0 +1,30 @@
+{
+  "skill": "db-check",
+  "id": 3,
+  "prompt": "Add a cached lookup for the currency list.",
+  "passed": 2,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Names a cache key pattern and a TTL",
+      "pass": false,
+      "why": "A TTL is named (5 minutes, TTL_SECONDS=300), but there is no cache key pattern. The cache is a single global dict with fixed 'at' and 'rows' fields, and the response never describes a key pattern."
+    },
+    {
+      "assertion": "Invalidates in the write path, or states exactly where invalidation must be called because no write path exists",
+      "pass": true,
+      "why": "The response says 'clear_cache() empties it, so call that after any currency write.' No write path exists, and this states where invalidation must be called, after any currency write."
+    },
+    {
+      "assertion": "Does not put per-user data under a shared key",
+      "pass": true,
+      "why": "The cached data is the global currency list (code and name). It holds no per-user data, so none is stored under a shared key."
+    }
+  ],
+  "output_head": "I added a cached currency lookup, and all 5 tests pass (4 new, 1 existing).\n\nThe choices I made, since the repo had no currency list yet:\n- **Storage:** a new `currencies` table in `db.py`, seeded with GBP, USD and EUR.\n- **Lookup:** `list_currencies(c)` in a new `currency.py` returns `[{code, name}]` sorted by code.\n- **Cache:** an in-process cache with a 5-minute expiry. `clear_cache()` empties it, so call that after any currency write.\n- **Safety:** each call returns copies, so callers can't change the cached data.\n- **Not wired in:** I didn't add an HTTP route, because you didn't ask for one.\n- **Process:** I didn't update `docs/PROCESS.md` or `docs/memory`, and I didn't commit anything.\n\nThe new tests are in `tests/test_currency.py`.\n",
+  "files": [
+    "A  currency.py",
+    "M  db.py",
+    "A  tests/test_currency.py"
+  ]
+}

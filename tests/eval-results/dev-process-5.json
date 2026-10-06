@@ -8,7 +8,7 @@
     {
       "assertion": "Does not load dev-process or create any process files",
       "pass": true,
-      "why": "The response is a plain text answer. No skill was loaded, no files were created or changed (git status and diff are empty), and the response does not mention dev-process."
+      "why": "The response is a plain text answer. No skill was loaded, no files were created, and git status and the diff are both empty."
     }
   ],
   "output_head": "The capital of France is Paris.\n",

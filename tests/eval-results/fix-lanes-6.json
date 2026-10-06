@@ -1,0 +1,18 @@
+{
+  "skill": "fix-lanes",
+  "id": 6,
+  "prompt": "Add a CSV export of all orders with filters and email delivery.",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "assertion": "Does not use the fix lane or write an incident or fix note",
+      "pass": true,
+      "why": "The response uses the full flow lane for a new feature. PROCESS.md has only a task brief, with no incident or fix note, and the fix lane is not used."
+    }
+  ],
+  "output_head": "I've saved the brief to `docs/PROCESS.md` and haven't written any code yet. A few answers would change what I build, so I need those before I plan.\n\n**Lane:** full flow (new feature).\n**Areas touched:** API, database, email, settings.\n**Standards that apply:** `db-check` and `security-check`. The export includes customer names, so I'm treating this task as Risk and applying the untagged rules to the new code. The project stays on Safe.\n**N/A:** `ui-check` and `ai-check`. There is no screen and no AI call.\n\n**Acceptance criteria (proposed)**\n1. `GET /orders.csv` returns all orders (id, customer, total, created_at) from one JOIN query, with no per-row queries.\n2. The filters are `date_from`, `date_to`, `customer_id`, `min_total` and `max_total`. They combine with AND, and a bad value returns 400.\n3. Cells that start with `= + - @` are escaped, to block formula injection.\n4. `POST /orders/export/email` sends the CSV as an attachment through `smtplib`. SMTP settings come from env or the settings table, never hard-coded.\n5. The recipient must be on an allowlist setting, so the endpoint can't act as an open mail relay. Every export and send is logged without row data.\n6. An SMTP failure returns 502 and is logged.\n7. Each criterion has a test, including one that fails if the query count grows.\n\n**Questions** (my recommendation is first in each)\n1. **Who may call it?** The app has no auth today. I recommend gating both endpoints with a shared token from env, sent in a header. The alt",
+  "files": [
+    "M  docs/PROCESS.md"
+  ]
+}

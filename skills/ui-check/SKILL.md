@@ -1,6 +1,6 @@
 ---
 name: ui-check
-description: 'Apply and check the frontend standards: design tokens, compact/standard/relaxed density, dark and light mode, responsive layout, validation, toasts and alerts, fallback pages, data states, accessibility, restrained visual style. Use when building or reviewing screens, components, forms or styles.'
+description: 'Frontend standards: tokens, density, dark and light, responsive, validation, toasts, fallback pages, data states, accessibility. Use when building or reviewing screens, components, forms or styles.'
 ---
 
 # ui-check

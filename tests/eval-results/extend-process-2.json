@@ -1,0 +1,36 @@
+{
+  "skill": "extend-process",
+  "id": 2,
+  "prompt": "Add a hook that blocks editing anything in the migrations folder.",
+  "passed": 4,
+  "total": 4,
+  "results": [
+    {
+      "assertion": "Exit code 2 blocks and the message says what to do instead",
+      "pass": true,
+      "why": "The hook calls sys.exit(2) in block(), and the stderr message says what was blocked and what to do instead: add a new migration outside the folder with approval, or ask the developer to make the edit."
+    },
+    {
+      "assertion": "Fails open on bad input",
+      "pass": true,
+      "why": "A JSON parse exception hits `sys.exit(0)`, and the test 'not json' expects exit 0."
+    },
+    {
+      "assertion": "Includes at least one blocking and one allowing test",
+      "pass": true,
+      "why": "tests/hooks.sh has 4 cases expecting exit 2 and 4 expecting exit 0."
+    },
+    {
+      "assertion": "Registers the hook in .claude/settings.json and EXTENSIONS.md",
+      "pass": true,
+      "why": "settings.json has a PreToolUse entry with the matcher and command. docs/EXTENSIONS.md has a row for block-migrations-edit."
+    }
+  ],
+  "output_head": "I added the hook, and all 8 hook tests pass, as does the existing unit test suite. Nothing is committed or pushed yet.\n\n- **Hook:** `.claude/hooks/block-migrations-edit.sh` runs before Edit, Write, MultiEdit and NotebookEdit. It blocks (exit 2) any edit whose path has a `migrations` folder in it, at any depth. The message says what was blocked and what to do instead. If the hook can't parse its input, it lets the edit through.\n- **Registration:** it is registered in `.claude/settings.json`.\n- **Tests:** `tests/hooks.sh` has 4 cases that must block and 4 that must allow. The allow cases include `docs/migrations.md`, a plain file named `migrations`, and bad input.\n- **Registry:** I created `docs/EXTENSIONS.md` with a row for the hook.\n\nThe hook only guards Claude's file-edit tools. It does not stop shell commands such as `sed -i` or `echo >` on migration files.\n\nI put \"A. Lead\" as owner and \"(this PR)\" in the PR column. Please correct them if they're wrong, and fill in the PR link once the PR exists. The project has no migrations folder today, so the hook has nothing to block yet.\n",
+  "files": [
+    "A  .claude/hooks/block-migrations-edit.sh",
+    "A  .claude/settings.json",
+    "A  docs/EXTENSIONS.md",
+    "A  tests/hooks.sh"
+  ]
+}

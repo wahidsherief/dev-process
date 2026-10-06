@@ -1,0 +1,19 @@
+{
+  "skill": "ui-check",
+  "id": 4,
+  "prompt": "Write a SQL migration to add an index.",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "assertion": "Does not load ui-check",
+      "pass": true,
+      "why": "The response and diff show only SQL migration work (SQLite checks, unit tests). Nothing indicates a ui-check skill was loaded, and no such skill appears in the available list."
+    }
+  ],
+  "output_head": "I added a migration that indexes `customer_id` on `orders` and `tickets`, with a rollback. The request didn't say which index you wanted. I picked these because both foreign keys are unindexed, and the db-check standard asks for foreign keys to be indexed.\n\n**Files** (new `migrations/` directory):\n- `migrations/001_add_customer_id_indexes.up.sql` creates `idx_orders_customer_id` and `idx_tickets_customer_id`, both with `IF NOT EXISTS`.\n- `migrations/001_add_customer_id_indexes.down.sql` drops both with `IF EXISTS`.\n\n**Verification** (in-memory SQLite with the same schema, not a copy of realistic data):\n- **Plan before:** `SCAN orders`.\n- **Plan after up:** `SEARCH orders USING INDEX idx_orders_customer_id (customer_id=?)`.\n- **Rollback:** the index list is empty after down and the plan goes back to `SCAN orders`. My first check printed the index still in use after down. That was an error in my check script, not in the migration.\n- **Re-running up:** it is safe to run twice.\n- **Existing tests:** `python3 -m unittest discover tests` passes, 1 test.\n\n**Not done:**\n- The repo has no migration runner, and `db.init` doesn't apply these files. They need to be run by hand, for example with `sqlite3 app.db < migrations/001_...up.sql`, until you add a runner. Say if you want one.\n- `orders.created_at` has no index. `list_orders` doesn't filter or sort on it, so I left it out. If a date filter is coming, say so and I'll add it.\n- `list_orders` still runs one query per order (1 + N) and",
+  "files": [
+    "A  migrations/001_add_customer_id_indexes.down.sql",
+    "A  migrations/001_add_customer_id_indexes.up.sql"
+  ]
+}

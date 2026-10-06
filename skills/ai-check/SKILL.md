@@ -1,6 +1,6 @@
 ---
 name: ai-check
-description: 'Apply and check the standards for features that call an AI provider: settings page, one service layer, usage log and dashboard, GBP and USD pricing in settings, budgets, data rules, mock mode. Use when adding or reviewing any code that calls an LLM or AI API.'
+description: 'Standards for features that call an AI provider: settings, service layer, usage log, GBP and USD pricing, spend cap and budgets, data rules, mock mode. Use when adding or reviewing code that calls an LLM or AI API.'
 ---
 
 # ai-check

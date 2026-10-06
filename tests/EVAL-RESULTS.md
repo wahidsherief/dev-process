@@ -31,3 +31,7 @@ Do not read the percentage as a quality score for real use. It shows which rules
 dev-process #1 3/5, #2 3/3, #3 2/4, #4 4/5, #5 1/1, #6 3/3, #7 6/6, #8 3/3, #9 4/4 (task risk escalation), #10 2/2 (logging check).
 ai-check 12/12. security-check #1 2/4, #2 3/4, #3 2/3, #4 1/1.
 Misses not yet investigated: dev-process #1, #3, #4 (the #1 brief and #4 file assertions also missed in v1.3) and security-check #1 to #3. Single LLM-graded runs; check before treating as regressions. Other skills (ui-check, db-check, fix-lanes, change-lanes) were not re-run after the rename.
+
+## v1.4.1 versus v1.4 (full suite, 47 evals, 158 assertions)
+
+v1.4: 128/158. v1.4.1 (final text): 126/158. A mid-pass run scored 123/158. Repeat runs of the dev-process skill alone: v1.4 29/36 and 29/36; v1.4.1 30/36, 29/36 and 32/36. Differences of 1 to 3 assertions are within run-to-run noise. Known weak spot unchanged: db-check #1 (0 to 2 of 5; the agent often makes no change). A run during a usage limit scored 0 everywhere (the judge returned "session limit"); those runs were discarded and repeated.

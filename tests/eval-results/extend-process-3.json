@@ -1,0 +1,34 @@
+{
+  "skill": "extend-process",
+  "id": 3,
+  "prompt": "Add a subagent that plans the backend migration for us.",
+  "passed": 4,
+  "total": 4,
+  "results": [
+    {
+      "assertion": "Tools are read-only by default",
+      "pass": true,
+      "why": "Frontmatter sets `tools: Read, Grep, Glob`, which are all read-only, and the body also forbids editing files or running commands."
+    },
+    {
+      "assertion": "Description says when to hand work to it",
+      "pass": true,
+      "why": "The description begins 'Hand work to this agent when the team needs a plan for migrating the backend...', which says when to delegate."
+    },
+    {
+      "assertion": "Does not call other agents",
+      "pass": true,
+      "why": "The tools list has no Agent tool, and the 'Do not' section says 'Call other agents'."
+    },
+    {
+      "assertion": "Instructions include current state and target",
+      "pass": true,
+      "why": "The Context section covers current state (read from the repo) and target (taken from the task prompt, with a fallback if none is given)."
+    }
+  ],
+  "output_head": "I added a read-only subagent, `plan-migration`, but I haven't run it yet. I also didn't run the project tests, because no code changed.\n\n- **What it does:** it reads `CLAUDE.md`, `docs/PROCESS.md`, the backend code, the schema and the tests. It returns a staged, reversible migration plan in a fixed order:\n  - target and assumptions\n  - inventory\n  - safety net and test gaps\n  - stages, each with a verify step and a rollback step\n  - data plan\n  - risks\n  - open questions for the approver\n- **Tools and model:** it can only use Read, Grep and Glob, so it changes nothing. It runs on opus because planning is design work, and it does not call other agents.\n- **Target:** you didn't say what the backend is migrating to. The agent takes the target from its task prompt. If the prompt doesn't name one, it returns only the inventory and the questions the target has to answer.\n- **Tests:** the team process requires evals for skills and tests for hooks, but not for agents, so this one has none. I wrote \"none\" in its row in the registry. Running it once on this repo with a named target would be a good check.\n- **Registry:** I created `docs/EXTENSIONS.md` and added a row listing A. Lead as owner (the technical lead in `CLAUDE.md`). The PR column says \"pending\".\n\nNothing is committed yet. The process says this goes through a PR with the reason written in it. Do you want me to commit it and open one?\n\nFiles are in `/tmp/tmpnnipf1ya`:\n- `.claude/agents/plan-migration.md`\n- `docs/EXTENSIONS.md`",
+  "files": [
+    "A  .claude/agents/plan-migration.md",
+    "A  docs/EXTENSIONS.md"
+  ]
+}

@@ -8,36 +8,36 @@
     {
       "assertion": "Uses the marks Present, Partial, Missing or N/A for each standard",
       "pass": true,
-      "why": "Every row in the report carries a status mark: \u2717 Missing, \u26a0 Partial or \u2014 N/A. No row is marked Present, but the assertion only requires that each row uses one of the marks."
+      "why": "Every row in the report table uses \u2713 Present, \u26a0 Partial, \u2717 Missing or \u2014 N/A. The risk-only row uses \u2717 Missing."
     },
     {
       "assertion": "Marks each row as current task, project gap or unrelated",
       "pass": true,
-      "why": "The Scope column labels every row as either Project gap or Unrelated. No row is labeled Current task, which fits because the report says there is no current task."
+      "why": "Every row has a Scope column set to 'Project gap' or 'Unrelated'. No row is 'Current task' because no task is set, and the report says so."
     },
     {
       "assertion": "Does not edit any source code",
       "pass": true,
-      "why": "The git status shows only the new report file, so no source files were changed."
+      "why": "The only change is the new report file under docs/analysis/. The response says nothing else was changed."
     },
     {
       "assertion": "Says the result is sample-based or limited",
       "pass": true,
-      "why": "The report says \"Sample-based (whole project is ~65 lines; all source files read)\" and names the mode as light."
+      "why": "The report says 'Sample-based'. The response says the ratings are the assistant's own reading with no scans or query plans run."
     },
     {
       "assertion": "Saves the report as a new timestamped file in docs/analysis/ with a header line (date, commit, mode, standard), or presents a compact table",
       "pass": true,
-      "why": "The file docs/analysis/2026-10-06-1304-light.md is new. Its header line gives the date, commit 4f7ee2c, mode light and standard Safe, and it contains a compact table."
+      "why": "The file docs/analysis/2026-10-06-1614-light.md has a header line with date, commit, mode and standard, followed by a table."
     },
     {
       "assertion": "Runs light mode: does not map the whole project or create docs/ARCHITECTURE.md",
       "pass": true,
-      "why": "Mode is light and no ARCHITECTURE.md was created. The only added file is the report. The project is tiny and all files were read, but that is not a whole-project mapping."
+      "why": "The mode is light, and only the analysis report was added. No ARCHITECTURE.md was created. Reading all 65 lines is reasonable for a project that small."
     }
   ],
-  "output_head": "I ran a light analysis against the Safe standard. I read all five source files, so the sampling covered everything. It's report-only, and I changed no code.\n\nThe report is saved at `docs/analysis/2026-10-06-1304-light.md`.\n\n**Top gaps**\n1. **Security:** `delete_customer` has no authentication and no audit log (`app.py:21`). Nothing in the app is logged or error-reported.\n2. **Backend:** `list_orders` runs one query per order (N+1). `/orders` is unpaginated, and nothing is indexed on `orders.customer_id` or `tickets.customer_id`. Every response is HTTP 200 with no error handling, and the schema is re-created on every GET.\n3. **Frontend:** `templates/index.html` hard-codes its colors, with no design tokens, dark mode, responsive rules or data states.\n\n**Smaller findings**\n- `fmt_total` truncates instead of rounding, and totals are stored as REAL.\n- `requests==2.28.0` is old and unused, and it conflicts with the stack's \"standard library only\" rule.\n- `.gitignore` doesn't exclude `*.db`.\n- Only one test exists, and it covers just the happy path of `list_orders`.\n\nMarked N/A: AI, cache, jobs and email (none present), form validation and toasts (no forms yet), and lint (none configured).\n\nThere is no current task, so no row is scoped \"Current task\". I didn't commit the report.\n",
+  "output_head": "I ran a light `analyze` against the Safe standard and saved the report to `docs/analysis/2026-10-06-1614-light.md`. I used light mode because you gave no mode, and covered both frontend and backend. The project is 65 lines, so I read all of it. The ratings are my own reading, with no scans or query plans run. Nothing was fixed or changed apart from the new report.\n\n**Top three gaps:**\n1. **No authentication or authorization.** `delete_customer` deletes with no identity check, no log line and no confirmation.\n2. **`list_orders` is slow and unbounded.**\n   - It runs one query per order (1 + N, computed from the code, not measured).\n   - It has no pagination, no indexes on the foreign-key columns, and no test that fails if the query count grows.\n3. **No logging, audit or error reporting, and no fallback pages.** Every path returns 200, and nothing is logged or reported.\n\n**Frontend:**\n- `templates/index.html` has hard-coded colors and no design tokens or shared components.\n- It has no dark mode, density setting or responsive layout.\n- It has no toast, alert or confirm components.\n- The table has no loading, empty or error state.\n- Accessibility is only partly there.\n\n**Other backend gaps:**\n- There are no migrations. The schema is rebuilt on every GET request.\n- There is no CI, so no dependency or secret scans run.\n- Test coverage is thin: one test, and `fmt_total` truncates instead of rounding.\n\nRules that only apply under the Risk standard are listed in the report as \"Risk-onl",
   "files": [
-    "A  docs/analysis/2026-10-06-1304-light.md"
+    "A  docs/analysis/2026-10-06-1614-light.md"
   ]
 }

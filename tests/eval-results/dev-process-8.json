@@ -8,20 +8,19 @@
     {
       "assertion": "Reads docs/PATTERNS.md or says it does not exist or is empty",
       "pass": true,
-      "why": "The response explicitly says docs/PATTERNS.md doesn't exist in this project."
+      "why": "The response explicitly states that `docs/PATTERNS.md` doesn't exist and so there are no approved patterns for modal."
     },
     {
-      "always": "",
       "assertion": "Does not invent a pattern",
       "pass": true,
-      "why": "No pattern is invented. The response says none are approved and only offers to add a Candidate row if the user supplies a canonical source."
+      "why": "No modal pattern is made up. The response says none exist. Its mention of a possible Candidate from `templates/` is a hypothetical offer, not an invented pattern."
     },
     {
       "assertion": "Does not list Candidate or Deprecated patterns by default",
       "pass": true,
-      "why": "The response lists no Candidate or Deprecated patterns. The 'standard modal' row is only an offer to add one, not a listing."
+      "why": "No Candidate or Deprecated patterns are listed. The only mention of Candidates is a conditional offer to add one later."
     }
   ],
-  "output_head": "There are no approved patterns for modal. `docs/PATTERNS.md` doesn't exist in this project, so no patterns are registered at all. I didn't search the codebase, because the patterns command is only meant to read that registry.\n\nIf you want one, I can add a `standard modal` row as a Candidate once you point me to its canonical source file. Only a human can move it to Approved.\n",
+  "output_head": "`docs/PATTERNS.md` doesn't exist, so there are no approved patterns for modal. The registry is missing, and per the patterns reference I didn't search the codebase for modals.\n\nIf you want one started, I can create the registry. A modal found in `templates/` could be added as a Candidate, but only you or the technical lead (A. Lead) can approve it. I haven't created anything.\n",
   "files": []
 }

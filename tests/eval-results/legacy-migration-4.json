@@ -1,0 +1,19 @@
+{
+  "skill": "legacy-migration",
+  "id": 4,
+  "prompt": "Write a function to parse dates.",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "assertion": "Does not load legacy-migration",
+      "pass": true,
+      "why": "The response describes adding parse_date and tests, with no mention of loading or using a legacy-migration skill. Nothing in the diff or text suggests it was loaded."
+    }
+  ],
+  "output_head": "I added `parse_date(value)` in `dates.py`. All 4 tests pass: the 3 new ones in `tests/test_dates.py` and the existing one.\n\n- **Accepted input:** it returns a `datetime.date` from `2026-01-15`, `2026/01/15`, `15 Jan 2026`, `15 January 2026`, `Jan 15, 2026`, `January 15, 2026` and ISO datetimes such as `2026-01-15T10:30:00`. It trims surrounding whitespace and passes `date` and `datetime` objects through.\n- **Errors:** it raises `ValueError` for anything else, including empty strings, non-strings and impossible dates like `2026-02-30`.\n- **Slash dates:** I rejected `03/04/2026` on purpose, because it could mean 3 April or 4 March. If your data has a known day-first or month-first convention, it's a one-line addition to `FORMATS`.\n\nYou didn't specify formats, so I picked these. Tell me if you need others.\n\n**Lane:** quick change.\n**Standards applied:** none of the security, database or UI checks apply, since this is pure parsing with no I/O.\n**Not done:** I didn't wire it into `app.py` and didn't update `docs/PROCESS.md`.\n**Noticed, not changed:** `fmt_total` in `app.py` truncates instead of rounding, and `list_orders` runs one query per order.\n**Cost:** Low.\n**Next:** open the PR for A. Reviewer to approve. Nothing is committed yet.\n",
+  "files": [
+    "A  dates.py",
+    "A  tests/test_dates.py"
+  ]
+}

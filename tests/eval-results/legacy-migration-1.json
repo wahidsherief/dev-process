@@ -1,0 +1,31 @@
+{
+  "skill": "legacy-migration",
+  "id": 1,
+  "prompt": "We need to modernise a 10-year-old PHP app. Where do we start?",
+  "passed": 4,
+  "total": 4,
+  "results": [
+    {
+      "assertion": "Starts with discover and baseline, not code changes",
+      "pass": true,
+      "why": "The response opens with 'Start with understanding and safety, not code.' Step 1 is 'Discover and baseline (no code changes yet)'."
+    },
+    {
+      "assertion": "Recommends piece-by-piece migration behind a feature flag over a full rewrite",
+      "pass": true,
+      "why": "It recommends running new code beside the old, one slice at a time behind a feature flag. It says to avoid a full rewrite unless the old app can't be understood or run."
+    },
+    {
+      "assertion": "Names the technical lead approval at Gate 1 before any change",
+      "pass": true,
+      "why": "Gate 1 reads 'your technical lead approves the baseline and guardrails'. It comes in step 2, before the decision record, safety net and migration steps, and the response says 'No code changes before this' about Gate 2."
+    },
+    {
+      "assertion": "Lists hidden behaviour to find: jobs, emails, integrations",
+      "pass": true,
+      "why": "Step 1 lists 'cron jobs, emails, integrations, webhooks, and manual processes' as hidden behaviour to find."
+    }
+  ],
+  "output_head": "Start with understanding and safety, not code. Don't rewrite everything at once. Migrate in slices, and put four human approval gates along the way.\n\n## Where to start\n\n**1. Discover and baseline (no code changes yet)**\n- Map the app once: modules, endpoints, DB tables, and the PHP version and dependencies (check `composer.json` for abandoned packages).\n- Find the hidden behaviour that breaks migrations: cron jobs, emails, integrations, webhooks, and manual processes such as someone running a script by hand.\n- Record the baseline: test coverage (probably none), slow queries, known bugs, page and response times. You'll compare against it at the end.\n- Save the results in `docs/ARCHITECTURE.md` and `docs/BASELINE.md`.\n\n**2. Guardrails**\n- Get CI running, add static analysis (PHPStan or Psalm at a low level), a code formatter, and a `CLAUDE.md` that describes the app.\n- **Gate 1:** your technical lead approves the baseline and guardrails.\n\n**3. Decision record (one page)**\n- Pick an approach. I recommend running the new code beside the old, one slice at a time behind a feature flag. Avoid a full rewrite unless the old app can't be understood or run.\n- For risky logic such as billing or pricing, run old and new in parallel on the same input and compare the results.\n- Write down the target (for example PHP 8.3 with Laravel or Symfony, or an in-place upgrade), the slice order, and the rollback path.\n\n**4. Safety net**\n- Don't skip this because the app has no tests. Start with chara",
+  "files": []
+}

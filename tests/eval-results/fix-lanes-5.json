@@ -1,0 +1,35 @@
+{
+  "skill": "fix-lanes",
+  "id": 5,
+  "prompt": "Bug: old tickets have no status value and the page breaks on them. We probably need a status column with a default.",
+  "passed": 4,
+  "total": 4,
+  "results": [
+    {
+      "assertion": "Notices the fix needs a schema change",
+      "pass": true,
+      "why": "The response states 'This is a schema change' and explains that CREATE TABLE IF NOT EXISTS can't alter an existing table, so a migration is needed."
+    },
+    {
+      "assertion": "Plans a migration with a rollback",
+      "pass": true,
+      "why": "The response adds an idempotent migration in db.init and gives a rollback: revert the code, and the extra column is harmless. It also advises backing up app.db first."
+    },
+    {
+      "assertion": "Applies db standards (default, index or backfill considered)",
+      "pass": true,
+      "why": "The column is NOT NULL DEFAULT 'open', and the response says existing rows read as open, which covers the default and the backfill. An index is not mentioned, but the assertion only requires one of default, index or backfill."
+    },
+    {
+      "assertion": "Flags the migration for the approver",
+      "pass": true,
+      "why": "Under 'Next' the response says 'A. Reviewer needs to approve.' It also calls out that the migration runs on startup against production and that app.db should be backed up first."
+    }
+  ],
+  "output_head": "Old tickets now get a `status` of `open`. The page should no longer break on them. The 3 tests pass, but I didn't run the page itself.\n\n**Choices:** I used `open` as the default status. The column is added by a migration in `db.init`, because `CREATE TABLE IF NOT EXISTS` can't change a table that already exists. This is a schema change, so I treated it as a normal change, not a quick bug fix.\n\n**Root cause:** `tickets` never had a `status` column.\n\n**Fix:** `db.init` checks for the column and adds `status TEXT NOT NULL DEFAULT 'open'` if it's missing. Running it again does nothing, and existing rows read as `open`.\n\n**Proof:**\n- **Before the fix:** the two new tests failed with `KeyError: 'status'`.\n- **After the fix:** the whole suite passes (3 tests, OK).\n- **New tests:** one covers an old-schema ticket, and the other covers a newly inserted one.\n\n**Changed:**\n- `db.py`\n- `tests/test_app.py`\n- `docs/memory/fix/2026-10-06-ticket-status.md` (the fix note)\n\n**Noticed, not changed:** `list_orders` runs one query per order, `fmt_total` truncates instead of rounding, and `delete_customer` has no auth check.\n\n**Next:**\n- A. Reviewer needs to approve.\n- Back up `app.db` before the first run against production, because the migration runs on startup.\n- To undo it, revert the code. The extra column is harmless.\n- I haven't committed anything.\n",
+  "files": [
+    "M  db.py",
+    "A  docs/memory/fix/2026-10-06-ticket-status.md",
+    "M  tests/test_app.py"
+  ]
+}

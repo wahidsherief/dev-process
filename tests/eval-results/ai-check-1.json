@@ -8,30 +8,30 @@
     {
       "assertion": "Calls the provider through one service layer",
       "pass": true,
-      "why": "All provider calls go through ai.py: complete() and _call_provider(), and app.py only calls ai.summarise_ticket."
+      "why": "All calls go through ai.complete(), which invokes _call_provider; summarise_ticket delegates to complete."
     },
     {
       "assertion": "Logs model, tokens in and out, cost, feature, user and time",
       "pass": true,
-      "why": "The ai_usage insert records created_at, feature, user, model, tokens_in, tokens_out, cost_usd, cost_gbp and status."
+      "why": "The ai_usage INSERT records created_at, feature, user, model, tokens_in, tokens_out, cost_usd and cost_gbp."
     },
     {
       "assertion": "Reads prices and the USD to GBP rate from settings",
       "pass": true,
-      "why": "complete() reads ai_price_in_usd_per_1m, ai_price_out_usd_per_1m and usd_to_gbp through setting(), which queries the settings table and falls back to defaults."
+      "why": "ai_price_in_usd, ai_price_out_usd and ai_usd_to_gbp are read from the settings table via get_setting, with no hardcoded values."
     },
     {
       "assertion": "Shows cost in both GBP and USD",
       "pass": true,
-      "why": "The UI shows both USD and GBP cost, and the API response returns both cost_usd and cost_gbp."
+      "why": "The UI renders \"cost $... / \u00a3...\" from cost_usd and cost_gbp."
     },
     {
       "assertion": "Provides a mock mode and a test for the cost calculation",
       "pass": true,
-      "why": "Mock mode is on by default and is controlled by the ai_mock setting. test_cost_calculation checks ai.cost for both USD and GBP."
+      "why": "ai_mock defaults to mock mode, and test_cost_calculation checks ai.cost for both USD and GBP."
     }
   ],
-  "output_head": "I added a \"Summarise ticket\" button, with a ticket-id field, to `templates/index.html`. It calls a new `POST /tickets/<id>/summarise` route in `app.py`. The 5 tests pass, including 4 new ones. I haven't run the page in a browser or made a live provider call. Nothing is committed.\n\n**Choices I made:**\n- **Provider:** Anthropic, through the standard library only.\n- **Mock mode:** it's on by default. Set `ai_mock` to `0` in settings to make real calls.\n- **API key:** it comes from the `ANTHROPIC_API_KEY` environment variable and is never stored in the database.\n- **Settings:** the model, prices per 1M tokens, USD\u2192GBP rate and monthly cap are read from the existing `settings` table. The defaults are placeholders I picked, so please set real values.\n- **Single service:** every AI call goes through `ai.py`, with a 20-second timeout, 2 retries and user-safe error messages.\n\n**Safe-standard items:**\n- **Usage log:** each call writes a row to a new `ai_usage` table with feature, user, model, tokens in and out, and cost in USD and GBP. Prompts are not logged.\n- **Spend cap:** calls stop with a clear message once the month's GBP spend reaches the cap.\n- **Data rules:** only the ticket's subject and body are sent, with emails and phone numbers redacted. Customer details are not included.\n\n**Tests:** the new tests cover the cost calculation, mock output with the usage row, redaction, the spend cap and a missing ticket.\n\n**Noticed, not changed:**\n- There's no auth or user identity, so usag",
+  "output_head": "I added a \"Summarise ticket\" button, and all 6 tests pass. I haven't run the server or clicked the button, and I haven't made a real provider call. The real-call path is only tested for refusing to run: it returns an error when settings are missing and when the cap is reached.\n\nChoices I made:\n- **Provider and mode:** the provider is Anthropic over `urllib`, so there are no new dependencies. The feature defaults to mock mode until `ai_mock` is set to `0`.\n- **Where settings live:** the model, USD prices per 1M tokens, USD\u2192GBP rate and monthly cap are rows in the `settings` table, and a real call refuses to run if any are missing. The API key is read from the `ANTHROPIC_API_KEY` environment variable, never stored in the database.\n- **Service and logging:** every call goes through one function in `ai.py`, with a 20-second timeout and 2 retries. It checks the monthly spend cap and logs each call to a new `ai_usage` table with model, tokens, cost in USD and GBP, feature, user and time.\n- **Data rules:** only the ticket subject and body are sent, with email addresses and phone numbers redacted. No customer id, name or email goes out, and prompts aren't logged.\n- **UI:** the button sits under a ticket-id input, because the UI has no ticket list yet. It shows the summary with the cost in both USD and GBP.\n- **Endpoint:** the button calls a new `POST /tickets/<id>/summary` route.\n\n**Noticed, not changed:**\n- The app has no authentication, so usage is logged under the user \"anonymous\"",
   "files": [
     "A  ai.py",
     "M  app.py",

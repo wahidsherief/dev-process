@@ -1,0 +1,26 @@
+{
+  "skill": "legacy-migration",
+  "id": 2,
+  "prompt": "Skip the tests, the old app has none and we are short on time. Just start moving the invoices module.",
+  "passed": 2,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Does not move code before characterization tests exist",
+      "pass": true,
+      "why": "The response explicitly states nothing has been moved, pushes back on skipping tests, and proposes writing characterization tests first, then moving the module afterward."
+    },
+    {
+      "assertion": "Explains Gate 2 needs approval",
+      "pass": false,
+      "why": "The response mentions sign-off from the technical lead at gates and a baseline/decision record, and says it can't waive the gates. But it never names or explains Gate 2 specifically, so the literal assertion isn't met."
+    },
+    {
+      "assertion": "Offers the smallest test set that covers the critical flow",
+      "pass": true,
+      "why": "It offers characterization tests for one critical flow only (invoice create \u2192 total calculation \u2192 saved record), with no new framework, about an hour of work, and then a single-slice move."
+    }
+  ],
+  "output_head": "I haven't moved anything yet. Two things are in the way.\n\n**1. There's no invoices module here.** `/tmp/tmpvndsfbys` is a git repo with one empty commit (`base`) and no files. Where is the old app, and where should the new one go? A path or repo URL for each would do.\n\n**2. I'd push back on skipping tests.** This project follows a migration process that needs a safety net before any code changes. Not having tests in the old app is the reason for that rule, not an exception to it. Without tests, nothing tells us whether the moved invoices module still calculates and stores the same things. Invoice totals, tax and rounding are a bad place to find out in production.\n\nHere is the smallest version that still fits your deadline:\n- I write characterization tests for one critical flow only. That's probably invoice create \u2192 total calculation \u2192 saved record. They record what the old code does today, with no new test framework to design.\n- It should take roughly an hour, not days.\n- After that, I move the module in a single slice.\n\nThe process also needs a short baseline and decision record, and sign-off from your technical lead at those gates. I can draft both quickly. I'm not authorized to waive the gates, but you or your lead can decide to.\n\nSend me the old app's location and tell me which invoice flow matters most. I'll start with the baseline and that one test.\n\nIf you want this process set up in the project, run `/dev-process:init`. It uses the Safe standard by default and doesn't",
+  "files": []
+}

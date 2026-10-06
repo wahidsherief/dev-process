@@ -1,6 +1,6 @@
 # <Project name>
 
-Process: dev-process v1.4 · Standard: <Safe|Risk> · Type: <new|existing|legacy migration>
+Process: dev-process v1.4.1 · Standard: <Safe|Risk> · Type: <new|existing|legacy migration>
 Approver: <name> · Technical lead: <name>
 
 ## Stack and commands
@@ -9,7 +9,7 @@ Approver: <name> · Technical lead: <name>
 - Error reporting: <Sentry | other | none, where applicable or decided>
 
 ## How we work
-Describe the task in plain words. The dev-process skill picks the lane (feature, bug fix, hotfix, data fix, quick change, refactor, upgrade, spike, release), applies the standards and ends with a short summary. Commands: `/dev-process:init`, `analyze`, `summary`, `resume`, `status`, `patterns`. Patterns live in `docs/PATTERNS.md`. State lives in `docs/PROCESS.md`. Plan before code on new features. One slice per PR (max 400 changed lines). Search `docs/memory/` before planning.
+Describe the task in plain words. The dev-process skill picks the lane (feature, bug fix, hotfix, data fix, quick change, refactor, upgrade, spike, release), applies the standards and ends with a short summary. Commands: `/dev-process:init`, `analyze`, `summary`, `resume`, `status`, `patterns`, `token-report`. Patterns live in `docs/PATTERNS.md`. State lives in `docs/PROCESS.md`. Plan before code on new features. One slice per PR (max 400 changed lines). Search `docs/memory/` before planning.
 
 ## Hard rules
 1. Never put secrets, passwords or real customer data into a prompt, log or note.

@@ -14,9 +14,7 @@ Goal: easy for the developer, strict underneath.
 - Tests for what is built; mocks and seed data
 - Gathering proof: query counts, test output, screenshots at 360 / 768 / 1280 px, accessibility scan, log line
 
-## Scope: changed code only
-
-Everything above applies to the lines and components this task changes or adds. Do not refactor, restyle or add features to nearby code to meet a standard. Report it in the handoff as "Noticed, not changed" so the team can decide.
+Everything above applies to the code this task changes or adds (hard rule 8 in `SKILL.md`).
 
 ## Ask only when needed
 
@@ -29,14 +27,8 @@ Everything above applies to the lines and components this task changes or adds. 
 
 Ask once, with a recommended answer. Never ask a question you can answer from the repo.
 
-## Always stop for a human
-
-- Brief (when unclear), plan (new or large work), PR approval
-- Migration gates 1 to 4, release sign-off
-- Destructive or hard-to-undo actions
+Always stop for a human at the "Stops" in `SKILL.md` (plan, PR approval, gates, sign-off, destructive actions).
 
 ## Report
 
-At the end of each task, list what was applied automatically in one line, with numbers: query count before and after (for example `queries: 1,001 -> 1`), the index and query-plan result, and the cache key pattern and TTL when caching was added. Example:
-
-- Applied: batched the invoice query (1 query, was 1+N), index on invoices.customer_id, cache 'export-lookups' 10 min, audit entry on export, setting 'export_max_rows'.
+In "Standards applied", give numbers in one line: query count before and after, the index and query-plan result, cache key and TTL if added. Example: `batched invoice query (1, was 1+N), index invoices.customer_id, cache 'export-lookups' 10 min, audit entry, setting 'export_max_rows'`.

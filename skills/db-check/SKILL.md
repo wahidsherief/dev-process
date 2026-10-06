@@ -1,6 +1,6 @@
 ---
 name: db-check
-description: 'Apply and check the backend and database standards: N+1 queries, indexes, migrations, caching, background jobs, email, API design. Use when writing or reviewing API endpoints, ORM queries, schema or migrations, cache, queues, or email code, or when asked to optimize a slow query.'
+description: 'Backend and database standards: N+1, indexes, migrations, caching, jobs, email, API design. Use when writing or reviewing endpoints, ORM queries, schema or migrations, cache, queues or email code, or when optimizing a slow query.'
 ---
 
 # db-check

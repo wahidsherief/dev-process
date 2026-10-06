@@ -1,0 +1,40 @@
+{
+  "skill": "ui-check",
+  "id": 1,
+  "prompt": "Build a customer list screen with a search box and a create button.",
+  "passed": 4,
+  "total": 5,
+  "results": [
+    {
+      "assertion": "Uses design tokens, no hard-coded colours",
+      "pass": false,
+      "why": "Most colours are CSS custom-property tokens defined on :root. But the dark theme and a few styles hard-code values: the .toast uses rgba(0,0,0,.2) in --shadow, and the --overlay values are raw rgba. These are inside token definitions, which is acceptable. The component rules use var(). There are no stray hard-coded colours in the component rules, so this likely passes. On a strict reading, though, the shadow and overlay tokens are defined with raw rgba, which is normal token usage."
+    },
+    {
+      "assertion": "Handles loading, empty and error states",
+      "pass": true,
+      "why": "The code shows 'Loading customers\u2026', separate empty and no-match messages, and an error alert with a Retry button. The response also lists all of these states."
+    },
+    {
+      "assertion": "Uses a responsive layout for 360, 768 and 1280 px, or lists the screenshots needed at those widths",
+      "pass": true,
+      "why": "The layout is responsive: flex-wrap, max-width, and dialog width of min(420px, 100vw-32px). The response also lists the screenshots needed at 360, 768 and 1280 px."
+    },
+    {
+      "assertion": "Supports dark and light mode",
+      "pass": true,
+      "why": "A prefers-color-scheme: dark media query overrides the tokens, so both themes are supported."
+    },
+    {
+      "assertion": "Gathers or lists the screenshots as proof",
+      "pass": true,
+      "why": "It lists the screenshots needed by screen, theme and width, and says plainly that none were taken because the page was not opened in a browser."
+    }
+  ],
+  "output_head": "The customer list screen is built. It has a search box and a \"New customer\" button that opens a create form.\n\nTests pass (4 run). I also checked `GET /customers?q=`, a valid `POST /customers` and an invalid one against the running server. I haven't opened the page in a browser, so the visuals are unchecked.\n\nChoices I made:\n- Search runs as you type, matches name or email, and returns up to 200 rows.\n- The create form is a modal with name and email, both required.\n- Errors show beside each field after you leave it, and the server repeats the checks.\n- A successful create shows a toast, and failures show an inline alert.\n- Colors are tokens with light and dark themes, and layout is responsive with 44px tap targets.\n\nThe list shows loading, empty, no-match and error states, with a Retry button on the error.\n\nNot done:\n- **Density toggle:** the standard asks for one, but it's outside this request.\n- **Noticed, not changed:**\n  - `delete_customer` has no auth check.\n  - `list_orders` makes one query per order.\n  - `fmt_total` truncates instead of rounding.\n  - `requests==2.28.0` is pinned although the app doesn't use it.\n\nThe changes are in `app.py`, `templates/index.html` and `tests/test_app.py`.\n\nScreenshots needed (screen \u00d7 theme \u00d7 density \u00d7 width):\n- List with data, light and dark, at 360, 768 and 1280 px.\n- Empty state, no-match state and error alert with Retry, at 360 and 1280 px.\n- Create dialog with field errors, light and dark, at 360 px.\n- Success toast after a create, ",
+  "files": [
+    "M  app.py",
+    "M  templates/index.html",
+    "M  tests/test_app.py"
+  ]
+}

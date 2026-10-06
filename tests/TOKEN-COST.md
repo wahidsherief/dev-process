@@ -43,3 +43,16 @@ Same method, one run per cell, so treat as rough.
 | Orders CSV export, admin only, with UI | $0.115 | $0.156 | 4 / 7 | +36% |
 
 The bug-fix row is noisy (the plain run was cheaper than in v1.2). Full flow is slightly heavier than v1.2 (+36% vs +30%); the new Standard text and logging check add a little. Not yet re-measured: `analyze`, `init`, and any run where the reviewer triggers.
+
+## v1.4.1 versus v1.4 (2 runs per cell, same machine and time, recorded in `tests/token-runs-v1.4*.jsonl`)
+
+Report: `python3 scripts/token-report.py --file tests/token-runs-v1.4.1.jsonl` (and the v1.4 file). Median of per-task overhead, 5 tasks:
+
+| | v1.4 | v1.4.1 |
+|---|---|---|
+| Median overhead | +31.3% | +17.7% |
+| Average overhead | +22.4% | +16.0% |
+| Quick tasks (UI label, endpoint) | +3% | +10% |
+
+Read with care: totals are dominated by cached tokens and swing with the number of turns (the same task sometimes takes 3 turns, sometimes 4, and a plugin run sometimes takes 8 or 9). The two versions are not clearly different. The one stable change is a small fixed saving on the simplest task (about 3.4k extra tokens versus 3.9k). Instruction size: `SKILL.md` 1,228 to 1,099 words; skill descriptions loaded every session 436 to 324 words (-26%); all instruction text 10,709 to about 10,450 words.
+No rework or review-round data exists yet, so the report's verdict is INSUFFICIENT DATA. That needs the pilot.

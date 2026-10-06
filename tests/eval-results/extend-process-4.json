@@ -1,0 +1,16 @@
+{
+  "skill": "extend-process",
+  "id": 4,
+  "prompt": "Explain what a hook is.",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "assertion": "Does not create any files",
+      "pass": true,
+      "why": "The response is purely explanatory text. The git status and diff show no files changed, and it describes no file creation or tool use."
+    }
+  ],
+  "output_head": "A **hook** is a point where you can attach your own code so it runs automatically when something happens, without changing the main program.\n\n**In Claude Code**, hooks are shell commands (or scripts) that the harness runs at set points in a session. Claude doesn't run them, so they are reliable. You configure them in `settings.json`. Common events include:\n\n- `PreToolUse`: runs before a tool call. It can inspect the call and block it.\n- `PostToolUse`: runs after a tool call, for example to run a formatter or tests after each edit.\n- `UserPromptSubmit`: runs when you send a prompt, for example to add context.\n- `SessionStart`: runs when a session begins, for example to install dependencies.\n- `Stop`: runs when Claude finishes a response.\n\nA hook receives event details as JSON on stdin. Its exit code or output can allow, block, or give feedback to Claude. Use a hook when you want something to happen every time (\"after every edit, run the tests\"), rather than relying on Claude to remember.\n\n**In general programming**, a hook is the same idea. Examples are git hooks (`pre-commit`, `pre-push`), web framework lifecycle callbacks, and React hooks like `useState`. In each case the framework calls your code at a defined moment.\n\nIf you meant a specific kind of hook, such as git hooks or setting one up in this project, tell me which and I can go into detail. The `/update-config` skill can set up Claude Code hooks.\n",
+  "files": []
+}

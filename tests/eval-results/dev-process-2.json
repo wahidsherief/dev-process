@@ -2,25 +2,25 @@
   "skill": "dev-process",
   "id": 2,
   "prompt": "Fix login.",
-  "passed": 3,
+  "passed": 2,
   "total": 3,
   "results": [
     {
       "assertion": "Does not invent a requirement from the title alone",
       "pass": true,
-      "why": "The response did not guess at a fix or make up what 'login' should do. It said no login code exists and asked what the symptom is. It raised 'add login' only as a question, not as an assumption."
+      "why": "The response made no changes and did not guess what 'login' meant. It noted the codebase has no login and said the report is too thin to act on. It also pointed out that building a login would be a new feature, not a fix."
     },
     {
       "assertion": "Asks for reproduction steps and expected behaviour",
       "pass": true,
-      "why": "Question 1 asks for the symptom, including a specific error, a failed sign-in or a redirect loop, and what the user expected instead. Question 2 asks where it happens. Together these cover reproduction details and expected behaviour. The response does not literally say 'reproduction steps' in the question list, but it does say it needs details to reproduce."
+      "why": "Question 2 asks for the steps, what was expected, what happened instead, and any error or log."
     },
     {
       "assertion": "Puts unanswered points in open questions",
-      "pass": true,
-      "why": "The response collects all unresolved points in a numbered list of questions (symptom, location, feature versus bug, urgency) rather than assuming answers. This works as an open-questions section, though it carries no literal 'Open questions' heading."
+      "pass": false,
+      "why": "The response lists numbered questions in the message body. It never records them as 'open questions' in any artifact or section, and nothing was written or changed. Read literally, the points were asked but not put in an open-questions record."
     }
   ],
-  "output_head": "There is no login code in this app. The only auth reference is a comment on `delete_customer` (`# no auth check yet`). There are no login routes, no users table, no sessions and no login template. `git log` shows a single \"base\" commit, so there's no history to point at a regression.\n\nI can't reproduce a defect that has no code behind it, and the fix-lanes process says to ask for steps rather than guess. These are the details I'd need:\n\n1. **What's the symptom?** For example, a specific error, a failed sign-in, or a redirect loop. What did you expect instead?\n2. **Where does it happen?** It may be in a different repo or branch, or in code that isn't committed here. If so, point me to it.\n3. **Is the request a missing feature?** If you mean \"add login\", that's a new feature with schema, auth and design decisions. It would go through the normal feature flow, not a bug fix.\n4. **Is it urgent?** Is production affected? That decides between a bug fix and a hotfix.\n\nOnce I have those, I'll write a failing test first and then make the smallest fix.\n",
+  "output_head": "I can't fix this yet, because there's no login in this codebase to fix.\n\n- **No login code:** `app.py` serves `/orders` and a static `index.html`. It has no login route, no session handling, no users table and no password handling. A search for \"login\" across the Python files finds nothing.\n- **No auth at all:** `delete_customer` is commented `# no auth check yet`. That's the only auth mention in the code.\n- **Thin report:** The bug-fix process says not to guess when a report is too thin, so I haven't changed anything.\n\nI need a few details to go further:\n\n1. **Where's the login?** Is it on another branch or in another repo, or did you mean something else, like the unauthenticated `delete_customer`?\n2. **What goes wrong?** Please give the steps, what you expected, what happened instead, and any error or log (redacted).\n3. **When did it start?** If you know, tell me roughly when it began and what changed.\n\nIf you actually want a login built, that's a new feature rather than a bug fix. It would need a users table, a schema change, so it would go through the normal feature flow (`dev-process` start). Let me know and I'll set that up.\n",
   "files": []
 }

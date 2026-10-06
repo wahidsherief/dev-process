@@ -1,0 +1,30 @@
+{
+  "skill": "ui-check",
+  "id": 3,
+  "prompt": "Delete button for a customer.",
+  "passed": 1,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Confirm dialog states the consequence",
+      "pass": false,
+      "why": "The confirm text is only \"Delete customer <name>?\". It names the customer but says nothing about what will happen, such as the customer being removed or their orders and tickets being orphaned."
+    },
+    {
+      "assertion": "Offers undo where possible, or states in the dialog that it cannot be undone",
+      "pass": false,
+      "why": "There is no undo. The confirm dialog does not say the deletion is permanent or cannot be undone."
+    },
+    {
+      "assertion": "Uses an alert, not a toast, for failure",
+      "pass": true,
+      "why": "On failure the code calls alert(\"Delete failed\"). It does not use a toast."
+    }
+  ],
+  "output_head": "I added a Delete button for each customer, and the tests pass. I didn't run the server or click the button in a browser.\n\n- **List:** the page now loads a customer list from a new `GET /customers`. Each row has a red Delete button that asks for confirmation, calls `DELETE /customers/<id>`, then reloads the list. The server returns 204 if it deleted the customer and 404 if the id doesn't exist.\n- **Test:** I added a unit test for the delete function. The `/customers` routes and the button script have no tests.\n\nChoices I made without asking:\n- **No auth:** the existing code has no authentication, so `DELETE` is open to anyone who can reach the server. It only listens on 127.0.0.1. Add an auth check before this is exposed anywhere else.\n- **Orphans:** deleting a customer leaves their orders and tickets in place. The orders list already handles a missing customer by showing `None`.\n\nThe changes are in `app.py`, `templates/index.html` and `tests/test_app.py`. Nothing is committed.\n",
+  "files": [
+    "M  app.py",
+    "M  templates/index.html",
+    "M  tests/test_app.py"
+  ]
+}

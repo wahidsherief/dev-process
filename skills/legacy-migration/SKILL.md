@@ -1,6 +1,6 @@
 ---
 name: legacy-migration
-description: 'Run the legacy migration track: choose an approach, then seven stages with four human gates, legacy risks, and UI redesign. Use when migrating, modernizing or redesigning an existing system, when asked to skip tests or the safety net during a migration, or when the project type in docs/PROCESS.md is legacy migration.'
+description: 'Legacy migration track: approach, seven stages, four human gates, risks, UI redesign. Use when migrating, modernizing or redesigning an existing system, when asked to skip tests or the safety net during a migration, or when docs/PROCESS.md says legacy migration.'
 ---
 
 # legacy-migration

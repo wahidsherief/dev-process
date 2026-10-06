@@ -1,0 +1,33 @@
+{
+  "skill": "change-lanes",
+  "id": 2,
+  "prompt": "Refactor list_orders in app.py so it does not issue one query per order. Behaviour must stay the same.",
+  "passed": 3,
+  "total": 4,
+  "results": [
+    {
+      "assertion": "Runs tests before changing code",
+      "pass": false,
+      "why": "The response only says the existing test passes; nothing shows tests were run before the change. The response and diff give no evidence of a baseline run."
+    },
+    {
+      "assertion": "Keeps behaviour identical",
+      "pass": true,
+      "why": "A LEFT JOIN keeps orders with no customer and returns None for them. customers.id is the primary key, so there are no duplicate rows. ORDER BY o.rowid preserves the original order. The returned dict shape is unchanged."
+    },
+    {
+      "assertion": "Does not edit tests to make them pass",
+      "pass": true,
+      "why": "Only app.py was modified, so no tests were edited."
+    },
+    {
+      "assertion": "Tests green after",
+      "pass": true,
+      "why": "The response states that the existing test passes after the change. The response gives no test output as evidence, but the claim is explicit."
+    }
+  ],
+  "output_head": "`list_orders` in `app.py` now runs one query, a `LEFT JOIN` of `orders` to `customers`, instead of one query per order. The existing test passes. I didn't add a test for orders with no matching customer.\n\nBehaviour is unchanged:\n- **Row count:** `customers.id` is the primary key, so each order still produces exactly one row.\n- **No customer:** orders whose customer is missing still come back with `customer: None`.\n- **Order:** I added `ORDER BY o.rowid` so the rows come back in the same order as before.\n\nI left the other code in `app.py` alone, including the `fmt_total` truncation and the missing auth check in `delete_customer`.\n",
+  "files": [
+    "M  app.py"
+  ]
+}
