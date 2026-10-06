@@ -40,7 +40,9 @@ If the plugin is installed in a project that is not set up, Claude does the task
 - A task that touches money, personal data, authentication or migrations is treated as Risk for that task only, and can use the reviewer agent. Claude may suggest moving the project to Risk; it never does it alone.
 - AI calls in a Safe project follow three rules: no secrets or customer data in prompts, a monthly spend cap, and a usage log.
 
-Claude picks the lane, applies the standards itself, asks only when it must, and ends every task with a short summary: lane, what was checked, what changed, how, proof, standards applied and skipped, a Low/Medium/High cost, and the next step.
+Claude picks the lane, applies the standards itself, asks only when it must, and ends every task with a short table summary: lane, task type, what was checked, what changed, how, proof, standards applied and skipped, the memory note path, a Low/Medium/High cost, and the next step.
+
+Every task also leaves a short memory note in `docs/memory/<task type>/YYYY-MM-DD-name.md` (feature, fix, refactor, migration, decision or incident), written before the summary. Only a trivial quick change with nothing worth keeping may skip it ("Memory: none (trivial)").
 
 ## Lanes
 
@@ -73,13 +75,14 @@ Claude never deploys and never touches production.
 | `legacy-migration` | Seven stages, four gates, risks, UI redesign |
 | `extend-process` | Add a project skill, hook or agent in a fixed format and register it |
 
-Each skill has a trigger-style `description` (Claude loads the rest only on a match) and an `evals/evals.json` test suite. The plugin also has the `standards-reviewer` agent (read-only, runs only for larger or risky full-flow changes), three hooks and templates for CLAUDE.md, PR, memory, incident, fix, release, spike notes, data-fix runbook, design page, baseline and CI.
+Each skill has a trigger-style `description` (Claude loads the rest only on a match) and an `evals/evals.json` test suite. The plugin also has the `standards-reviewer` agent (read-only, runs only for larger or risky full-flow changes), four hooks and templates for CLAUDE.md, PR, memory, incident, fix, release, spike notes, data-fix runbook, design page, baseline and CI.
 
 ## Hooks (enforced, whatever the developer does)
 
 - Before a tool runs: block `.env` reads, force-push, branch deletion (local and remote), wide recursive deletes
 - Before a prompt is sent: block prompts that contain a secret
 - After an edit: run the project's lint and test commands (`.devprocess/config.json`)
+- When Claude stops: if project files changed but no memory note was written, ask Claude once to write it (only in projects set up by `/dev-process:init`)
 
 CI (`templates/standards.yml.tpl`): PR size, scans, checklist, and `fix-has-test` (a bug-fix PR must change a test).
 
@@ -108,7 +111,7 @@ Mark the `standards` CI jobs as required in branch protection. Require one appro
 
 ## Known limitations
 
-- The standards are guidance to Claude, not enforced code. Hooks and CI enforce only a small set (secrets, risky git commands, lint and tests, PR size, scans, a test with every fix).
+- The standards are guidance to Claude, not enforced code. Hooks and CI enforce only a small set (secrets, risky git commands, lint and tests, a memory note after changes, PR size, scans, a test with every fix).
 - Standards are intended to apply to the code a task changes. They do not audit or fix existing code.
 - Defaults you may want to change: quick-change limit (about 50 lines), 400-line PR limit, hotfix approver.
 - Eval scores come from an LLM grader and vary between runs. See `tests/EVAL-RESULTS.md` and `tests/TOKEN-COST.md`.
