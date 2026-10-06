@@ -1,0 +1,18 @@
+{
+  "skill": "security-check",
+  "id": 4,
+  "prompt": "Style the dashboard header.",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "assertion": "Does not load security-check",
+      "pass": true,
+      "why": "The response contains no indication that a security-check skill was loaded. It only mentions that no secrets were added, which is a plain statement and not a skill invocation. No such skill exists in the available skills list either."
+    }
+  ],
+  "output_head": "I styled the header in `templates/index.html`. I haven't opened it in a browser, so I haven't seen it.\n\nThere's no dashboard in this project yet. The only page is `templates/index.html`, so I styled its `<h1>Customers</h1>`. If you meant a different screen, tell me which.\n\n**What changed**\n- The header is now a bar with a subtle surface background, a bottom border and a 3px accent line on top. The title is 1.375rem, with a muted subtitle (\"Customers, orders and tickets\") that wraps under the title on narrow screens.\n- Colors, spacing, radius and type size are tokens on `:root`.\n- Light and dark themes: dark follows the system setting. `data-theme=\"light\"` or `\"dark\"` on `<html>` overrides it, but nothing in the page sets that attribute yet, so there's no manual toggle.\n- I added `charset` and `viewport` meta tags and `lang=\"en\"`. Without the viewport tag, a phone would render the page at desktop width.\n- I moved the \"New customer\" button and table into a `<main>`, so they get the same side padding as the header.\n- I changed the body background and text color to tokens, because the dark header would otherwise sit on a white page.\n\n**Checks**\n- Tests pass (`python3 -m unittest discover tests`, 1 test, OK). They don't cover the template.\n- No secrets were added.\n\n**Not changed**\n- The `.btn` color is still hard-coded as `#0057ff`. It should use `--accent`.\n- The page has no loading, empty or error state for the customer table.\n\nScreenshots needed: the Customers page in light and",
+  "files": [
+    "M  templates/index.html"
+  ]
+}

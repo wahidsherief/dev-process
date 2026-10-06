@@ -1,0 +1,26 @@
+{
+  "skill": "dev-process",
+  "id": 2,
+  "prompt": "Fix login.",
+  "passed": 3,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Does not invent a requirement from the title alone",
+      "pass": true,
+      "why": "The response did not guess at a fix or make up what 'login' should do. It said no login code exists and asked what the symptom is. It raised 'add login' only as a question, not as an assumption."
+    },
+    {
+      "assertion": "Asks for reproduction steps and expected behaviour",
+      "pass": true,
+      "why": "Question 1 asks for the symptom, including a specific error, a failed sign-in or a redirect loop, and what the user expected instead. Question 2 asks where it happens. Together these cover reproduction details and expected behaviour. The response does not literally say 'reproduction steps' in the question list, but it does say it needs details to reproduce."
+    },
+    {
+      "assertion": "Puts unanswered points in open questions",
+      "pass": true,
+      "why": "The response collects all unresolved points in a numbered list of questions (symptom, location, feature versus bug, urgency) rather than assuming answers. This works as an open-questions section, though it carries no literal 'Open questions' heading."
+    }
+  ],
+  "output_head": "There is no login code in this app. The only auth reference is a comment on `delete_customer` (`# no auth check yet`). There are no login routes, no users table, no sessions and no login template. `git log` shows a single \"base\" commit, so there's no history to point at a regression.\n\nI can't reproduce a defect that has no code behind it, and the fix-lanes process says to ask for steps rather than guess. These are the details I'd need:\n\n1. **What's the symptom?** For example, a specific error, a failed sign-in, or a redirect loop. What did you expect instead?\n2. **Where does it happen?** It may be in a different repo or branch, or in code that isn't committed here. If so, point me to it.\n3. **Is the request a missing feature?** If you mean \"add login\", that's a new feature with schema, auth and design decisions. It would go through the normal feature flow, not a bug fix.\n4. **Is it urgent?** Is production affected? That decides between a bug fix and a hotfix.\n\nOnce I have those, I'll write a failing test first and then make the smallest fix.\n",
+  "files": []
+}

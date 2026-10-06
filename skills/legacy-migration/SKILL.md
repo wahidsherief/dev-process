@@ -31,7 +31,7 @@ Migrate in slices. Do not rewrite everything at once. Each gate needs a named hu
 
 1. **Discover and baseline.** Map the code once with an explore agent; save `docs/ARCHITECTURE.md`. Record build time, tests, coverage, bundle size, query times, known bugs in `docs/BASELINE.md`. Frontend: list screens and components. Backend: list modules, endpoints, tables, jobs. Also list scheduled jobs, emails, integrations and manual processes (hidden behavior).
 2. **Guardrails.** CLAUDE.md, hooks, deny rules and CI in place before any change. **Gate 1: technical lead approves baseline and guardrails.**
-3. **Decision record.** One page: options, chosen target and reason, slice order, rollback path, tier.
+3. **Decision record.** One page: options, chosen target and reason, slice order, rollback path, standard (Safe or Risk).
 4. **Safety net.** Characterization tests lock current behavior. Backend: golden API responses and data fixtures. Frontend: end-to-end tests and screenshots. CI green on untouched code. **Gate 2: technical lead approves the decision record and coverage of critical flows.**
 5. **Migrate in slices.** One module or screen per session, behind a feature flag, using the normal work loop (`start`, `plan`, `build`, `review`, `done`). Data: backup, dry run on a copy, reconcile counts afterwards. Old tests stay green. **Gate 3: approver reviews every slice PR.**
 6. **Verify and release.** End-to-end, security and performance checks against the baseline. Staged rollout, tested rollback, monitoring and alerts live. **Gate 4: release owner signs off.**

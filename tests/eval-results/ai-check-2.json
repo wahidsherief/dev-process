@@ -1,0 +1,26 @@
+{
+  "skill": "ai-check",
+  "id": 2,
+  "prompt": "Where should I put the API key for the AI provider?",
+  "passed": 3,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Key is masked in the UI",
+      "pass": true,
+      "why": "The response says the settings page should show a masked API key, only the last 4 characters, and never write the key to a plain database column."
+    },
+    {
+      "assertion": "Stored encrypted or in a secret store",
+      "pass": true,
+      "why": "It recommends an environment variable set from the host's secret store, or fetching the key from a secret store such as a cloud secret manager or Vault. It also says to avoid plaintext in the database and cites the standard's 'encrypted or secret store' rule."
+    },
+    {
+      "assertion": "Never in code or logs",
+      "pass": true,
+      "why": "It says not to put the key in code or git. It also says never to log the key or include it in error messages, and to keep it out of the usage log and prompts."
+    }
+  ],
+  "output_head": "Don't put it in the code, in git, or as plaintext in the sqlite database. The project's AI standard (`ai-check`) says to store the key encrypted or in a secret store.\n\nPython's standard library has no encryption, so the practical options are:\n\n1. **Environment variable (recommended).** Read it with `os.environ[\"AI_API_KEY\"]` in the single AI service layer. In production, set it from your host's secret store. Locally, use an untracked `.env` or a shell export. Add any `.env` file to `.gitignore`.\n2. **Secret store.** If you have one (cloud secret manager, Vault), fetch the key from there at startup. This is the better choice if you need to rotate keys or need an audit trail.\n3. **Settings page.** The standard wants a settings page with provider, model, limits, mock mode and a masked API key. The page should show only the last 4 characters. It should write the key to the secret store, or show whether the env var is set. It should never write the key to a plain database column.\n\nOther rules that apply:\n- Never log the key or include it in error messages.\n- Keep the key out of the usage log and out of prompts.\n- Mock mode should run without a key, so tests and local dev never need a real one.\n\nI haven't looked at the repo yet. If you'd like, I can check how config is currently loaded and add this to the AI service layer, with the masked settings field and mock mode.\n",
+  "files": []
+}

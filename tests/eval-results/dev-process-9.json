@@ -1,0 +1,38 @@
+{
+  "skill": "dev-process",
+  "id": 9,
+  "prompt": "Add a refund button on the order page that calls the payment provider and refunds the full amount.",
+  "passed": 4,
+  "total": 4,
+  "results": [
+    {
+      "assertion": "Says this task is treated as Risk (or applies the full rule set) because it touches payments or money",
+      "pass": true,
+      "why": "The response says: \"I treated it as Risk for this task because it moves money.\" It also names the full-flow lane."
+    },
+    {
+      "assertion": "Does not change the project standard in docs/PROCESS.md from Safe",
+      "pass": true,
+      "why": "The PROCESS.md diff only appends a task section. It leaves the existing project-level content unchanged, and the Risk label is scoped \"for this task\". No project standard line is edited."
+    },
+    {
+      "assertion": "Does not ask the developer to choose a standard, tier or lane",
+      "pass": true,
+      "why": "The assistant picked the lane itself. Its only follow-ups are confirming the provider API shape and PR review, and neither asks the developer to choose a standard, tier or lane."
+    },
+    {
+      "assertion": "Plans or mentions an audit or log entry for the refund",
+      "pass": true,
+      "why": "The response says each refund writes an audit line. The code logs \"AUDIT refund ...\" on success and an error line on failure."
+    }
+  ],
+  "output_head": "The order page at `/orders/<id>` now has a \"Refund full amount\" button that refunds the order's whole total through the payment provider. The unit tests pass (6 tests). I have not run the server, so the page and the real provider call are untested. I didn't commit anything.\n\n**Lane:** full flow. I treated it as Risk for this task because it moves money.\n\n**Choices I made:**\n- **Provider API:** the repo has no provider details, so I assumed `POST {PAYMENT_API_URL}/refunds` with a bearer key, returning `{\"id\": ...}`. This needs checking against the real provider's docs.\n- **Config:** `PAYMENT_API_URL`, `PAYMENT_API_KEY`, `PAYMENT_CURRENCY` and `REFUND_ADMIN_TOKEN` are read from the environment. The refund fails cleanly if the provider isn't configured.\n- **Approval:** the app has no auth, so refunds need an `X-Admin-Token` header matching `REFUND_ADMIN_TOKEN`. If that variable is unset, every refund is denied. The page asks for the token and a confirmation before it sends the request.\n- **Double refunds:** a new `refunds` table has one row per order, and the provider call carries an idempotency key. A second refund attempt returns 409. If the provider call fails, the row is removed so the refund can be retried.\n- **Library:** I used `urllib` rather than `requests`, which is in `requirements.txt`, because CLAUDE.md says standard library only.\n- **Logging:** each refund writes an audit line and each failure an error line. A denied attempt is logged as a warning.\n\n**Changes:** `ap",
+  "files": [
+    "M  app.py",
+    "M  db.py",
+    "M  docs/PROCESS.md",
+    "A  payments.py",
+    "A  templates/order.html",
+    "M  tests/test_app.py"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "skill": "dev-process",
+  "id": 10,
+  "prompt": "Add a delete button for customers on the customers page.",
+  "passed": 2,
+  "total": 2,
+  "results": [
+    {
+      "assertion": "The delete code path it adds or changes has a log or audit call",
+      "pass": true,
+      "why": "delete_customer now calls logging.getLogger(\"app\").info(\"audit: customer deleted id=%s\", ...) when a row is deleted, and the test checks it with assertLogs."
+    },
+    {
+      "assertion": "Does not add logging to unrelated existing code",
+      "pass": true,
+      "why": "The only logging added is in delete_customer. list_orders, get_ticket and the other existing functions are unchanged. The logging import is used only by the delete path."
+    }
+  ],
+  "output_head": "Lane: Full flow, kept small. Safe standard, raised to Risk for this task because it deletes customer data.\nChecked: `app.py`, `db.py`, the template and the tests.\nChanged:\n- `app.py` adds `list_customers`, `GET /customers` and `DELETE /customers/<id>`. `delete_customer` now returns whether a row was deleted and writes an audit log line.\n- `templates/index.html` now lists customers, each with a red Delete button that asks for confirmation. It reloads the list on success and shows an alert on failure.\n- `tests/test_app.py` adds a delete test covering the log line, the empty list afterwards and a second delete of the same id.\n\nHow: Plain DELETE by id. The button text is built with `textContent`, so customer names can't inject HTML.\nProof: `python3 -m unittest discover tests` ran 2 tests, all OK. I didn't run the server or click through the page.\nStandards applied: security (audit log, parameterized SQL, no HTML injection), UI (confirmation, error state, aria-label).\nStandards skipped: no query-count test (the new queries aren't in a loop), and no auth (the app has none, see below).\nNoticed, not changed:\n- Anyone who can reach the server can delete customers, so add auth before exposing it beyond localhost. The existing `# no auth check yet` comment says the same.\n- Deleting a customer leaves their orders and tickets orphaned. The orders list shows a null customer name for them.\n- `list_orders` still runs one query per order, and `fmt_total` truncates instead of rounding.\n- The D",
+  "files": [
+    "M  app.py",
+    "M  templates/index.html",
+    "M  tests/test_app.py"
+  ]
+}

@@ -1,6 +1,6 @@
 # <Project name>
 
-Process: dev-process v1.0 · Tier: <Light|Full> · Type: <new|existing|legacy migration>
+Process: dev-process v1.4 · Standard: <Safe|Risk> · Type: <new|existing|legacy migration>
 Approver: <name> · Technical lead: <name>
 
 ## Stack and commands

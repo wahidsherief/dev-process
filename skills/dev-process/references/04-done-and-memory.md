@@ -17,32 +17,32 @@ Proof is a screenshot, query plan, test output or log line. Save it under `docs/
 
 ## Full flow: the 12 items
 
-Tags: **[L]** applies in Light and Full. No tag: Full only.
+Tags: **[S]** applies in Safe and Risk. No tag: Risk only.
 
 **UI**
-- [L] Density modes, dark and light, 360 / 768 / 1280 px verified with screenshots
-- [L] Validation, toasts and alerts, loading, empty and error states
-- [L] Fallback pages (404, 500, 403, offline) and the error boundary
+- [S] Density modes, dark and light, 360 / 768 / 1280 px verified with screenshots
+- [S] Validation, toasts and alerts, loading, empty and error states
+- [S] Fallback pages (404, 500, 403, offline) and the error boundary
 - Restrained colors, one font family, uncluttered, short animations, reduced motion
-- [L] Accessibility scan clean, no hard-coded colors
+- [S] Accessibility scan clean, no hard-coded colors
 
 **Platform**
-- [L] Critical actions logged; a test error visible in the error-reporting tool (where applicable or decided)
+- [S] Critical actions logged; a test error visible in the error-reporting tool (where applicable or decided)
 - Settings page for configurable values; caching with invalidation
 - Email in Mailpit; test mode, seed and reset
 
 **Data**
-- [L] No N+1, indexes in place, query plans checked, migration and rollback tested
+- [S] No N+1, indexes in place, query plans checked, migration and rollback tested
 
 **AI**
 - Settings, usage log, cost in GBP and USD, budget alert, mock mode
 
 **Security**
-- [L] Auth and roles enforced, scans clean, rollback noted
+- [S] Auth and roles enforced, scans clean, rollback noted
 
 **Process**
-- [L] Tests pass, reviewer report attached when required, approver named, memory note saved
-- [L] Every acceptance criterion in the brief is met, with proof
+- [S] Tests pass, reviewer report attached when required, approver named, memory note saved
+- [S] Every acceptance criterion in the brief is met, with proof
 
 Only the items for the areas touched need proof. Write the result in the summary and the PR description, for example `9 of 12: 7 proven, 2 N/A (reasons)`. If an item is open, list exactly what would close it.
 

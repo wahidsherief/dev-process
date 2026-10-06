@@ -5,12 +5,12 @@ description: 'Apply and check the frontend standards: design tokens, compact/sta
 
 # ui-check
 
-Frontend standards. Apply them automatically while building UI and gather the screenshots as proof. [L] = Light and Full tiers; no tag = Full only.
+Frontend standards. Apply them automatically while building UI and gather the screenshots as proof. [S] = Safe and Risk; no tag = Risk only.
 
 
-[L] = applies in Light and Full. No tag = Full only. Apply these automatically when the task touches UI.
+[S] = Safe standard (always applies). No tag = Risk standard only (risky tasks). Apply these automatically when the task touches UI.
 
-**Scope.** Apply these standards to the lines and components this task changes or adds, not to the rest of the file or screen. Do not refactor existing code to meet them. If existing code nearby breaks a standard, leave it and note it under "Noticed, not changed" in the handoff.
+**Scope.** Rule 8 in `dev-process`: apply to the lines this task changes or adds; note nearby gaps as "Noticed, not changed".
 
 ## Before you finish (every time)
 1. No hard-coded colors, including shadows and overlays: everything is a token.
@@ -19,14 +19,14 @@ Frontend standards. Apply them automatically while building UI and gather the sc
 4. End with a `Screenshots needed:` list.
 
 ## Foundation
-- [L] **Design tokens and components.** Color, spacing, radius, shadow and type as tokens. No hard-coded values. One shared component set: button, input, table, modal, nav, card, toast, alert.
-- [L] **Layout density.** Compact, standard, relaxed. Saved per user. Applied through spacing tokens.
-- [L] **Dark and light mode.** Both themes as tokens. System default plus a saved manual toggle. Verify contrast, focus rings, charts and images in both.
-- [L] **Responsive.** Mobile-first. Verify at 360, 768 and 1280 px. Tap targets at least 44 px. No horizontal page scroll.
+- [S] **Design tokens and components.** Color, spacing, radius, shadow and type as tokens. No hard-coded values. One shared component set: button, input, table, modal, nav, card, toast, alert.
+- [S] **Layout density.** Compact, standard, relaxed. Saved per user. Applied through spacing tokens.
+- [S] **Dark and light mode.** Both themes as tokens. System default plus a saved manual toggle. Verify contrast, focus rings, charts and images in both.
+- [S] **Responsive.** Mobile-first. Verify at 360, 768 and 1280 px. Tap targets at least 44 px. No horizontal page scroll.
 
 ## UX and feedback
-- [L] **Validation.** Client for speed, server for correctness. Message beside the field after the user leaves it; say what to fix. Keep entered data after a failed submit; disable submit while sending. Map server errors to the correct fields.
-- [L] **Toasts and alerts.** Toast confirms: short, auto-dismiss after 4 to 5 seconds, maximum 3 stacked. Inline alert for warnings, failures and system notices; never auto-dismiss errors. Confirm dialog for destructive actions only: state the consequence, offer undo where possible. Announce through a live region. No toast for field validation.
+- [S] **Validation.** Client for speed, server for correctness. Message beside the field after the user leaves it; say what to fix. Keep entered data after a failed submit; disable submit while sending. Map server errors to the correct fields.
+- [S] **Toasts and alerts.** Toast confirms: short, auto-dismiss after 4 to 5 seconds, maximum 3 stacked. Inline alert for warnings, failures and system notices; never auto-dismiss errors. Confirm dialog for destructive actions only: state the consequence, offer undo where possible. Announce through a live region. No toast for field validation.
 - **Built-in guidance.** Empty states explain and offer the next action. Helper text and short tooltips for non-obvious fields; dismissible first-run hints. One term per action across the product; one clear primary action per screen.
 
 ## Visual quality
@@ -42,12 +42,12 @@ Frontend standards. Apply them automatically while building UI and gather the sc
 - Field errors: beside the field after the user leaves it. Never a toast.
 
 ## Resilience
-- [L] **Fallback pages.** Designed pages for 404, 500, 403, offline and maintenance. Each says what happened, offers a way out (home, retry, contact) and shows a reference id. A top-level error boundary shows a fallback and reports the error. Never show a stack trace.
-- [L] **Data states.** Loading, empty and error states on every data view. Errors offer a retry.
-- [L] **Error reporting.** Client errors reported (Sentry where decided) with source maps. Send the user id only, no personal data.
+- [S] **Fallback pages.** Designed pages for 404, 500, 403, offline and maintenance. Each says what happened, offers a way out (home, retry, contact) and shows a reference id. A top-level error boundary shows a fallback and reports the error. Never show a stack trace.
+- [S] **Data states.** Loading, empty and error states on every data view. Errors offer a retry.
+- [S] **Error reporting.** Client errors reported (Sentry where decided) with source maps. Send the user id only, no personal data.
 
 ## Quality gates
-- [L] **Accessibility.** WCAG 2.1 AA. Zero violations on the automated scan. Keyboard access, visible focus, labels, alt text, contrast.
+- [S] **Accessibility.** WCAG 2.1 AA. Zero violations on the automated scan. Keyboard access, visible focus, labels, alt text, contrast.
 - **Performance.** Bundle budget in CI. Lazy-load routes and heavy components. Paginated lists. Track Core Web Vitals: LCP, INP, CLS.
 - **Data fetching.** One data layer with cache keys and invalidation. No duplicate or looping requests.
 - **Testing.** Component tests for logic, end-to-end for critical flows, screenshot tests for key screens.

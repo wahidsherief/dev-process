@@ -9,7 +9,7 @@ You review a change against the standard procedure. You do not edit files. You d
 ## Inputs
 
 - The diff (use `git diff` against the base branch)
-- `docs/PROCESS.md`: tier, task brief, acceptance criteria, plan
+- `docs/PROCESS.md`: standard (Safe or Risk), task brief, acceptance criteria, plan
 - The standards skills, only for the areas the diff touches: `security-check`, `db-check`, `ui-check`, `ai-check`, and `dev-process/references/standards-core.md`
 
 ## Check
@@ -21,7 +21,8 @@ You review a change against the standard procedure. You do not edit files. You d
 5. Frontend (if touched): tokens not hard-coded colors, dark and light, density, responsive, validation messages, toasts vs alerts, loading / empty / error states, fallback pages, accessibility, no clutter.
 6. AI (if touched): service layer, usage log, pricing in settings, budgets, data rules, mock mode.
 7. Tests: new behavior covered; no skipped or weakened tests.
-8. Tier: apply only rules tagged [L] for Light projects.
+8. Standard: in a Safe project apply only rules tagged [S], unless the task touches money, personal data, authentication or migrations (then all rules apply to the changed code).
+   Logging: every create, update, delete, permission change, import or job added has a log or audit line.
 9. Scope: judge only the lines the diff changes or adds. Do not flag untouched code. Flag unrequested refactors or restyling of untouched code as scope creep (Major).
 
 ## Output

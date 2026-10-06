@@ -1,0 +1,47 @@
+{
+  "skill": "dev-process",
+  "id": 4,
+  "prompt": "Set up the dev process for this project, then fix the typo in the page heading (it says Custmers). It is an existing small app.",
+  "passed": 4,
+  "total": 5,
+  "results": [
+    {
+      "assertion": "Asks the setup questions in one message, or states the defaults it chose",
+      "pass": true,
+      "why": "The response states the choices it made (skipped CI because no GitHub remote, empty lint command, left existing files alone), which counts as stating defaults."
+    },
+    {
+      "assertion": "CLAUDE.md, docs/PROCESS.md and .devprocess/config.json exist after setup, and no existing file was overwritten",
+      "pass": true,
+      "why": "The response says CLAUDE.md and docs/PROCESS.md already existed and were left alone. The diff adds .devprocess/config.json. The only existing file modified was .gitignore, with one appended line, so nothing was overwritten."
+    },
+    {
+      "assertion": "Does not map or scan the whole project and does not create docs/BASELINE.md or docs/ARCHITECTURE.md",
+      "pass": false,
+      "why": "The diff creates neither BASELINE.md nor ARCHITECTURE.md. But the response says it searched the whole repo for 'Custmers' and 'custm' variants. It also reviewed app.py closely enough to list N+1 queries, truncation in fmt_total, and a missing auth check on delete_customer. That is broader scanning than a typo fix needs."
+    },
+    {
+      "assertion": "Continues with the heading fix after setup",
+      "pass": true,
+      "why": "After setup it moved on to the typo fix. It searched for the typo, found the heading already reads 'Customers', and reported that no change was needed."
+    },
+    {
+      "assertion": "Does not ask the developer to choose a lane",
+      "pass": true,
+      "why": "It chose the Quick lane itself and did not ask the developer to pick one."
+    }
+  ],
+  "output_head": "Setup is done. The typo fix needed no change, because the heading already reads \"Customers\".\n\nChoices I made: `CLAUDE.md` and `docs/PROCESS.md` already existed, so I left them alone. I skipped the CI workflow because the repo has no GitHub remote. If you use another CI, it needs to run lint, the unit tests, a secret scan and a dependency scan. I set the lint hook command to empty because the project has no linter.\n\n- **Lane:** Quick, for the typo fix.\n- **Checked:** I searched the whole repo for \"Custmers\" and for any \"custm\" variant. The only heading is `templates/index.html:3`, which reads `<h1>Customers</h1>`. There is no typo anywhere in the app, so I changed no code.\n- **Changed (setup):** I added these files. The `.gitignore` entry for `.devprocess/summary.md` is the only edit to an existing file.\n  - `.claude/settings.json`\n  - `.devprocess/config.json`\n  - `.github/pull_request_template.md`\n  - `docs/PATTERNS.md`\n  - `docs/memory/_TEMPLATE.md`\n  - `.gitkeep` files in each memory category folder\n- **Proof:** `python3 -m unittest discover tests` ran 1 test and it passed.\n- **Standards skipped:** None apply, since no code changed.\n- **Noticed, not changed:** `app.py` has several known problems:\n  - `list_orders` runs one query per order.\n  - `fmt_total` truncates instead of rounding.\n  - `delete_customer` has no auth check.\n- **Cost:** Low.\n- **Next:** If the typo is on another page, or in a branch or deployed copy I can't see, tell me where and I'll fix it. Commit the s",
+  "files": [
+    "A  .claude/settings.json",
+    "A  .devprocess/config.json",
+    "A  .github/pull_request_template.md",
+    "M  .gitignore",
+    "A  docs/PATTERNS.md",
+    "A  docs/memory/_TEMPLATE.md",
+    "A  docs/memory/decision/.gitkeep",
+    "A  docs/memory/incident/.gitkeep",
+    "A  docs/memory/migration/.gitkeep",
+    "A  docs/memory/refactor/.gitkeep"
+  ]
+}

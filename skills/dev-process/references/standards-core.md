@@ -2,12 +2,12 @@
 
 Security, secrets, logging and audit are in the `security-check` skill.
 
-[L] = applies in Light and Full. No tag = Full only.
+[S] = Safe standard (always applies). No tag = Risk standard only (risky tasks).
 
 ## Git and PR
-- [L] One branch per slice. Maximum 400 changed lines per PR.
-- [L] Reviewer agent first, approver last. One named approver per PR (security-sensitive changes included).
-- [L] Use the PR template. All checks green before merge.
+- [S] One branch per slice. Maximum 400 changed lines per PR.
+- [S] Reviewer agent first, approver last. One named approver per PR (security-sensitive changes included).
+- [S] Use the PR template. All checks green before merge.
 
 ## Settings
 - A settings page for every admin-changeable value: limits, toggles, prices, email, AI keys.

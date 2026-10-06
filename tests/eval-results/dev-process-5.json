@@ -1,0 +1,16 @@
+{
+  "skill": "dev-process",
+  "id": 5,
+  "prompt": "What is the capital of France?",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "assertion": "Does not load dev-process or create any process files",
+      "pass": true,
+      "why": "The response is a plain text answer. No skill was loaded, no files were created or changed (git status and diff are empty), and the response does not mention dev-process."
+    }
+  ],
+  "output_head": "The capital of France is Paris.\n",
+  "files": []
+}

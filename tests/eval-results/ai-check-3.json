@@ -1,0 +1,30 @@
+{
+  "skill": "ai-check",
+  "id": 3,
+  "prompt": "Add a monthly spend limit for AI usage per user.",
+  "passed": 3,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Limits live in settings, not code",
+      "pass": true,
+      "why": "The limit is read from the settings table key ai_monthly_limit_usd_per_user, with DEFAULTS used only as a fallback. Prices and the FX rate are read from settings the same way."
+    },
+    {
+      "assertion": "Provides a warning before the limit (status, warning bar or alert), or names it as a follow-up slice",
+      "pass": true,
+      "why": "The response lists 'the warning alert before the limit' under 'Not done', so it names the warning as a follow-up."
+    },
+    {
+      "assertion": "Adds a test for the limit",
+      "pass": true,
+      "why": "tests/test_ai.py has test_limit_blocks_then_other_user_and_next_month_ok and test_blocked_call_not_sent_to_provider. Both exercise SpendLimitReached."
+    }
+  ],
+  "output_head": "I added a monthly per-user spend limit for AI usage, and all 5 tests pass. Nothing is committed.\n\n**Choices I made:**\n- There was no AI code in the repo, so I built a small service layer, `ai.call_ai()`.\n- The limit is $10 per user per calendar month (UTC), set by the `ai_monthly_limit_usd_per_user` setting. I picked that default and you may want a different one.\n- Once a user reaches the limit, further calls raise `SpendLimitReached` and never reach the provider. It resets next month and other users are unaffected.\n- Mock mode is on by default. No real provider is wired in, so the caller passes one in.\n- Prices per 1M tokens and the USD\u2192GBP rate are rows in the `settings` table, not in code. The rate default is 0.79 and the prices default to $3 in and $15 out, which are placeholders to replace.\n- Every call is logged to a new `ai_usage` table (user, feature, model, tokens in and out, cost in USD and GBP, time). The table is created by `db.init`.\n\n**Files:** new `ai.py` and `tests/test_ai.py`; `db.py` gets the new table.\n\n**Tests cover:**\n- cost in both currencies\n- a mock call writing a usage row\n- the limit blocking one user but not another, and resetting in a new month\n- a blocked call not reaching the provider\n\n**Not done (these are in the AI standards but outside \"spend limit\"):**\n- a settings page\n- a usage dashboard\n- the warning alert before the limit\n- redacting personal data from prompts; `call_ai` only documents that callers must do it\n\n**Noticed, not changed:**\n- ",
+  "files": [
+    "A  ai.py",
+    "M  db.py",
+    "A  tests/test_ai.py"
+  ]
+}

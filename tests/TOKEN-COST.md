@@ -28,3 +28,18 @@ Method: `claude -p` on the mini-app fixture, same task with and without the plug
 ## For the pilot
 
 Record cost and turns per task (usage line or `--output-format json`) and compare medians against similar work done without the plugin. Decide in the retro whether the extra cost on full-flow tasks is worth the rework it prevents.
+
+
+## v1.4 re-measure (Safe/Risk, hint hook, analyze modes)
+
+Same method, one run per cell, so treat as rough.
+
+| Task | Plain | With plugin | Turns (plain / plugin) | Cost change |
+|---|---|---|---|---|
+| Change a button label | $0.063 | $0.069 | 3 / 3 | +10% |
+| Fix a wrong total | $0.070 | $0.087 | 3 / 4 | +24% |
+| Slow orders page (N+1) | $0.099 | $0.106 | 5 / 5 | +7% |
+| Add a count endpoint with test | $0.084 | $0.089 | 4 / 4 | +6% |
+| Orders CSV export, admin only, with UI | $0.115 | $0.156 | 4 / 7 | +36% |
+
+The bug-fix row is noisy (the plain run was cheaper than in v1.2). Full flow is slightly heavier than v1.2 (+36% vs +30%); the new Standard text and logging check add a little. Not yet re-measured: `analyze`, `init`, and any run where the reviewer triggers.

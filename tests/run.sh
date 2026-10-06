@@ -40,7 +40,7 @@ import json, sys
 d = json.load(open(sys.argv[1]))
 assert d["skill_name"] == sys.argv[2]
 ev = d["evals"]
-assert 3 <= len(ev) <= 8, "need 3 to 8 evals, have %d" % len(ev)
+assert 3 <= len(ev) <= 10, "need 3 to 10 evals, have %d" % len(ev)
 assert any(e.get("should_trigger") is False for e in ev), "need a non-trigger eval"
 assert any(e.get("should_trigger", True) for e in ev), "need a trigger eval"
 ids = [e["id"] for e in ev]; assert len(set(ids)) == len(ids), "duplicate ids"
@@ -107,6 +107,12 @@ pg 0 '{"prompt":"token = request.headers.get(\"X-Admin-Token\")"}' "allows token
 pg 0 '{"prompt":"password = hash_password(user_input)"}' "allows password from a function call"
 pg 0 '{"prompt":"API_KEY=\"your-api-key-here\""}' "allows placeholder value"
 pg 0 'not json' "ignores bad input"
+hd="$(mktemp -d)"; mkdir "$hd/.git"; export TMPDIR="$hd"
+o1="$(printf '{"prompt":"fix it","cwd":"%s"}' "$hd" | bash scripts/prompt-guard.sh)"; o2="$(printf '{"prompt":"fix it","cwd":"%s"}' "$hd" | bash scripts/prompt-guard.sh)"
+echo "$o1" | grep -q "not set up" && [ -z "$o2" ] && ok "setup hint once for a project without docs/PROCESS.md" || bad "setup hint"
+mkdir "$hd/docs"; touch "$hd/docs/PROCESS.md"; rm -f "$hd"/dev-process-hint-*
+o3="$(printf '{"prompt":"fix it","cwd":"%s"}' "$hd" | bash scripts/prompt-guard.sh)"; [ -z "$o3" ] && ok "no hint once set up" || bad "hint when set up"
+unset TMPDIR; rm -rf "$hd"
 
 echo "post-edit.sh"
 tmp="$(mktemp -d)"; mkdir "$tmp/.devprocess"

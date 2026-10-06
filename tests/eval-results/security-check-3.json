@@ -1,0 +1,31 @@
+{
+  "skill": "security-check",
+  "id": 3,
+  "prompt": "Add Sentry to the app.",
+  "passed": 2,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Sets environment and release",
+      "pass": true,
+      "why": "monitoring.py passes environment (from APP_ENV, default 'development') and release (from APP_RELEASE) to sentry_sdk.init, and a test verifies this."
+    },
+    {
+      "assertion": "Sends no personal data",
+      "pass": true,
+      "why": "The code sets send_default_pii=False in sentry_sdk.init, and a test asserts it."
+    },
+    {
+      "assertion": "States how a forced test error will be verified in the tool, or that this check is still pending",
+      "pass": false,
+      "why": "The response says it did not send a real error because there is no DSN. It never says how a forced test error would be verified in Sentry, and never says that check is still pending. It only lists untested manual capture as an option."
+    }
+  ],
+  "output_head": "Sentry is added, and it stays off unless `SENTRY_DSN` is set. The 3 tests pass: the existing one plus two new ones. I did not send a real error to Sentry, since there's no DSN here.\n\n**What I changed**\n- **`monitoring.py`:** new file with `init_sentry()`. It reads `SENTRY_DSN` from the environment, plus `APP_ENV` (default `development`) and `APP_RELEASE`. It sets `send_default_pii=False`. If `sentry_sdk` isn't installed, it does nothing.\n- **`app.py`:** calls `init_sentry()` at startup, before the server starts.\n- **`requirements.txt`:** added `sentry-sdk>=2.0,<3`.\n- **`tests/test_monitoring.py`:** one test checks that nothing is enabled without a DSN. The other checks that environment, release and no-PII are passed to `sentry_sdk.init`.\n\n**Choices I made**\n- I assumed you meant the Python `sentry-sdk`. I used the DSN-from-environment pattern so no secret goes in code.\n- I did not add any manual capture calls. The stdlib `http.server` catches handler exceptions and logs them itself, so Sentry's automatic hooks may not see them. If you want those errors reported, I'd wrap `do_GET` in a try/except that calls `sentry_sdk.capture_exception` (not done, not tested).\n- I tried to also add `.env` to `.gitignore`, but the dev-process guard blocked that command, so I left `.gitignore` alone. Nothing in the project reads a `.env` file.\n\n**Noticed, not changed**\n- The app has no logger and no audit table, so `delete_customer` writes no log or audit entry.\n- `delete_customer` has no auth ",
+  "files": [
+    "M  app.py",
+    "A  monitoring.py",
+    "M  requirements.txt",
+    "A  tests/test_monitoring.py"
+  ]
+}

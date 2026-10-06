@@ -7,7 +7,7 @@ description: 'Handle everyday non-feature work in a light lane: quick change (sm
 
 Five light lanes. Pick the lane, follow the steps, produce only the listed documents. Hooks, CI and the PR approver apply to all of them.
 
-Read the tier from `docs/PROCESS.md` if it exists. Keep every answer short: these lanes exist to be fast.
+Read the standard (Safe or Risk) from `docs/PROCESS.md` if it exists; risky tasks use Risk rules (see `dev-process`). Keep every answer short: these lanes exist to be fast.
 
 ## Quick change
 

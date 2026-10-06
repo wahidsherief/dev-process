@@ -6,14 +6,13 @@ If `init` runs in the middle of a task, or the developer wrote the task after it
 
 ## Questions (ask together, one message, skip any you can answer from the repo)
 
-Defaults if nobody answers: Light tier, existing system, detected stack and commands, the developer as approver, no error reporting.
+Defaults if nobody answers: Safe standard (the developer is not asked), existing system, detected stack and commands, the developer as approver, no error reporting.
 
-1. Tier: Light (internal tools, prototypes, small fixes) or Full (customer-facing, user data, AI features)?
-2. Project type: new system, existing system, or legacy migration?
-3. Stack: language, framework, ORM. (Detect from the repo, then confirm.)
-4. Commands: lint, type check, unit tests, end-to-end tests, build. (Detect, then confirm.)
-5. Named approver for PRs. Technical lead (default: the developer who ran init).
-6. Error reporting: Sentry or another service, or none, where applicable or decided.
+1. Project type: new system, existing system, or legacy migration?
+2. Stack: language, framework, ORM. (Detect from the repo, then confirm.)
+3. Commands: lint, type check, unit tests, end-to-end tests, build. (Detect, then confirm.)
+4. Named approver for PRs. Technical lead (default: the developer who ran init).
+5. Error reporting: Sentry or another service, or none, where applicable or decided.
 
 ## Create
 
@@ -21,8 +20,8 @@ From `templates/`, adapt and write:
 
 | File | Source |
 |---|---|
-| `CLAUDE.md` | `templates/CLAUDE.md.tpl`. Keep it short. Fill tier, stack, commands, approver. |
-| `docs/PROCESS.md` | `templates/PROCESS.md.tpl`. Set tier and type. |
+| `CLAUDE.md` | `templates/CLAUDE.md.tpl`. Keep it short. Fill standard (Safe), stack, commands, approver. |
+| `docs/PROCESS.md` | `templates/PROCESS.md.tpl`. Set `Standard: Safe` and type. |
 | `docs/memory/{feature,fix,refactor,migration,decision,incident}/` | each with a `.gitkeep`; copy `templates/memory-note.md` to `docs/memory/_TEMPLATE.md` |
 | `.github/pull_request_template.md` | `templates/pull_request_template.md` |
 | `.claude/settings.json` | `templates/settings.json.tpl`: deny rules and permissions |
@@ -30,6 +29,8 @@ From `templates/`, adapt and write:
 | `.github/workflows/standards.yml` | `templates/standards.yml.tpl`, only if the repo uses GitHub. Otherwise tell the developer what the CI must run. |
 | `docs/PATTERNS.md` | `templates/PATTERNS.md.tpl` |
 | `.gitignore` | add `.devprocess/summary.md` if it is not already ignored |
+
+The standard starts as Safe. Risky tasks get the Risk rules for that task automatically (see `SKILL.md`). Nobody chooses a standard at setup.
 
 Never overwrite an existing file. If one exists, show a diff and ask.
 

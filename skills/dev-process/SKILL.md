@@ -17,7 +17,7 @@ The developer describes the work in plain words. You do the rest: pick the lane,
 
 ## The hidden flow
 
-1. **Understand.** Read `docs/PROCESS.md` (tier, current task), `CLAUDE.md`, and search `docs/memory/` for related notes. Read code only for the area touched.
+1. **Understand.** Read `docs/PROCESS.md` (standard, current task), `CLAUDE.md`, and search `docs/memory/` for related notes. Read code only for the area touched.
 2. **Pick the lane and size.** Automatically, from the request and the code. Never ask the developer to choose. If unsure, take the lighter lane that fits, say so, and move up if the work grows. Say the lane in one line.
 
 | Work | Lane | Details |
@@ -38,7 +38,7 @@ If a quick change grows past its limits, say so and switch to the full flow.
 3. **Brief** (Full flow only). Goal, out of scope, numbered acceptance criteria. Always draft the criteria yourself with proposed answers. Skip the brief for the other lanes: one acceptance line is enough.
 4. **Plan** (Full flow, hotfix actions, data fix). Short: tables and indexes, settings, log events, cache keys, tests, size. Show it and wait only for new or large work. Otherwise show a two-line summary and continue.
 5. **Build.** Only what the plan says, with tests. If the task clearly matches an Approved or Active pattern in `docs/PATTERNS.md`, reuse it (`references/patterns.md`). Apply the standards for the areas touched, without asking (`references/autonomy.md`): call `security-check`, `db-check`, `ui-check`, `ai-check` as the work touches them.
-6. **Verify.** Run lint, tests and scans (hooks already run them after edits). Run the `standards-reviewer` agent **only** when the tier is Full and the change is over about 80 lines or touches authentication, permissions, migrations or money. Otherwise review it yourself against the lane's short check. Gather the proof yourself.
+6. **Verify.** Run lint, tests and scans (hooks already run them after edits). Check that every critical action you added has a log or audit line (see `security-check`). Run the `standards-reviewer` agent **only** when the task's standard is Risk and the change is over about 80 lines or touches authentication, permissions, migrations or money. Otherwise review it yourself against the lane's short check. Gather the proof yourself.
 7. **Record.** Update `docs/PROCESS.md` (short). Write the memory note when the lane calls for one (`references/04-done-and-memory.md`).
 8. **Summary.** The short summary below. The developer opens the PR; the approver approves.
 
@@ -70,7 +70,12 @@ One line each, no repetition. Cost is a judgement of context used, never an exac
 7. Never write outside the plan without saying so.
 8. Fix or build what was requested and apply the relevant standards to the affected area. Do not bring unrelated existing code up to standard. Mention nearby technical debt only when useful ("Noticed, not changed"). If the fix itself requires changing an area, the changed code follows the standard.
 
-Tier: rules tagged [L] apply in the Light tier and the Full tier; the rest apply to Full only. Read it from `docs/PROCESS.md`.
+## Standard: Safe or Risk (never asked)
+
+- **Safe** (the default) applies rules tagged `[S]`. **Risk** applies every rule: `[S]` plus the untagged ones. Risk is Safe plus extras.
+- The project standard is stored once in `docs/PROCESS.md` (`Standard:`). `init` sets Safe. Do not ask the developer; they can say "set this project to Risk" at any time.
+- **Task risk is temporary.** If a task touches payments or money, customer or personal data, authentication or permissions, or migrations, treat that task as Risk: apply the untagged rules to the changed code and allow the reviewer. The project standard does not change. Say it in the summary, and suggest "set the project to Risk?" at most once.
+- AI provider calls apply the `[S]` AI rules (data rules, spend cap, usage log) in a Safe project. The rest of `ai-check` applies when the standard is Risk.
 
 ## Keep it cheap
 
@@ -83,7 +88,7 @@ Tier: rules tagged [L] apply in the Light tier and the Full tier; the rest apply
 ## Commands
 
 - `init`: `references/01-init.md`. Prepares the project, then starts the current task. No project scan.
-- `analyze`: `references/analyze.md`. The only place the whole project and its standards are scanned, and only on request. Reports ✓ Present / ⚠ Partial / ✗ Missing / — N/A. Fixes nothing.
+- `analyze`: `references/analyze.md`. Light by default; `deep` maps once, then re-checks only what changed; `deep --full` re-maps. Only on request. Saves a timestamped report in `docs/analysis/`. Reports ✓ Present / ⚠ Partial / ✗ Missing / — N/A. Fixes nothing.
 - `summary`, `status`, `resume`: `references/summary-resume.md`.
 - `patterns`: `references/patterns.md`.
 

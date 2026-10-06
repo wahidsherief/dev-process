@@ -1,6 +1,6 @@
 # Process state
 - Procedure version: 1.1
-- Tier: Full
+- Standard: Safe
 - Type: existing system
 - Approver: A. Reviewer · Technical lead: A. Lead · Release owner: A. Lead
 

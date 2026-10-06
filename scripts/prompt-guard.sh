@@ -29,5 +29,19 @@ for rx, what in PATTERNS:
         sys.stderr.write("dev-process prompt guard: your prompt looks like it contains %s (Red-class data). "
                          "Remove it or replace it with a fake value, then send again. If it was real, rotate it and tell the technical lead.\n" % what)
         sys.exit(2)
+
+# Setup hint: a git project without docs/PROCESS.md. Printed once per project per machine
+# (stdout on exit 0 is added to Claude's context). Never blocks.
+try:
+    import os, hashlib, tempfile
+    cwd = data.get("cwd") or os.getcwd()
+    if os.path.isdir(os.path.join(cwd, ".git")) and not os.path.exists(os.path.join(cwd, "docs", "PROCESS.md")):
+        mark = os.path.join(tempfile.gettempdir(), "dev-process-hint-" + hashlib.sha1(cwd.encode()).hexdigest()[:12])
+        if not os.path.exists(mark):
+            open(mark, "w").close()
+            print("dev-process: this project is not set up yet. Do the developer's task as asked. "
+                  "In one line at the end, offer `/dev-process:init` (no questions needed: Safe standard by default, no project scan).")
+except Exception:
+    pass
 sys.exit(0)
 PY

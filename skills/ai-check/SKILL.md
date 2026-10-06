@@ -5,20 +5,21 @@ description: 'Apply and check the standards for features that call an AI provide
 
 # ai-check
 
-Standards for AI-integrated systems. Full tier.
+Standards for AI-integrated systems. Apply when a feature calls an AI provider. AI usage must be visible, limited and priced.
 
+[S] = Safe and Risk; no tag = Risk only.
 
-Apply when a feature calls an AI provider. AI usage must be visible, limited and priced. Full tier.
+**Scope.** Rule 8 in `dev-process`: apply to the lines this task changes or adds; note nearby gaps as "Noticed, not changed".
 
-**Scope.** Apply these standards to the lines and components this task changes or adds, not to the rest of the file or screen. Do not refactor existing code to meet them. If existing code nearby breaks a standard, leave it and note it under "Noticed, not changed" in the handoff.
-
-1. **Settings page.** Provider, model, API key (masked), limits, model options, mock mode. Store the key encrypted or in a secret store, never as plaintext in the database or in code.
-2. **Service layer.** One service for every AI call. Timeouts, safe retries, clear failure messages.
-3. **Usage log and dashboard.** Log every call: model, tokens in, tokens out, cost, feature, user, time. Dashboard: today, this month, by feature, by user.
-4. **Pricing in GBP and USD.** Prices per 1M tokens and the USD to GBP rate live in settings, never in code. Every cost is shown in both currencies.
-5. **Budgets.** Per-user and monthly limits, with a warning bar and an alert before the limit.
-6. **Data rules.** Follow the prompt-data classes. Redact personal data before sending. Log prompts only when policy allows.
-7. **Testing.** Mock mode and a test for the cost calculation.
+- **Settings page.** Provider, model, API key (masked), limits, model options, mock mode. Store the key encrypted or in a secret store, never as plaintext in the database or in code.
+- **Service layer.** One service for every AI call. Timeouts, safe retries, clear failure messages.
+- [S] **Usage log.** Log every call: model, tokens in, tokens out, cost, feature, user, time.
+- **Dashboard.** today, this month, by feature, by user.
+- **Pricing in GBP and USD.** Prices per 1M tokens and the USD to GBP rate live in settings, never in code. Every cost is shown in both currencies.
+- [S] **Spend cap.** A monthly spending limit that stops or degrades AI calls when reached.
+- **Budgets.** Per-user limits, with a warning bar and an alert before the limit.
+- [S] **Data rules.** No secrets or customer data in prompts. Follow the prompt-data classes. Redact personal data before sending. Log prompts only when policy allows.
+- **Testing.** Mock mode and a test for the cost calculation.
 
 Illustrative cost calculation (rates come from settings):
 

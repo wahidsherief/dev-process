@@ -1,4 +1,4 @@
-# dev-process (v1.2)
+# dev-process (v1.4)
 
 AI-assisted development standard procedure as a Claude Code plugin. Stack-agnostic. The developer types the task; the standards, proof and notes happen behind the scenes.
 
@@ -21,7 +21,23 @@ Describe the work in plain words, in the project repo:
 "Change the heading to Order Desk"            -> quick change: do it, run tests, short summary
 ```
 
-Only two optional commands exist: `/dev-process:dev-process init` (once per project) and `/dev-process:dev-process status`.
+Optional commands:
+
+| Command | What it does |
+|---|---|
+| `/dev-process:init` | Prepares the project once, then continues the current task. No questions needed, no project scan. |
+| `/dev-process:analyze` | Standards report, on request. Light by default; `deep` maps once and later re-checks only what changed; `deep --full` re-maps. Saved as a timestamped file in `docs/analysis/`. |
+| `/dev-process:summary`, `resume` | Save a short summary; pick up after `/clear` without rescanning. |
+| `/dev-process:status` | Where the current task stands. |
+| `/dev-process:patterns` | Approved reusable patterns (`docs/PATTERNS.md`). |
+
+If the plugin is installed in a project that is not set up, Claude does the task and offers `init` once.
+
+## Standards: Safe and Risk
+
+- **Safe** (default) applies the rules tagged `[S]`. **Risk** applies every rule. Nobody is asked to choose.
+- A task that touches money, personal data, authentication or migrations is treated as Risk for that task only, and can use the reviewer agent. Claude may suggest moving the project to Risk; it never does it alone.
+- AI calls in a Safe project follow three rules: no secrets or customer data in prompts, a monthly spend cap, and a usage log.
 
 Claude picks the lane, applies the standards itself, asks only when it must, and ends every task with a short summary: lane, what was checked, what changed, how, proof, standards applied and skipped, a Low/Medium/High cost, and the next step.
 
@@ -29,7 +45,7 @@ Claude picks the lane, applies the standards itself, asks only when it must, and
 
 | Lane | When | What the developer sees |
 |---|---|---|
-| Full | New feature, large enhancement, new module | Brief, plan (confirm), build, verify, summary |
+| Full flow | New feature, large enhancement, new module | Brief, plan (confirm), build, verify, summary |
 | Quick change | Small UI or copy change, under about 50 lines | Do it, tests, summary |
 | Bug fix | Something behaves wrongly | Failing test, fix, root cause, summary |
 | Hotfix | Production issue (S1 to S3) | Stabilise, rollback step, named approver, incident note |

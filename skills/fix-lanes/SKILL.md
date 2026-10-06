@@ -7,7 +7,7 @@ description: 'Handle bugs, production issues and one-off data fixes in the right
 
 Three lanes for things that are broken. Pick the lane, follow its steps, produce its documents. Hooks, CI and a named human approver apply in every lane: a hotfix may skip ceremony, never the approver or the checks.
 
-Read the tier from `docs/PROCESS.md` if it exists. Record the lane and task in `docs/PROCESS.md` (create the task entry if missing).
+Read the standard (Safe or Risk) from `docs/PROCESS.md` if it exists; risky tasks use Risk rules (see `dev-process`). Record the lane and task in `docs/PROCESS.md` (create the task entry if missing).
 
 ## Choose the lane
 

@@ -5,24 +5,25 @@ description: 'Apply and check security, secrets, logging, audit and error-report
 
 # security-check
 
-**Scope.** Apply these standards to the lines and components this task changes or adds, not to the rest of the file or screen. Do not refactor existing code to meet them. If existing code nearby breaks a standard, leave it and note it under "Noticed, not changed" in the handoff.
+**Scope.** Rule 8 in `dev-process`: apply to the lines this task changes or adds; note nearby gaps as "Noticed, not changed".
 
-Apply automatically. Gather proof (scan output, a log line, a test error in the reporting tool). [L] = Light and Full tiers; no tag = Full only.
+Apply automatically. Gather proof (scan output, a log line, a test error in the reporting tool). [S] = Safe and Risk; no tag = Risk only.
 
 ## Security
-- [L] Identity and role checked on every route and API. Deny by default.
-- [L] Secrets only in environment variables or a secret store. Never in code, prompts, logs or notes.
-- [L] Validate all input. Encode all output.
-- [L] Dependency and secret scans in CI. High severity blocks the merge.
+- [S] Identity and role checked on every route and API. Deny by default.
+- [S] Secrets only in environment variables or a secret store. Never in code, prompts, logs or notes.
+- [S] Validate all input. Encode all output.
+- [S] Dependency and secret scans in CI. High severity blocks the merge.
 - Automated backups with a tested restore. A rollback step for every release.
 - Sessions expire, sign-in attempts are rate-limited, passwords use a modern hash.
 
 ## Logging and audit
-- [L] Structured logs with request id and user id on every line.
-- [L] Log critical actions: sign-in, create, update, delete, permission changes, imports, background jobs.
-- [L] Error reporting (Sentry where applicable or decided), with environment and release.
-- [L] Audit table: who changed what and when.
-- [L] Never log secrets or personal data.
+- [S] Structured logs with request id and user id on every line.
+- [S] Log critical actions: sign-in, create, update, delete, permission changes, imports, background jobs.
+- [S] Error reporting (Sentry where applicable or decided), with environment and release.
+- [S] Audit table: who changed what and when.
+- [S] Never log secrets or personal data.
+- [S] **Logging check (cheap, every task).** For each create, update, delete, permission change, import or job the task adds or changes, confirm a log or audit call sits in that code path. If missing, add it to the changed code. If the project has no logger at all, say so once under "Noticed, not changed" and do not build one unasked.
 
 ## Prompt data
 Green (code, public docs): allowed. Amber (logs, database samples, config): redact first. Red (secrets, credentials, personal or customer data, production dumps): never. If Red data was pasted, rotate any exposed secret and tell the technical lead.

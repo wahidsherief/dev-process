@@ -1,6 +1,6 @@
 # Process log
 
-Tier: <Light|Full> · Type: <type> · Approver: <name> · Technical lead: <name>
+Standard: <Safe|Risk> · Type: <type> · Approver: <name> · Technical lead: <name>
 Standards: see `.devprocess/config.json`. Commands for lint, tests and scans are there too.
 
 ## Current task

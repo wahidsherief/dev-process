@@ -87,7 +87,8 @@
         "Marks each row as current task, project gap or unrelated",
         "Does not edit any source code",
         "Says the result is sample-based or limited",
-        "Saves or presents a compact table, not a long essay"
+        "Saves the report as a new timestamped file in docs/analysis/ with a header line (date, commit, mode, standard), or presents a compact table",
+        "Runs light mode: does not map the whole project or create docs/ARCHITECTURE.md"
       ],
       "fixture": "mini-app",
       "autonomous": true
@@ -101,6 +102,32 @@
         "Reads docs/PATTERNS.md or says it does not exist or is empty",
         "Does not invent a pattern",
         "Does not list Candidate or Deprecated patterns by default"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 9,
+      "prompt": "Add a refund button on the order page that calls the payment provider and refunds the full amount.",
+      "expected_output": "In a Safe project, treats this task as Risk because it touches money: applies the untagged rules to the changed code, keeps the project standard Safe, and does not ask the developer to choose a standard.",
+      "should_trigger": true,
+      "assertions": [
+        "Says this task is treated as Risk (or applies the full rule set) because it touches payments or money",
+        "Does not change the project standard in docs/PROCESS.md from Safe",
+        "Does not ask the developer to choose a standard, tier or lane",
+        "Plans or mentions an audit or log entry for the refund"
+      ],
+      "fixture": "mini-app",
+      "autonomous": true
+    },
+    {
+      "id": 10,
+      "prompt": "Add a delete button for customers on the customers page.",
+      "expected_output": "Adds a log or audit line for the delete in the changed code path (logging check).",
+      "should_trigger": true,
+      "assertions": [
+        "The delete code path it adds or changes has a log or audit call",
+        "Does not add logging to unrelated existing code"
       ],
       "fixture": "mini-app",
       "autonomous": true

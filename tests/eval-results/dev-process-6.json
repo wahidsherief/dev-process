@@ -1,0 +1,29 @@
+{
+  "skill": "dev-process",
+  "id": 6,
+  "prompt": "Production is slow and users say the orders page times out. Sort it out.",
+  "passed": 3,
+  "total": 3,
+  "results": [
+    {
+      "assertion": "Routes to the hotfix or fix lane, not the full feature flow",
+      "pass": true,
+      "why": "The response explicitly labels itself \"Lane: hotfix (S2)\" and follows a minimal hotfix flow (failing test, small fix, rollback step, incident note) rather than a full feature flow."
+    },
+    {
+      "assertion": "Does not write a long brief with acceptance criteria",
+      "pass": true,
+      "why": "The response is a short summary with root cause, fix, test and next steps. It contains no long brief and no acceptance criteria section."
+    },
+    {
+      "assertion": "Does not touch production",
+      "pass": true,
+      "why": "It states that nothing is committed or deployed and that it has not seen production logs. The diff changes only app.py and the tests. Deployment is left to a human release owner."
+    }
+  ],
+  "output_head": "I fixed the likely cause of the orders timeouts. It's an N+1 query in `list_orders`, and I haven't checked it against production load. Nothing is committed or deployed.\n\n**Lane: hotfix (S2)**\n\n- **Root cause:** `list_orders` in `app.py` ran one customer lookup per order, so a request cost N+1 queries. Query count grew with the orders table until the page timed out.\n- **Fix:** one `LEFT JOIN` query. The response shape is the same, and orders with a missing customer still come back with `customer: null`. It's about 5 changed lines and needs no schema change. The join uses the customers primary key, so no new index is needed.\n- **Failing test first:** I added `test_list_orders_uses_constant_queries` to `tests/test_app.py`. Before the fix it failed with `AssertionError: 51 != 1`. After the fix the whole suite passes (2 tests).\n- **Not confirmed:** I haven't seen production logs, query timings or the row count. The N+1 is the only slow pattern in the code, but confirm latency drops after release.\n\n**Noticed, not changed:**\n- `/orders` returns every order with no limit or pagination, so it will still get slower as data grows.\n- `delete_customer` has no auth check.\n- `fmt_total` truncates instead of rounding.\n\n**Next steps, which need a human:**\n1. A. Reviewer or A. Lead reviews the change, and I can run the standards reviewer first.\n2. Before deploying, state the rollback step: revert this one commit.\n3. A. Lead, as release owner, deploys and then watches `/orders` latency and erro",
+  "files": [
+    "M  app.py",
+    "M  tests/test_app.py"
+  ]
+}
