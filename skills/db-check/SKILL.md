@@ -10,7 +10,7 @@ Backend and data standards. Apply them automatically while building. Do not ask 
 
 [S] = Safe standard (always applies). No tag = Risk standard only (risky tasks). Apply these automatically when the task touches API, data, jobs or email.
 
-**Scope.** Rule 8 in `dev-process`: apply to the lines this task changes or adds; note nearby gaps as "Noticed, not changed".
+**Scope.** Rule 8 in `dev-process`: apply to the lines this task changes or adds; note nearby gaps under Insights.
 
 ## Before you finish (every time)
 1. Lists are paginated. Every foreign-key, filter and sort column has an index, checked with the real query plan.

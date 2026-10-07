@@ -20,7 +20,7 @@ notes="$(printf '%s\n' "$paths" | grep '^docs/memory/' | grep -v -e '\.gitkeep$'
 code="$(printf '%s\n' "$paths" | grep -v -e '^docs/' -e '^\.devprocess/' -e '\.bak')"
 
 if [ -n "$code" ] && [ -z "$notes" ]; then
-  echo "dev-process: files changed but no memory note was written. Add docs/memory/<task type>/YYYY-MM-DD-name.md (feature, fix, refactor, migration, decision or incident; use the matching template) and show its path in the summary's Memory row. If this was a trivial quick change with nothing worth keeping, say 'Memory: none (trivial)' in the summary instead." >&2
+  echo "dev-process: files changed but no memory note was written. Add docs/memory/<task type>/YYYY-MM-DD-name.md (feature, fix, refactor, migration, decision or incident; use the matching template) and link it on the summary's 'Note saved to' line. If this was a trivial quick change with nothing worth keeping, write 'Note saved to: none (trivial change)' in the summary instead." >&2
   exit 2
 fi
 exit 0

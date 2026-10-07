@@ -10,7 +10,7 @@ Frontend standards. Apply them automatically while building UI and gather the sc
 
 [S] = Safe standard (always applies). No tag = Risk standard only (risky tasks). Apply these automatically when the task touches UI.
 
-**Scope.** Rule 8 in `dev-process`: apply to the lines this task changes or adds; note nearby gaps as "Noticed, not changed".
+**Scope.** Rule 8 in `dev-process`: apply to the lines this task changes or adds; note nearby gaps under Insights.
 
 ## Before you finish (every time)
 1. No hard-coded colors, including shadows and overlays: everything is a token.

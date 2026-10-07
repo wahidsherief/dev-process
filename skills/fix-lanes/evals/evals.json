@@ -89,7 +89,7 @@
         "Fixes the rounding problem with a test",
         "Does not change list_orders or any other function that was not part of the fix",
         "Mentions existing non-compliance it saw (for example the per-order query loop) as noticed but not changed",
-        "Handoff includes a Noticed, not changed line"
+        "Summary includes an Insights section for the nearby issue"
       ],
       "fixture": "mini-app",
       "autonomous": true

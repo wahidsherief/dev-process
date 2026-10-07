@@ -38,26 +38,38 @@ A quick change that grows past its limits switches to the full flow; say so.
 4. **Plan** (full flow, hotfix actions, data fix). Short: tables and indexes, settings, log events, cache keys, tests, size. Wait for approval only for new or large work; otherwise show two lines and continue.
 5. **Build.** Only what the plan says, with tests. Reuse an Approved or Active pattern from `docs/PATTERNS.md` when the task clearly matches (`references/patterns.md`). Apply the standards for the areas touched without asking (`references/autonomy.md`): `security-check`, `db-check`, `ui-check`, `ai-check`.
 6. **Verify.** Run lint, tests and scans (hooks run them after edits). Check that every critical action you added has a log or audit line (`security-check`). Run the `standards-reviewer` agent **only** when the task's standard is Risk and the change is over about 80 lines or touches authentication, permissions, migrations or money; otherwise review against the lane's short check yourself. Gather the proof yourself.
-7. **Record.** Update `docs/PROCESS.md` (short). Write the memory note into `docs/memory/<task type>/` **before** the summary. It is required for every lane; the only exception is a trivial quick change with nothing worth keeping, shown as "Memory: none (trivial)" (`references/04-done-and-memory.md`). The summary's Memory row must show the real path.
+7. **Record.** Update `docs/PROCESS.md` (short). Write the memory note into `docs/memory/<task type>/` **before** the summary. It is required for every lane; the only exception is a trivial quick change with nothing worth keeping, shown as "Memory: none (trivial)" (`references/04-done-and-memory.md`). The summary's **Note saved to** line must link the real path.
 8. **Summary.** The developer opens the PR; the approver approves.
 
 ## Summary after every task
 
-Show it as a two-column markdown table, never a code block:
+The summary is the whole final message of a finished task: nothing before the headline, nothing after **Action needed**, no closing recap. A plain question (not a finished task) gets a normal answer with no summary. Plain markdown, no table, no box, no emoji:
 
-| Item | Result |
-|---|---|
-| Lane | |
-| Task type | memory folder: feature, fix, refactor, migration, decision or incident (`references/04-done-and-memory.md`) |
-| Issue | what was wrong or requested, and the impact |
-| Fix | how it was resolved, files touched, and the proof it works |
-| Standards | applied; skipped (reason) |
-| Noticed, not changed | (only if useful) |
-| Memory | docs/memory/<task type>/YYYY-MM-DD-name.md (or "none") |
-| Token cost | Low / Medium / High |
-| Guide | next step for the developer |
+```
+**<Outcome headline, 15 words at most; "Blocked: ..." when blocked>**
 
-Each cell is one short phrase, 12 words at most, no sub-lists, nothing the diff already shows. Cost is a judgement of context used, never an exact token count (definitions: `references/summary-resume.md`).
+*<Lane> · <task type> · <used> used (<cached> cached) · <Low|Medium|High>*
+
+---
+
+**Issue:** what was wrong or requested, and the impact.
+**Fixed By:** how it was done; files as links, e.g. [app.py](app.py).
+**Test Result:** before -> after (failing then passing for a fix); "Not run, <reason>" if untested.
+**Standards:** Applied ...; Skipped ... (reason).
+**Note saved to:** [name.md](docs/memory/<task type>/YYYY-MM-DD-name.md), or "none (trivial change)".
+
+**Insights**
+- ...
+
+**Action needed:** one concrete step for the developer.
+```
+
+- Task type is the memory folder: feature, fix, refactor, migration, decision or incident (`references/04-done-and-memory.md`).
+- One sentence per line. Drop a line with nothing to say. Links are paths relative to the project root.
+- Tokens: run `scripts/task-tokens.py` (python3 or python, from this plugin's `scripts/` folder) just before writing the summary and paste its output (`17k used (395k cached)`). If it prints nothing, show the level only. Never invent a number. Level definitions: `references/summary-resume.md`.
+- **Insights** only when one changes the developer's next decision, shows a risk the diff does not, or is nearby debt that will cause trouble soon. At most 3 bullets, each 15 words or fewer, may link a `file#Lnn`. Skip the section when there is none; never add general advice. Anything beyond three goes in the memory note.
+- A trivial change uses the short form: headline, meta line, **Fixed By** (with the test result), **Action needed**.
+- Offer the PR title and description only when the next step is opening the PR.
 
 ## Stops (human decides)
 
@@ -75,7 +87,7 @@ Each cell is one short phrase, 12 words at most, no sub-lists, nothing the diff 
 5. Log every critical action and report every error.
 6. Never mark something done without proof. N/A only with a written reason.
 7. Never write outside the plan without saying so.
-8. Fix or build what was requested and apply the relevant standards to the affected area. Do not bring unrelated existing code up to standard. Mention nearby technical debt only when useful ("Noticed, not changed"). If the fix itself requires changing an area, the changed code follows the standard.
+8. Fix or build what was requested and apply the relevant standards to the affected area. Do not bring unrelated existing code up to standard. Mention nearby technical debt only when useful (under Insights). If the fix itself requires changing an area, the changed code follows the standard.
 
 ## Standard: Safe or Risk (never asked)
 

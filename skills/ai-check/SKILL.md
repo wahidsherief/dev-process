@@ -9,7 +9,7 @@ Standards for AI-integrated systems. Apply when a feature calls an AI provider. 
 
 [S] = Safe and Risk; no tag = Risk only.
 
-**Scope.** Rule 8 in `dev-process`: apply to the lines this task changes or adds; note nearby gaps as "Noticed, not changed".
+**Scope.** Rule 8 in `dev-process`: apply to the lines this task changes or adds; note nearby gaps under Insights.
 
 - **Settings page.** Provider, model, API key (masked), limits, model options, mock mode. Store the key encrypted or in a secret store, never as plaintext in the database or in code.
 - **Service layer.** One service for every AI call. Timeouts, safe retries, clear failure messages.

@@ -130,5 +130,8 @@ rm -rf "$tmp"
 echo "token-report"
 python3 tests/test-token-report.py >/dev/null 2>&1 && ok "token-record and token-report: none, insufficient, enough data, verdicts" || bad "token-report tests"
 
+echo "task-tokens"
+python3 tests/test-task-tokens.py >/dev/null 2>&1 && ok "task-tokens: sums since last prompt, de-dupes chunks, fails silent" || bad "task-tokens tests"
+
 [ $fail = 0 ] && echo "ALL PASS" || echo "FAILURES"
 exit $fail

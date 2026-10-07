@@ -1,4 +1,4 @@
-# dev-process (v1.4.2)
+# dev-process (v1.4.3)
 
 AI-assisted development standard procedure as a Claude Code plugin. Stack-agnostic. The developer types the task; the standards, proof and notes happen behind the scenes.
 
@@ -40,9 +40,9 @@ If the plugin is installed in a project that is not set up, Claude does the task
 - A task that touches money, personal data, authentication or migrations is treated as Risk for that task only, and can use the reviewer agent. Claude may suggest moving the project to Risk; it never does it alone.
 - AI calls in a Safe project follow three rules: no secrets or customer data in prompts, a monthly spend cap, and a usage log.
 
-Claude picks the lane, applies the standards itself, asks only when it must, and ends every task with a short table summary: lane, task type, what was checked, what changed, how, proof, standards applied and skipped, the memory note path, a Low/Medium/High cost, and the next step.
+Claude picks the lane, applies the standards itself, asks only when it must, and ends every task with one short report and nothing else: an outcome headline, a meta line (lane, task type, real tokens as `17k used (395k cached)`, a Low/Medium/High level), then Issue, Fixed By, Test Result, Standards, a link to the memory note, optional Insights (at most 3 short bullets) and the Action needed. `used` is fresh input plus output tokens (the work); `cached` is context re-read from cache, which is cheap. The numbers come from `scripts/task-tokens.py`, which reads the session transcript; if it cannot, only the level is shown.
 
-Every task also leaves a short memory note in `docs/memory/<task type>/YYYY-MM-DD-name.md` (feature, fix, refactor, migration, decision or incident), written before the summary. Only a trivial quick change with nothing worth keeping may skip it ("Memory: none (trivial)").
+Every task also leaves a short memory note in `docs/memory/<task type>/YYYY-MM-DD-name.md` (feature, fix, refactor, migration, decision or incident), written before the summary. Only a trivial quick change with nothing worth keeping may skip it ("Note saved to: none (trivial change)").
 
 ## Lanes
 

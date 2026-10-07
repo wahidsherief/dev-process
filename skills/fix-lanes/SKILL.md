@@ -25,7 +25,7 @@ Severity: **S1** outage, data loss or security exposure. **S2** a major feature 
 1. **Reproduce.** Exact steps, expected versus actual, environment, how often. If it cannot be reproduced or the report is too thin, ask for steps, logs (redacted) and the time it started. Do not guess.
 2. **Failing test first.** Write a test that fails for the right reason. Show it failing.
 3. **Root cause.** One or two sentences on why, not on the symptom. Search for the same pattern elsewhere.
-4. **Minimal fix.** The smallest change. No refactoring or cleanup in the same PR. The changed lines follow the applicable standards; the code around them is left alone, and any existing non-compliance goes under "Noticed, not changed" in the handoff. Never "fix" by weakening or deleting a test, or by swallowing the error.
+4. **Minimal fix.** The smallest change. No refactoring or cleanup in the same PR. The changed lines follow the applicable standards; the code around them is left alone, and any existing non-compliance goes under Insights in the summary. Never "fix" by weakening or deleting a test, or by swallowing the error.
 5. **Prove.** The new test passes, the whole suite passes, and a neighbouring behaviour is checked.
 6. **Record.** `docs/memory/fix/YYYY-MM-DD-name.md` from `templates/fix-note.md`: symptom, root cause, fix, test, prevention.
 7. **Done check (short).** Failing then passing test shown; root cause stated; no unrelated changes; suite green; memory note; approver named. If the fix touched a query, UI, auth code or code that calls an AI provider, also apply `db-check`, `ui-check`, `security-check` or `ai-check`.
@@ -57,21 +57,7 @@ Claude never runs a data fix against production.
 
 ## Summary
 
-End with the short summary from `dev-process/references/summary-resume.md`, with the lane named first (bug fix, hotfix or data fix; add S1, S2 or S3):
-
-Show it as a two-column markdown table (Item | Result), never a code block. One short phrase per cell, 12 words at most:
-
-| Item | Result |
-|---|---|
-| Lane | <lane> (S1/S2/S3) |
-| Task type | memory folder: fix (bug fix, data fix) or incident (hotfix) |
-| Issue | what was wrong, the impact and the root cause |
-| Fix | how it was fixed, files touched, and the proof: <failing test output, then passing output; suite result> |
-| Standards | applied; skipped (reason) |
-| Noticed, not changed | (only if useful) |
-| Memory | docs/memory/<task type>/YYYY-MM-DD-name.md (or "none") |
-| Token cost | Low / Medium / High |
-| Guide | <approver, rollback or deploy step, production items> |
+End with the summary in the format defined in `dev-process` SKILL.md ("Summary after every task"), with the lane named in the meta line (bug fix, hotfix or data fix; add S1, S2 or S3). Task type: fix (bug fix, data fix) or incident (hotfix). **Issue** includes the root cause. **Test Result** is the failing run, then the passing run and the suite result. **Action needed** names the approver, the rollback or deploy step and any production items.
 
 Proof shows the actual failing run first (paste the one-line failure), then the passing run. Do not stage or commit generated files such as `__pycache__`. A hotfix summary also lists the incident note due within 24 hours. A data fix summary lists the dry-run counts and the rollback script. Offer PR text only when the next step is opening the PR.
 

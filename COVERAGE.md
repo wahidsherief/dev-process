@@ -30,7 +30,7 @@ Every section of the Standard Procedure (V1) and where the plugin handles it. "G
 | new | Skill evals | `skills/*/evals/evals.json`; `tests/run-evals.py` | Test suite for each skill |
 | new | Lanes for non-feature work: bug fix, hotfix (S1 to S3), data fix | skill `fix-lanes`; `skills/fix-lanes/templates/`; CI job `fix-has-test` in `templates/standards.yml.tpl` | Guides; Claude never deploys or touches production |
 | new | Lanes for quick change, refactor, upgrade, spike, release | skill `change-lanes`; `skills/change-lanes/templates/` | Guides; release owner signs off |
-| new | Simple developer interface: type the task, lane picked automatically, short summary after every task | `SKILL.md` (lane table, handoff); `references/04-done-and-memory.md` (short checks by lane) | Guides |
+| new | Simple developer interface: type the task, lane picked automatically, one plain summary after every task (headline, Issue, Fixed By, Test Result, Insights, Action needed, real token count) | `SKILL.md` (lane table, summary format); `references/04-done-and-memory.md` (short checks by lane); `scripts/task-tokens.py` | Guides |
 | new | Commands: init (then start the task), analyze, summary, status, resume | `commands/*.md`; `references/01-init.md`; `references/analyze.md`; `references/summary-resume.md` | Guides; analyze only on request |
 | new | Reusable approved patterns (Candidate, Approved, Active, Deprecated) | `references/patterns.md`; `templates/PATTERNS.md.tpl`; `docs/PATTERNS.md` | Guides; a human approves |
 | new | Token report: overhead vs efficiency, with a verdict | `commands/token-report.md`; `scripts/token-record.py`; `scripts/token-report.py`; `references/token-report.md` | Reads recorded runs only; nothing is invented |
