@@ -67,7 +67,7 @@ The summary is the whole final message of a finished task: nothing before the he
 - Task type is the memory folder: feature, fix, refactor, migration, decision or incident (`references/04-done-and-memory.md`).
 - One sentence per line. Drop a line with nothing to say. Links are paths relative to the project root.
 - Tokens: run `scripts/task-tokens.py` (python3 or python, from this plugin's `scripts/` folder) just before writing the summary and paste its output (`17k used (395k cached)`). If it prints nothing, show the level only. Never invent a number. Level definitions: `references/summary-resume.md`.
-- **Insights** only when one changes the developer's next decision, shows a risk the diff does not, or is nearby debt that will cause trouble soon. At most 3 bullets, each 15 words or fewer, may link a `file#Lnn`. Skip the section when there is none; never add general advice. Anything beyond three goes in the memory note.
+- **Insights** only when one changes the developer's next decision, shows a risk the diff does not, or is nearby debt that will cause trouble soon. At most 3 bullets, each 15 words or fewer, may link a `file#Lnn`. A pattern suggestion (`references/patterns.md`) goes here as a bold bullet: `**Pattern candidate:** ...`. Skip the section when there is none; never add general advice. Anything beyond three goes in the memory note.
 - A trivial change uses the short form: headline, meta line, **Fixed By** (with the test result), **Action needed**.
 - Offer the PR title and description only when the next step is opening the PR.
 

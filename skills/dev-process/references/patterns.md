@@ -31,6 +31,6 @@ List matching patterns from `docs/PATTERNS.md`: name, category, status, when to 
 
 ## Suggesting a new pattern
 
-After work that went well and is likely to be reused, add one line to the summary: `Pattern candidate: <name> (<category>) at <path>. Add as Candidate?` Add the row only if the developer says yes, with status Candidate. Never mark it Approved.
+After work that went well and is likely to be reused, add a bold bullet inside the summary's **Insights** section: `- **Pattern candidate:** <name> (<category>) at [path](path). Add as Candidate?` (it counts toward the 3-bullet limit and creates the section if there is none). Add the row only if the developer says yes, with status Candidate. Never mark it Approved.
 
 Approving or deprecating: when the developer says so, change the Status cell and nothing else.
