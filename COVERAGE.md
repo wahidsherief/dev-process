@@ -6,7 +6,7 @@ Every section of the Standard Procedure (V1) and where the plugin handles it. "G
 |---|---|---|---|
 | 1 | Purpose, principles, standards (Safe, Risk) | `SKILL.md` (Standard section, Hard rules); `templates/CLAUDE.md.tpl`; `references/01-init.md` (defaults to Safe, no question) | Guides. [S] tags in every standards file; task risk escalates per task |
 | 2 | Definitions and roles | `templates/PROCESS.md.tpl` (approver, technical lead, release owner); skill `legacy-migration` (gates) | Guides |
-| 3 | AI environment: CLAUDE.md, skills, reviewer agent, hooks, permissions | `references/01-init.md`; `agents/standards-reviewer.md`; `hooks/hooks.json`; `scripts/*.sh`; `templates/settings.json.tpl` | Guides + enforced |
+| 3 | AI environment: CLAUDE.md, skills, reviewer agent, hooks, permissions | `references/01-init.md`; `agents/standards-reviewer.md`; `hooks/hooks.json`; `scripts/*.sh` (incl. `update-check.sh`, a session-start update notice); `templates/settings.json.tpl` | Guides + enforced |
 | 3 | Plugins allowlist and review | `references/01-init.md` | Guides |
 | 3 | Prompt-data classes (Green / Amber / Red) | `references/01-init.md`; `security-check`; `templates/CLAUDE.md.tpl`; `scripts/guard.sh` (blocks .env reads); `scripts/prompt-guard.sh` (blocks secrets in prompts) | Guides + enforced |
 | 3 | Token discipline | `references/01-init.md` | Guides |

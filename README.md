@@ -1,4 +1,4 @@
-# dev-process (v1.4.4)
+# dev-process (v1.4.5)
 
 AI-assisted development standard procedure as a Claude Code plugin. Stack-agnostic. The developer types the task; the standards, proof and notes happen behind the scenes.
 
@@ -75,10 +75,11 @@ Claude never deploys and never touches production.
 | `legacy-migration` | Seven stages, four gates, risks, UI redesign |
 | `extend-process` | Add a project skill, hook or agent in a fixed format and register it |
 
-Each skill has a trigger-style `description` (Claude loads the rest only on a match) and an `evals/evals.json` test suite. The plugin also has the `standards-reviewer` agent (read-only, runs only for larger or risky full-flow changes), four hooks and templates for CLAUDE.md, PR, memory, incident, fix, release, spike notes, data-fix runbook, design page, baseline and CI.
+Each skill has a trigger-style `description` (Claude loads the rest only on a match) and an `evals/evals.json` test suite. The plugin also has the `standards-reviewer` agent (read-only, runs only for larger or risky full-flow changes), five hooks and templates for CLAUDE.md, PR, memory, incident, fix, release, spike notes, data-fix runbook, design page, baseline and CI.
 
 ## Hooks (enforced, whatever the developer does)
 
+- At session start: if a newer dev-process is published, show one line with the update commands (checks at most every 12 hours, never updates anything, silent offline)
 - Before a tool runs: block `.env` reads, force-push, branch deletion (local and remote), wide recursive deletes
 - Before a prompt is sent: block prompts that contain a secret
 - After an edit: run the project's lint and test commands (`.devprocess/config.json`)

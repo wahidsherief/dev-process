@@ -130,6 +130,16 @@ rm -rf "$tmp"
 echo "token-report"
 python3 tests/test-token-report.py >/dev/null 2>&1 && ok "token-record and token-report: none, insufficient, enough data, verdicts" || bad "token-report tests"
 
+echo "update-check.sh"
+ud="$(mktemp -d)"
+printf '{"version": "9.9.9"}' > "$ud/new.json"; printf '{"version": "0.0.1"}' > "$ud/old.json"
+V="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([0-9.]*\)".*/\1/p' .claude-plugin/plugin.json | head -1)"; printf '{"version": "%s"}' "$V" > "$ud/same.json"
+o="$(DEVPROCESS_LATEST_FILE="$ud/new.json" bash scripts/update-check.sh)"; echo "$o" | grep -q '"systemMessage"' && echo "$o" | grep -q "9.9.9" && echo "$o" | grep -q "plugin update dev-process@dev-process" && ok "newer version: notice with commands" || bad "update notice"
+o="$(DEVPROCESS_LATEST_FILE="$ud/same.json" bash scripts/update-check.sh)"; [ -z "$o" ] && ok "same version: silent" || bad "same version"
+o="$(DEVPROCESS_LATEST_FILE="$ud/old.json" bash scripts/update-check.sh)"; [ -z "$o" ] && ok "older remote: silent" || bad "older remote"
+o="$(DEVPROCESS_LATEST_FILE="$ud/missing.json" bash scripts/update-check.sh)"; [ $? = 0 ] && [ -z "$o" ] && ok "unreadable remote: silent, exit 0" || bad "unreadable remote"
+rm -rf "$ud"
+
 echo "task-tokens"
 python3 tests/test-task-tokens.py >/dev/null 2>&1 && ok "task-tokens: sums since last prompt, de-dupes chunks, fails silent" || bad "task-tokens tests"
 
