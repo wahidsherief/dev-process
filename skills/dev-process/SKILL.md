@@ -38,7 +38,7 @@ A quick change that grows past its limits switches to the full flow; say so.
 4. **Plan** (full flow, hotfix actions, data fix). Short: tables and indexes, settings, log events, cache keys, tests, size. Wait for approval only for new or large work; otherwise show two lines and continue.
 5. **Build.** Only what the plan says, with tests. Reuse an Approved or Active pattern from `docs/PATTERNS.md` when the task clearly matches (`references/patterns.md`). Apply the standards for the areas touched without asking (`references/autonomy.md`): `security-check`, `db-check`, `ui-check`, `ai-check`.
 6. **Verify.** Run lint, tests and scans (hooks run them after edits). Check that every critical action you added has a log or audit line (`security-check`). Run the `standards-reviewer` agent **only** when the task's standard is Risk and the change is over about 80 lines or touches authentication, permissions, migrations or money; otherwise review against the lane's short check yourself. Gather the proof yourself.
-7. **Record.** Update `docs/PROCESS.md` (short). Write the memory note into `docs/memory/<task type>/` **before** the summary. It is required for every lane; the only exception is a trivial quick change with nothing worth keeping, shown as "Memory: none (trivial)" (`references/04-done-and-memory.md`). The summary's **Note saved to** line must link the real path.
+7. **Record.** Update `docs/PROCESS.md` (short). Write the memory note into `docs/memory/<task type>/` **before** the summary. It is required for every lane; the only exception is a trivial quick change with nothing worth keeping, shown as "Memory: none (trivial)" (`references/04-done-and-memory.md`). The summary's **Note** line must link the real path.
 8. **Summary.** The developer opens the PR; the approver approves.
 
 ## Summary after every task
@@ -52,11 +52,11 @@ The summary is the whole final message of a finished task: nothing before the he
 
 ---
 
-**Issue:** what was wrong or requested, and the impact.
-**Fixed By:** how it was done; files as links, e.g. [app.py](app.py).
-**Test Result:** before -> after (failing then passing for a fix); "Not run, <reason>" if untested.
-**Standards:** Applied ...; Skipped ... (reason).
-**Note saved to:** [name.md](docs/memory/<task type>/YYYY-MM-DD-name.md), or "none (trivial change)".
+**Issue:** the effect a user or the system felt, with a number.
+**Fixed By:** the approach and the trade-off it made; one link, e.g. [app.py](app.py#L42).
+**Test Result:** before -> after numbers (failing then passing for a fix); "Not run, <reason>" if untested.
+**Skipped:** standards not applied, with the reason. Leave the line out when none were skipped.
+**Note:** [name.md](docs/memory/<task type>/YYYY-MM-DD-name.md). Leave the line out when there is none.
 
 **Insights**
 - ...
@@ -65,10 +65,10 @@ The summary is the whole final message of a finished task: nothing before the he
 ```
 
 - Task type is the memory folder: feature, fix, refactor, migration, decision or incident (`references/04-done-and-memory.md`).
-- One sentence per line. Drop a line with nothing to say. Links are paths relative to the project root.
+- Concise but useful: every line is 12 words or fewer, one sentence, and holds something the diff does not show. **Issue** says how bad it was, not a restatement of the request. **Fixed By** gives the reason for the approach, not a list of files. **Test Result** gives numbers, never just "pass". Drop a line with nothing to say. Links are paths relative to the project root.
 - Tokens: run `scripts/task-tokens.py` (python3 or python, from this plugin's `scripts/` folder) just before writing the summary and paste its output (`17k used (395k cached)`). If it prints nothing, show the level only. Never invent a number. Level definitions: `references/summary-resume.md`.
-- **Insights** only when one changes the developer's next decision, shows a risk the diff does not, or is nearby debt that will cause trouble soon. At most 3 bullets, each 15 words or fewer, may link a `file#Lnn`. A pattern suggestion (`references/patterns.md`) goes here as a bold bullet: `**Pattern candidate:** ...`. Skip the section when there is none; never add general advice. Anything beyond three goes in the memory note.
-- A trivial change uses the short form: headline, meta line, **Fixed By** (with the test result), **Action needed**.
+- **Insights** only when one changes the developer's next decision, shows a risk the diff does not, or is nearby debt that will cause trouble soon. Each bullet says what is wrong, what it causes and what to do, in 15 words or fewer, with a `file#Lnn` link when it points at code. Worst first, at most 2. A weak or general insight is dropped: none is better than a vague one. A pattern suggestion (`references/patterns.md`) goes here as a bold bullet: `**Pattern candidate:** ...`. Skip the section when there is none; never add general advice. Anything beyond two goes in the memory note.
+- The short form is the default for a change under about 20 lines with no skipped standard and no insight: headline, meta line, **Fixed By** (with the test result), **Action needed**.
 - Offer the PR title and description only when the next step is opening the PR.
 
 ## Stops (human decides)

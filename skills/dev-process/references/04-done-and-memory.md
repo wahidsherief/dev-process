@@ -61,6 +61,6 @@ Required for every lane except a trivial quick change. Write the file before the
 
 The **Task type** in every summary table is the folder name above, so the summary and the memory note use the same word. The summary also shows the note's path in its **Memory** row.
 
-Length: eight lines for a quick change or a fix, twenty at most otherwise. Content: what and why; what changed; decisions and trade-offs; how verified; gotchas; PR link. Skip it only for a trivial quick change with nothing worth keeping, and say "Memory: none (trivial)" in the summary.
+Length: eight lines for a quick change or a fix, twenty at most otherwise. Content: what and why; what changed; decisions and trade-offs; how verified; gotchas; PR link. Skip it only for a trivial quick change with nothing worth keeping, and say "a summary with no Note line" in the summary.
 
 Before planning any task, search `docs/memory/` for related notes.

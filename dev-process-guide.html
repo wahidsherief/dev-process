@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dev-process Engineering Guide</title>
+<style>
+:root{
+  --bg:#fbfbfa; --fg:#1d2327; --muted:#5b666e; --line:#d9dedf; --soft:#f1f3f2; --code:#eef1f0;
+  --accent:#1f5f7a; --cur:#1d6b46; --curbg:#e4f2ea; --plan:#8a5a00; --planbg:#fbf0d9; --opt:#4a4f8f; --optbg:#e9eaf7;
+  --warn:#8a2b1c; --warnbg:#fbe9e5; --note:#f3f6f8;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14181a; --fg:#e3e8ea; --muted:#9aa6ad; --line:#2d363a; --soft:#1b2124; --code:#1d2428;
+  --accent:#6bb6d3; --cur:#6cd49b; --curbg:#173226; --plan:#e8b655; --planbg:#33290f; --opt:#a3a8f0; --optbg:#22254a;
+  --warn:#f09a8b; --warnbg:#3a1f1a; --note:#1a2125; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181a; --fg:#e3e8ea; --muted:#9aa6ad; --line:#2d363a; --soft:#1b2124; --code:#1d2428;
+  --accent:#6bb6d3; --cur:#6cd49b; --curbg:#173226; --plan:#e8b655; --planbg:#33290f; --opt:#a3a8f0; --optbg:#22254a;
+  --warn:#f09a8b; --warnbg:#3a1f1a; --note:#1a2125; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--accent)}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:0;max-width:1240px;margin:0 auto}
+nav.toc{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:28px 18px 28px 24px;border-right:1px solid var(--line);font-size:13.5px}
+nav.toc strong{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc li{margin:0}
+nav.toc a{display:block;padding:3px 0;text-decoration:none;color:var(--fg)}
+nav.toc a:hover{color:var(--accent)}
+nav.toc .grp{margin-top:12px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+main{padding:36px 40px 80px;max-width:860px;min-width:0}
+header.doc{border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:8px}
+header.doc h1{font-size:30px;line-height:1.2;margin:0 0 6px}
+header.doc p{margin:4px 0;color:var(--muted)}
+h2{font-size:22px;line-height:1.3;margin:48px 0 10px;padding-top:10px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:26px 0 6px}
+h4{font-size:15px;margin:18px 0 4px}
+p{margin:8px 0}
+ul,ol{padding-left:22px;margin:8px 0}
+li{margin:3px 0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px}
+code{background:var(--code);padding:1px 5px;border-radius:3px}
+pre{background:var(--code);padding:12px 14px;border-radius:4px;overflow:auto;border:1px solid var(--line);line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px}
+.tw{overflow-x:auto}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600}
+td code,th code{font-size:12.5px}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:3px;letter-spacing:.02em;white-space:nowrap;vertical-align:1px}
+.cur{color:var(--cur);background:var(--curbg)} .plan{color:var(--plan);background:var(--planbg)} .opt{color:var(--opt);background:var(--optbg)}
+.callout{background:var(--note);border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;border-radius:0 4px 4px 0}
+.callout.warn{border-left-color:var(--warn);background:var(--warnbg)}
+.callout.philo{font-size:17px}
+.callout p:first-child{margin-top:0}.callout p:last-child{margin-bottom:0}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 0;margin:12px 0;padding:0;list-style:none}
+.flow li{margin:0;display:flex;align-items:center}
+.flow li span{border:1px solid var(--line);background:var(--soft);padding:5px 10px;border-radius:3px;font-size:14px}
+.flow li+li::before{content:"\2192";color:var(--muted);margin:0 8px}
+.flow.bad li span{border-color:var(--warn);background:var(--warnbg)}
+.stack{margin:14px 0;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.stack>div{padding:8px 14px;border-top:1px solid var(--line);font-size:14.5px}
+.stack>div:first-child{border-top:0}
+.stack>div:nth-child(odd){background:var(--soft)}
+.stack .arrow{text-align:center;color:var(--muted);padding:2px;background:var(--bg)!important;font-size:13px}
+.stack .row{display:flex;flex-wrap:wrap;gap:6px}
+.stack .row span{border:1px solid var(--line);background:var(--bg);padding:2px 9px;border-radius:3px;font-size:13.5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two>div{border:1px solid var(--line);border-radius:4px;padding:2px 14px 8px;min-width:0}
+.two h4{margin-top:10px}
+dl.gl dt{font-weight:600;margin-top:14px}
+dl.gl dd{margin:2px 0 0 0;color:var(--fg)}
+dl.gl dd b{color:var(--muted);font-weight:600}
+details{border:1px solid var(--line);border-radius:4px;margin:10px 0;padding:0 14px;background:var(--bg)}
+details[open]{padding-bottom:10px}
+summary{cursor:pointer;font-weight:600;padding:9px 0}
+.small{font-size:13.5px;color:var(--muted)}
+.mm{display:flex;flex-direction:column;gap:0;align-items:flex-start;margin:14px 0}
+.mm div{border:1px solid var(--line);background:var(--soft);padding:4px 16px;font-weight:600;letter-spacing:.04em;font-size:14px;min-width:200px;border-radius:3px}
+.mm i{font-style:normal;color:var(--muted);padding:0 0 0 22px;line-height:1.2}
+.skip{position:absolute;left:-999px}
+@media (max-width:980px){
+  .layout{display:block}
+  nav.toc{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:16px}
+  main{padding:20px 16px 60px}
+  .two{grid-template-columns:1fr}
+}
+@media print{
+  nav.toc{display:none}.layout{display:block;max-width:none}
+  main{padding:0;max-width:none}
+  body{background:#fff;color:#000;font-size:11pt}
+  h2{break-after:avoid}table,pre,.callout,.stack{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc" aria-label="Contents">
+<strong>Contents</strong>
+<ol>
+<li class="grp">Understand</li>
+<li><a href="#s1">1. Introduction</a></li>
+<li><a href="#s2">2. The problem</a></li>
+<li><a href="#s3">3. Is and is not</a></li>
+<li><a href="#s4">4. Architecture</a></li>
+<li><a href="#s5">5. Terminology</a></li>
+<li class="grp">How it decides</li>
+<li><a href="#s6">6. Operating model</a></li>
+<li><a href="#s7">7. Safe and Risk</a></li>
+<li><a href="#s8">8. Task lanes</a></li>
+<li><a href="#s9">9. Standards</a></li>
+<li><a href="#s10">10. Scope protection</a></li>
+<li class="grp">Capabilities</li>
+<li><a href="#s11">11. analyze</a></li>
+<li><a href="#s12">12. Patterns</a></li>
+<li><a href="#s13">13. Token efficiency</a></li>
+<li><a href="#s14">14. Legacy projects</a></li>
+<li><a href="#s15">15. Quality model</a></li>
+<li class="grp">Control</li>
+<li><a href="#s16">16. Enforcement</a></li>
+<li><a href="#s17">17. Human approval</a></li>
+<li class="grp">Practice</li>
+<li><a href="#s18">18. Developer workflow</a></li>
+<li><a href="#s19">19. Commands</a></li>
+<li><a href="#s20">20. Automatic vs manual</a></li>
+<li><a href="#s21">21. Stack agnostic</a></li>
+<li class="grp">Context</li>
+<li><a href="#s22">22. How it was designed</a></li>
+<li><a href="#s23">23. What changes</a></li>
+<li><a href="#s24">24. Limitations</a></li>
+<li><a href="#s25">25. Adoption</a></li>
+<li><a href="#s26">26. Mental model</a></li>
+<li><a href="#status">Status summary</a></li>
+</ol>
+</nav>
+
+<main>
+<header class="doc">
+<h1>dev-process: Engineering Guide</h1>
+<p>An AI-assisted development process delivered as a Claude Code plugin.</p>
+<p class="small">Describes plugin version <strong>1.4.1</strong> (repository commit <code>49842b1</code>, tag <code>v1.4.1</code>). Written from the plugin's files, not from plans.</p>
+</header>
+
+<div class="callout">
+<p><strong>How to read the labels.</strong>
+<span class="tag cur">Current</span> exists in the plugin today.
+<span class="tag plan">Planned</span> discussed and designed, not built.
+<span class="tag opt">Optional / Future</span> possible later, no commitment.
+Anything without a label is explanation.</p>
+<p><strong>Naming.</strong> Earlier drafts called the project levels <em>Light</em> and <em>Full</em> and tagged rules <code>[L]</code>. Since v1.4 they are <strong>Safe</strong> and <strong>Risk</strong>, and rules are tagged <code>[S]</code>. This guide uses the current names and mentions the old ones where they appear in the glossary. Plugin commands are namespaced, for example <code>/dev-process:analyze</code>; a bare <code>/init</code> is a Claude Code built-in, not this plugin. The guide shortens them to <code>init</code>, <code>analyze</code> and so on.</p>
+</div>
+
+<!-- 1 -->
+<h2 id="s1">1. Introduction</h2>
+<h3>What is dev-process?</h3>
+<p>dev-process is a Claude Code <strong>plugin</strong>. A developer describes a task in plain words. The plugin makes Claude choose the right kind of work (a quick edit, a bug fix, a new feature, a hotfix), apply only the engineering standards that matter for the code being changed, run checks, collect proof, and finish with a short summary. A named human still approves the change.</p>
+<p>It is a set of instructions (skills), a few commands, three hooks, one reviewer agent and templates. It adds no runtime to your application.</p>
+
+<h3>Why did we build it?</h3>
+<p>AI assistants write code quickly, but without guardrails the results vary. These are the problems the plugin targets:</p>
+<ul>
+<li><strong>Inconsistent output.</strong> The same request produces different structure, naming and quality from one session to the next.</li>
+<li><strong>Missed standards.</strong> Developers forget company rules (tokens, indexes, logging, accessibility). The AI forgets them too unless told every time.</li>
+<li><strong>Expensive context.</strong> Re-explaining the process and re-reading the project every session costs tokens.</li>
+<li><strong>Recreated solutions.</strong> A modal or table already exists in the project, and the AI builds another.</li>
+<li><strong>Legacy risk.</strong> Old systems are hard to understand, and AI edits without tests can break hidden behavior.</li>
+<li><strong>Scope creep.</strong> A small fix turns into a refactor because "the file could be better".</li>
+<li><strong>Unrestricted autonomy.</strong> AI that deploys, force-pushes or reads secrets on its own is a risk.</li>
+<li><strong>Accountability.</strong> Someone has to own the decision to merge.</li>
+</ul>
+<div class="callout philo">
+<p><strong>Philosophy:</strong> AI proposes and assists; engineering standards, automated checks and human approval keep the change controlled.</p>
+</div>
+
+<!-- 2 -->
+<h2 id="s2">2. The problem we are solving</h2>
+<h3>Without a process</h3>
+<ol class="flow bad"><li><span>Developer</span></li><li><span>AI</span></li><li><span>Code</span></li><li><span>Hope it is correct</span></li></ol>
+<h3>With dev-process</h3>
+<ol class="flow">
+<li><span>Developer</span></li><li><span>Task understanding</span></li><li><span>Automatic lane</span></li><li><span>Relevant standards</span></li><li><span>Reusable patterns</span></li><li><span>Implementation</span></li><li><span>Verification</span></li><li><span>Short summary</span></li><li><span>Human approval</span></li>
+</ol>
+<p>Each step is small and has a purpose: understanding avoids wrong guesses; the lane sets how much ceremony the work needs; standards and patterns keep output consistent; verification and the summary turn "it works" into evidence; approval keeps a person accountable.</p>
+<p class="small">All steps are <span class="tag cur">Current</span>. They are carried out by Claude following the plugin's instructions; only part of the checking is automated (see section 16).</p>
+
+<!-- 3 -->
+<h2 id="s3">3. What dev-process is, and is not</h2>
+<div class="two">
+<div>
+<h4>It is</h4>
+<ul>
+<li>An AI-assisted engineering process</li>
+<li>A routing layer: task, lane, area, standards</li>
+<li>A standards guidance system, with a few enforced rules</li>
+<li>A reusable-pattern registry (<code>docs/PATTERNS.md</code>)</li>
+<li>A project-analysis mechanism (<code>analyze</code>)</li>
+<li>Lightweight memory and state (<code>docs/PROCESS.md</code>, memory notes, <code>summary</code>/<code>resume</code>)</li>
+<li>A bridge between AI speed and engineering discipline</li>
+</ul>
+</div>
+<div>
+<h4>It is not</h4>
+<ul>
+<li>A replacement for developers</li>
+<li>A replacement for CI/CD or code review</li>
+<li>A framework or library in your app</li>
+<li>Tied to Laravel, React, PHP or any one stack</li>
+<li>A tool that refactors whole projects on its own</li>
+<li>A guarantee that AI code is correct</li>
+</ul>
+</div>
+</div>
+
+<!-- 4 -->
+<h2 id="s4">4. Architecture overview</h2>
+<div class="stack" role="img" aria-label="Architecture layers from developer to human approval">
+<div><strong>Developer</strong> types a task in plain words (or runs an optional command)</div>
+<div class="arrow">&darr;</div>
+<div><strong>dev-process</strong> (entry skill): reads <code>docs/PROCESS.md</code> and <code>CLAUDE.md</code>, orchestrates the rest</div>
+<div class="arrow">&darr;</div>
+<div><strong>Lane detection</strong> (automatic): full flow, quick, bug fix, hotfix, data fix, refactor, upgrade, spike, release, migration</div>
+<div class="arrow">&darr;</div>
+<div><strong>Affected-area detection</strong>: UI, API and data, security, AI calls, jobs, email</div>
+<div class="arrow">&darr;</div>
+<div><strong>Relevant standards</strong> (only for areas touched)
+<div class="row" style="margin-top:6px"><span>ui-check</span><span>db-check</span><span>security-check</span><span>ai-check</span><span>legacy-migration (migration lane)</span></div></div>
+<div class="arrow">&darr;</div>
+<div><strong>Patterns</strong>: reuse an Approved or Active pattern when the task clearly matches</div>
+<div class="arrow">&darr;</div>
+<div><strong>Implementation</strong> and tests</div>
+<div class="arrow">&darr;</div>
+<div><strong>Hooks, tests, CI</strong>: lint and tests after each edit; secret and risky-command guards; CI checks on the PR</div>
+<div class="arrow">&darr;</div>
+<div><strong>Reviewer agent</strong> (only for Risk tasks over about 80 lines or touching sensitive code) &rarr; <strong>Human approval</strong></div>
+</div>
+
+<h3>Where the commands fit</h3>
+<p>There are seven commands, all optional, all <span class="tag cur">Current</span>. The developer does not need them to start working.</p>
+<table>
+<tr><th>Command</th><th>Place in the flow</th></tr>
+<tr><td><code>init</code></td><td>Before the first task in a project: prepares files, then continues the task</td></tr>
+<tr><td><code>analyze</code> / <code>analyze deep</code></td><td>Beside the flow: reports on the project against the standards</td></tr>
+<tr><td><code>summary</code> &rarr; <code>/clear</code> &rarr; <code>resume</code></td><td>Between sessions: save the task state, clear context, continue</td></tr>
+<tr><td><code>status</code></td><td>Any time: where the current task stands</td></tr>
+<tr><td><code>patterns</code></td><td>Before building: look up approved reusable solutions</td></tr>
+<tr><td><code>token-report</code></td><td>After a pilot: compares token cost with and without the plugin</td></tr>
+</table>
+
+<details><summary>What is in the repository</summary>
+<table>
+<tr><th>Part</th><th>Files</th></tr>
+<tr><td>Entry skill</td><td><code>skills/dev-process/SKILL.md</code> plus <code>references/</code> (init, brief and plan, build and review, done check, autonomy, analyze, summary and resume, patterns, token-report)</td></tr>
+<tr><td>Lane skills</td><td><code>fix-lanes</code> (bug fix, hotfix, data fix), <code>change-lanes</code> (quick, refactor, upgrade, spike, release), <code>legacy-migration</code></td></tr>
+<tr><td>Standards skills</td><td><code>ui-check</code>, <code>db-check</code>, <code>security-check</code>, <code>ai-check</code></td></tr>
+<tr><td>Extension skill</td><td><code>extend-process</code>: add a project skill, hook or agent in a fixed format</td></tr>
+<tr><td>Agent</td><td><code>agents/standards-reviewer.md</code>: read-only reviewer</td></tr>
+<tr><td>Commands</td><td><code>commands/*.md</code>: thin dispatchers that point to the skill</td></tr>
+<tr><td>Hooks</td><td><code>hooks/hooks.json</code> and <code>scripts/guard.sh</code>, <code>prompt-guard.sh</code>, <code>post-edit.sh</code></td></tr>
+<tr><td>Token tools</td><td><code>scripts/token-record.py</code>, <code>scripts/token-report.py</code></td></tr>
+<tr><td>Templates</td><td>CLAUDE.md, PROCESS.md, PATTERNS.md, PR template, CI workflow, memory, fix, incident, release, spike and design notes</td></tr>
+<tr><td>Tests</td><td><code>tests/run.sh</code>, 47 evals across 9 skills (<code>skills/*/evals/evals.json</code>), a small fixture app</td></tr>
+</table></details>
+
+<!-- 5 -->
+<h2 id="s5">5. Terminology guide</h2>
+<dl class="gl">
+<dt>Plugin</dt><dd><b>Simple:</b> an add-on for Claude Code. <b>Technical:</b> a folder with a manifest (<code>.claude-plugin/plugin.json</code>) bundling skills, commands, agents and hooks that Claude Code loads together.</dd>
+<dt>Skill</dt><dd><b>Simple:</b> a written playbook Claude reads when it is relevant. <b>Technical:</b> a <code>SKILL.md</code> with a short description; Claude loads the full text only when the task matches that description.</dd>
+<dt>Command</dt><dd><b>Simple:</b> something the developer types, like <code>/dev-process:analyze</code>. <b>Technical:</b> a markdown file in <code>commands/</code> that hands a request to a skill.</dd>
+<dt>Hook</dt><dd><b>Simple:</b> an automatic check that runs at a fixed moment. <b>Technical:</b> a script Claude Code runs before a tool call, after an edit, or when a prompt is sent. Exit code 2 blocks the action.</dd>
+<dt>Agent</dt><dd><b>Simple:</b> a helper with a narrow job. <b>Technical:</b> a sub-session with its own instructions. Here: <code>standards-reviewer</code>, read-only. Agents do not call other agents.</dd>
+<dt>Lane</dt><dd><b>Simple:</b> the type of work being done. <b>Technical:</b> a predefined workflow path (full flow, quick change, bug fix, hotfix, data fix, refactor, upgrade, spike, release, migration) with its own steps and short check.</dd>
+<dt>Task</dt><dd><b>Simple:</b> what the developer asked for. <b>Technical:</b> the current unit of work, recorded in <code>docs/PROCESS.md</code> with its lane and status.</dd>
+<dt>Project tier (called "Standard" in v1.4)</dt><dd><b>Simple:</b> how strict the project's rules are by default. <b>Technical:</b> the <code>Standard:</code> field in <code>docs/PROCESS.md</code>, either Safe or Risk. Stored once.</dd>
+<dt>Light</dt><dd><b>Simple:</b> the old name for the basic rule set. <b>Technical:</b> now called <strong>Safe</strong>. Rules tagged <code>[S]</code> (formerly <code>[L]</code>).</dd>
+<dt>Full</dt><dd><b>Simple:</b> the old name for the complete rule set. <b>Technical:</b> now called <strong>Risk</strong>: every rule, that is <code>[S]</code> rules plus untagged ones. Not to be confused with the "full flow" lane for new features.</dd>
+<dt>Standard</dt><dd><b>Simple:</b> a rule for how we build (for example "no hard-coded colors"). <b>Technical:</b> a numbered, checkable rule inside a standards skill, with expected evidence.</dd>
+<dt>Pattern</dt><dd><b>Simple:</b> a proven way we already built something (a modal, a table). <b>Technical:</b> a row in <code>docs/PATTERNS.md</code> with metadata and a pointer to the real source file. No code is copied.</dd>
+<dt>Candidate pattern</dt><dd><b>Simple:</b> suggested, not yet trusted. <b>Technical:</b> status Candidate; never applied automatically.</dd>
+<dt>Approved pattern</dt><dd><b>Simple:</b> a pattern a human has said to reuse. <b>Technical:</b> status Approved (or Active); applied automatically when a task clearly matches.</dd>
+<dt>Baseline</dt><dd><b>Simple:</b> a snapshot of how the system performs now. <b>Technical:</b> <code>docs/BASELINE.md</code>: build time, test count, coverage, query times. Created in migration stage 1; used to compare later.</dd>
+<dt>Project analysis</dt><dd><b>Simple:</b> a quick report on how the project meets the standards. <b>Technical:</b> <code>analyze</code>: samples code, reports Present, Partial, Missing or N/A per standard.</dd>
+<dt>Deep analysis</dt><dd><b>Simple:</b> a thorough, more expensive report. <b>Technical:</b> <code>analyze deep</code>: maps the project once, then re-checks only what changed.</dd>
+<dt>Resume state</dt><dd><b>Simple:</b> a note that lets you continue after clearing the chat. <b>Technical:</b> <code>.devprocess/summary.md</code>, written by <code>summary</code> and read by <code>resume</code>.</dd>
+<dt>Human approval</dt><dd><b>Simple:</b> a person says yes. <b>Technical:</b> a named approver on the PR; also hotfix approval, migration gates and release sign-off.</dd>
+<dt>Guardrail</dt><dd><b>Simple:</b> a limit that keeps work safe. <b>Technical:</b> a hook, deny rule, CI job, stop point or scope rule that constrains what the AI can do.</dd>
+<dt>Scope</dt><dd><b>Simple:</b> what the task is about. <b>Technical:</b> the lines and components a task changes or adds. Standards apply to these, not to untouched code.</dd>
+<dt>Evidence</dt><dd><b>Simple:</b> proof the work is done. <b>Technical:</b> test output, query counts and plans, screenshots, scan results, log lines. No proof, no "done".</dd>
+<dt>Verification</dt><dd><b>Simple:</b> checking the work. <b>Technical:</b> running lint, tests and scans, plus the lane's short check and, for large or risky changes, the reviewer.</dd>
+<dt>Regression test</dt><dd><b>Simple:</b> a test that stops a bug coming back. <b>Technical:</b> in the bug-fix lane, a test written first that fails for the right reason, then passes after the fix.</dd>
+<dt>CI</dt><dd><b>Simple:</b> automatic checks on every pull request. <b>Technical:</b> a workflow (template provided) for PR size, lint, types, tests, secret scan, dependency scan, checklist and "a fix changes a test".</dd>
+<dt>MCP</dt><dd><b>Simple:</b> a way to connect Claude to outside tools. <b>Technical:</b> Model Context Protocol servers. dev-process does not ship any; <code>init</code> only advises keeping an allowlist and starting read-only.</dd>
+<dt>Token / context</dt><dd><b>Simple:</b> the amount of text the AI reads and writes, which costs money and time. <b>Technical:</b> input, output and cached tokens in a session. Less irrelevant text in context means lower cost and fewer mistakes.</dd>
+<dt>Stack-agnostic</dt><dd><b>Simple:</b> works with any language or framework. <b>Technical:</b> the lanes and standards describe behavior, not a framework; Claude inspects the actual stack and project tooling does stack-specific enforcement.</dd>
+</dl>
+
+<!-- 6 -->
+<h2 id="s6">6. Core operating model</h2>
+<div class="callout"><p><strong>Project context + task + affected area + risk &rarr; appropriate process</strong></p></div>
+<table>
+<tr><th>Decision</th><th>How it is made today</th></tr>
+<tr><td>Task lane</td><td>Claude picks it from the request and the code. It never asks the developer. If unsure it takes the lighter lane and moves up if the work grows. <span class="tag cur">Current</span></td></tr>
+<tr><td>Affected area</td><td>Claude names the areas touched (UI, API, data, AI, jobs) in one line. <span class="tag cur">Current</span></td></tr>
+<tr><td>Applicable standards</td><td>Only the standards skills for areas touched are loaded, and only the rules for the task's standard (Safe or Risk). <span class="tag cur">Current</span></td></tr>
+<tr><td>Project tier</td><td>Stored once in <code>docs/PROCESS.md</code>. <code>init</code> sets Safe. It is not detected from the project. <span class="tag cur">Current</span> default; <span class="tag plan">Planned</span> detection (section 7)</td></tr>
+<tr><td>Deeper analysis needed?</td><td>Never automatic. Only when the developer runs <code>analyze</code> or <code>analyze deep</code>. <span class="tag cur">Current</span></td></tr>
+<tr><td>Review needed?</td><td>The reviewer agent runs only when the task's standard is Risk and the diff is over about 80 lines or touches authentication, permissions, migrations or money. Otherwise Claude checks against the lane's short list. <span class="tag cur">Current</span></td></tr>
+</table>
+<p><strong>Not every task loads every skill.</strong> A label change loads one lane skill and perhaps <code>ui-check</code>. It does not load <code>db-check</code>, <code>ai-check</code> or the migration playbook. That is how the plugin controls both quality (relevant rules only) and tokens (no irrelevant text).</p>
+
+<!-- 7 -->
+<h2 id="s7">7. Project standards: Safe and Risk</h2>
+<p>Earlier called Light and Full tiers. Renamed in v1.4 to avoid confusion with the "full flow" lane.</p>
+<h3>Why two levels exist</h3>
+<p>An internal prototype and a payments system should not carry the same checklist. Safe applies the essential rules to any work. Risk adds the rules that matter when the cost of a mistake is high.</p>
+<table>
+<tr><th></th><th>Safe (default)</th><th>Risk</th></tr>
+<tr><td>Rules applied</td><td>Only rules tagged <code>[S]</code></td><td>Every rule: <code>[S]</code> plus untagged</td></tr>
+<tr><td>Reviewer agent</td><td>Not used, unless the task itself is risky</td><td>Used when the diff is over about 80 lines or touches auth, permissions, migrations or money</td></tr>
+<tr><td>Analysis</td><td><code>analyze</code> judges <code>[S]</code> rules; Risk-only gaps are listed as "Risk-only" rows, not failures</td><td>Judges all rules</td></tr>
+<tr><td>Typical use</td><td>Internal tools, prototypes, small fixes</td><td>Customer-facing systems, user data, payments, AI features</td></tr>
+</table>
+<p><strong>Rule:</strong> Risk = Safe + extra requirements. A Risk task applies every Safe rule too.</p>
+
+<h3>What <code>[S]</code> means</h3>
+<p>In each standards skill, a rule starting with <code>[S]</code> belongs to the Safe set. A rule with no tag is Risk-only. Examples of untagged (Risk-only) rules: performance budgets, backups with a tested restore, the full AI cost dashboard and per-user budgets, restrained-color and animation guidelines.</p>
+
+<h3>How the standard is determined today</h3>
+<ul>
+<li><span class="tag cur">Current</span> <code>init</code> writes <code>Standard: Safe</code> to <code>docs/PROCESS.md</code> and <code>CLAUDE.md</code>. The developer is not asked. They can say "set this project to Risk" at any time.</li>
+<li><span class="tag plan">Planned</span> <strong>Automatic detection</strong> of the right project standard. Not implemented.</li>
+</ul>
+
+<h3>Project standard vs task-level risk escalation</h3>
+<table>
+<tr><th></th><th>Project standard</th><th>Task risk escalation</th></tr>
+<tr><td>Scope</td><td>Persistent, stored once</td><td>Temporary, for that task only</td></tr>
+<tr><td>Trigger</td><td>The team decides</td><td>The task touches payments or money, customer or personal data, authentication or permissions, or migrations</td></tr>
+<tr><td>Effect</td><td>Sets the default rule set</td><td>The untagged rules apply to the changed code and the reviewer is allowed. The project standard does not change</td></tr>
+<tr><td>Status</td><td><span class="tag cur">Current</span></td><td><span class="tag cur">Current</span>, judged by Claude from the task; no script detects it</td></tr>
+</table>
+<p>After an escalated task, the summary says so and may suggest once: "set the project to Risk?" It never changes the project standard by itself.</p>
+<p><strong>AI calls</strong> follow a middle path: in a Safe project, code that calls an AI provider applies three <code>[S]</code> rules (no secrets or customer data in prompts, a monthly spend cap, a usage log). The rest of <code>ai-check</code> applies in Risk.</p>
+
+<!-- 8 -->
+<h2 id="s8">8. Task lanes</h2>
+<p>Ten lanes, all <span class="tag cur">Current</span>. The developer never picks one; Claude names the lane in one line at the start.</p>
+<div class="tw"><table>
+<tr><th>Lane</th><th>When it applies</th><th>What it does</th><th>What it intentionally skips</th><th>Example</th></tr>
+<tr><td>Full flow</td><td>New feature, large enhancement, new module</td><td>Brief with numbered acceptance criteria, plan, build, verify, summary. Design page for new systems</td><td>Nothing heavy; this is the complete path</td><td>"Add an invoice export for finance"</td></tr>
+<tr><td>Quick change</td><td>About 50 changed lines or fewer; no database, permission, security or dependency change</td><td>One acceptance line, change, short check, tests if logic exists</td><td>Brief, plan, reviewer, memory note (unless something worth keeping)</td><td>"Change the button label to Add customer"</td></tr>
+<tr><td>Bug fix</td><td>A defect that is not urgent (S3)</td><td>Reproduce, failing test first, root cause, minimal fix, proof, fix note</td><td>Brief, plan, refactoring or cleanup in the same change</td><td>"Order totals show 10.99, should be 11"</td></tr>
+<tr><td>Hotfix</td><td>Production issue (S1 or S2)</td><td>Stabilise first (rollback or flag off), minimal fix, expedited named approval, rollback step, incident note within 24 hours</td><td>Ceremony only. Never the approver or the checks</td><td>"Orders page is down"</td></tr>
+<tr><td>Data fix</td><td>One-off correction of production data</td><td>Reviewed script, dry run, backup, rollback script, counts reconciled, approvals, run log</td><td>Manual edits. Claude never runs it against production</td><td>"Fix duplicate customer rows"</td></tr>
+<tr><td>Refactor</td><td>Change structure, not behavior</td><td>Run tests first (baseline), small steps, same tests green after</td><td>Brief, plan; no test edited to pass</td><td>"Split this 600-line function"</td></tr>
+<tr><td>Upgrade</td><td>Dependency or security patch</td><td>One dependency at a time, release-note check, scan before and after, tests at each step</td><td>Brief, plan; rollback is a revert</td><td>"Upgrade the ORM"</td></tr>
+<tr><td>Spike</td><td>"Can we...?" investigation, time-boxed</td><td>Throwaway branch, spike note with recommendation</td><td>Merging, production data</td><td>"Is moving to queues worth it?"</td></tr>
+<tr><td>Release</td><td>Cut a version</td><td>Release notes, changelog, pre-release checklist with proof</td><td>Deploying. The release owner signs off</td><td>"Prepare release 2.4"</td></tr>
+<tr><td>Migration</td><td>Move or modernize a legacy system, redesign its UI</td><td>Seven stages, four human gates, slices behind flags</td><td>Rewriting everything at once; changing code before Gate 1 and Gate 2</td><td>"Modernize the old admin"</td></tr>
+</table></div>
+<div class="callout"><p><strong>Why a quick change should not carry feature overhead.</strong> A brief, plan and review for a one-line label change cost more tokens and time than the change itself, and developers will learn to route around a process that is heavy on trivial work. The lanes put the ceremony where the risk is. If a quick change grows past its limits, Claude says so and moves up to the full flow.</p></div>
+
+<!-- 9 -->
+<h2 id="s9">9. The standards system</h2>
+<div class="callout"><p>Standards are not applied blindly to every task. They are routed based on relevance.</p></div>
+<p>Each standards skill has a short description. Claude loads the full skill only when the task touches that area. Rules apply to the lines the task changes (section 10).</p>
+<div class="tw"><table>
+<tr><th>Skill</th><th>Problem it solves</th><th>Triggered when</th><th>What it checks (Safe rules in bold)</th><th>Evidence expected</th><th>Safe / Risk</th></tr>
+<tr><td><code>ui-check</code></td><td>Inconsistent, inaccessible, hard-to-maintain UI</td><td>Building or reviewing screens, components, forms, styles</td><td><strong>Design tokens, density, dark and light, responsive, validation, toasts and alerts, fallback pages, data states, client error reporting, accessibility.</strong> Risk adds: visual restraint, animation, performance budget, data-fetching layer, tests</td><td>Screenshots (360, 768, 1280 px; light and dark), accessibility scan, test output, forced error in the reporting tool. Always ends with a "Screenshots needed" list</td><td>10 Safe rules; rest Risk</td></tr>
+<tr><td><code>db-check</code></td><td>Slow queries, unsafe schema changes, inconsistent APIs</td><td>Endpoints, ORM queries, schema or migrations, cache, queues, email, slow queries</td><td><strong>API design, auth, database and ORM (no N+1, indexes, pagination), migrations with rollback, logging and audit.</strong> Risk adds: scalable design, backups, caching rules, background jobs, email, configuration, test data</td><td>Query count before and after, real query plan, migration up and down output, test from an empty database</td><td>5 Safe rules; rest Risk</td></tr>
+<tr><td><code>security-check</code></td><td>Leaked secrets, missing access control, silent failures</td><td>Auth, input handling, secrets, config, logging, audit, error reporting, dependencies</td><td><strong>Identity and role on every route, secrets only in env or a secret store, validate input and encode output, dependency and secret scans, structured logs, critical actions logged, error reporting, audit table, no secrets or personal data in logs, per-task logging check.</strong> Risk adds: backups, session and rate-limit rules</td><td>Scan results, a test showing a forbidden role is denied, a log line for a critical action</td><td>Most rules Safe</td></tr>
+<tr><td><code>ai-check</code></td><td>Unlimited, unpriced or unsafe AI usage</td><td>Code that calls an LLM or AI API</td><td><strong>Usage log, spend cap, data rules (no secrets or customer data in prompts).</strong> Risk adds: settings page, one service layer, dashboard, GBP and USD pricing, per-user budgets, mock mode</td><td>Usage-log row, cost shown in both currencies, budget alert firing in test, cost-calculation test</td><td>3 Safe rules; rest Risk</td></tr>
+<tr><td><code>legacy-migration</code></td><td>Breaking a legacy system while changing it</td><td>Migrating, modernizing or redesigning a system; project type is legacy migration; asked to skip the safety net</td><td>Approach choice, seven stages, four gates, legacy risks, UI redesign with a golden page</td><td>Baseline, characterization tests, gate approvals, reconciled data counts</td><td>A track, not a rule set; applies in the migration lane</td></tr>
+</table></div>
+<p>Shared rules (branch per slice, 400-line PR limit, PR template, settings page, test environment) are in <code>references/standards-core.md</code>.</p>
+
+<!-- 10 -->
+<h2 id="s10">10. Scope protection</h2>
+<p>Hard rule 8 in the entry skill:</p>
+<div class="callout"><p>Fix or build what was requested and apply the relevant standards to the affected area. Do not bring unrelated existing code up to standard. Mention nearby technical debt only when useful ("Noticed, not changed"). If the fix itself requires changing an area, the changed code follows the standard.</p></div>
+<div class="two">
+<div><h4>Good</h4><p>Bug in a dropdown: fix the dropdown, add a regression test, apply the UI rules to the lines changed (tokens, accessibility of that control). The summary says: "Noticed, not changed: 14 hard-coded colors elsewhere in the form."</p></div>
+<div><h4>Bad</h4><p>Bug in a dropdown: redesign the whole page, replace colors, restructure the form, because other elements are not compliant. The diff grows, review gets harder, and unrelated behavior can break.</p></div>
+</div>
+<p>This prevents AI-driven scope creep in four places: the rule itself, a "Scope" line in every standards skill, a reviewer check that flags unrequested refactors as scope creep (Major), and the summary's "Noticed, not changed" line, which gives the team a decision instead of a surprise. <span class="tag cur">Current</span> (guidance and reviewer; not enforced by code)</p>
+
+<!-- 11 -->
+<h2 id="s11">11. <code>analyze</code> and <code>analyze deep</code></h2>
+<h3><code>analyze</code> (light, default)</h3>
+<ul>
+<li><strong>Purpose:</strong> a quick view of how the project meets the standards for the areas that exist.</li>
+<li><strong>Looks at:</strong> <code>docs/ARCHITECTURE.md</code> if present, config and dependency files, and a small sample per area. Never maps the whole project.</li>
+<li><strong>Why it is cheap:</strong> sampling, reuse of an existing map, only the standards skills for detected areas, and a short table as output.</li>
+<li><strong>Respects the project standard:</strong> judges <code>[S]</code> rules in a Safe project, all rules in a Risk project. Risk-only gaps show as "Risk-only" rows.</li>
+<li><strong>Reports:</strong> one mark per standard: <code>&check; Present</code>, <code>&#9888; Partial</code>, <code>&cross; Missing</code>, <code>&mdash; N/A</code>, plus a scope (Current task, Project gap or Unrelated) and one line of evidence. Ends with at most three lines of key findings.</li>
+<li><strong>Changes nothing:</strong> reads code only. It writes one report file and fixes nothing.</li>
+</ul>
+<pre><code>Error monitoring   &cross; Missing   Project gap    no reporting client found
+UI tokens          &#9888; Partial   Current task   tokens in theme.css; 14 hard-coded colors in forms/
+Database indexing  &check; Present   Unrelated      migrations index all foreign keys</code></pre>
+<span class="tag cur">Current</span>
+
+<h3><code>analyze deep</code></h3>
+<table>
+<tr><th>Aspect</th><th>Behavior as specified in <code>references/analyze.md</code></th></tr>
+<tr><td>When to use</td><td>When you need a proper review, for example before a legacy project is worked on or before a migration</td></tr>
+<tr><td>Read-only?</td><td>Yes for code. It may write <code>docs/ARCHITECTURE.md</code> (first map) and a report file</td></tr>
+<tr><td>First deep scan</td><td>Maps the project once into <code>docs/ARCHITECTURE.md</code>, then samples each area. For a large project (roughly over 300 source files) it asks once before mapping</td></tr>
+<tr><td>Later deep runs</td><td>Finds the latest report in <code>docs/analysis/</code>, runs <code>git diff --name-only &lt;commit&gt;..HEAD</code>, re-checks only changed areas and marks unchanged rows "(carried)"</td></tr>
+<tr><td>Stored results</td><td>A new file each time: <code>docs/analysis/YYYY-MM-DD-HHMM-&lt;mode&gt;.md</code>, never overwritten</td></tr>
+<tr><td>Timestamp and version</td><td>First line: <code>Analyzed: date | commit | mode | standard | previous: &lt;file&gt; or first</code>. The header tells you whether it is the first scan</td></tr>
+<tr><td>Sharing</td><td>The files live in the project's <code>docs/</code> folder, not in the plugin. A teammate gets them when the report is committed and pulled with the project (Git). The plugin does not commit for you</td></tr>
+<tr><td><code>analyze deep --full</code></td><td>Re-maps everything and ignores the previous report. For use after a big restructure</td></tr>
+</table>
+<div class="callout warn"><p><strong>Status.</strong> All of the above is <span class="tag cur">Current</span> as instructions to Claude, and the light mode was exercised by an eval on a small fixture app. The incremental <code>deep</code> comparison and <code>--full</code> have <strong>not yet been run on a real project</strong>, and their token cost has not been measured. Deep analysis costs more tokens than light by design.</p></div>
+<p>A missing or partial standard is never fixed because of a report. Work on a gap starts only when a developer asks for a task on it.</p>
+
+<!-- 12 -->
+<h2 id="s12">12. Reusable patterns</h2>
+<div class="callout"><p><strong>Standards = how we should build.</strong> <strong>Patterns = proven ways we already built something.</strong></p></div>
+<p>The registry is <code>docs/PATTERNS.md</code>, one table. Each row has: name (for example <code>standard modal</code>), category (modal, data table, form, api, query, job, email), status, when to use, <strong>canonical source</strong> (path and symbol of the real implementation), and constraints. <span class="tag cur">Current</span></p>
+<h3>Lifecycle</h3>
+<ol class="flow"><li><span>Candidate</span></li><li><span>Approved</span></li><li><span>Active</span></li><li><span>Deprecated</span></li></ol>
+<table>
+<tr><th>Status</th><th>Meaning</th><th>Used automatically?</th></tr>
+<tr><td>Candidate</td><td>Suggested, not reviewed</td><td>No</td></tr>
+<tr><td>Approved</td><td>A human said to reuse it</td><td>Yes</td></tr>
+<tr><td>Active</td><td>In regular use</td><td>Yes</td></tr>
+<tr><td>Deprecated</td><td>Do not use; the registry says what replaces it</td><td>Never recommended</td></tr>
+</table>
+<p>Only a human moves a pattern to Approved (the technical lead, or the developer when they say so). Claude never promotes a pattern on its own.</p>
+<h3>Commands</h3>
+<ul>
+<li><code>patterns</code> lists Approved and Active patterns. <code>patterns modal</code> filters by category or name. <code>patterns all</code> includes Candidate and Deprecated. If the file is missing or empty it says so. It does not search the codebase.</li>
+</ul>
+<h3>Why the registry holds pointers, not code</h3>
+<p>The canonical source file stays the single source of truth. A copy in the registry would drift from the code and cost tokens to read and maintain. Claude reads the one real file when it needs it.</p>
+<h3>Example</h3>
+<ol class="flow"><li><span>Approved "standard modal" exists</span></li><li><span>New developer needs a modal</span></li><li><span>Claude finds the pattern by category and name</span></li><li><span>Reads only the canonical source</span></li><li><span>Reuses it, adapts only what is needed</span></li><li><span>Verifies</span></li></ol>
+<p>The summary says which pattern was used. A new developer does not recreate a modal that already exists.</p>
+<h3>What exists and what does not</h3>
+<ul>
+<li><span class="tag cur">Current</span> Lookup when a task clearly matches an Approved or Active pattern; "apply the standard modal pattern" by name; suggesting a candidate after finished work ("Pattern candidate: name at path. Add as Candidate?"), added only if the developer says yes.</li>
+<li><span class="tag plan">Planned / not built</span> Automatic discovery of candidate patterns by scanning the codebase. Today candidates come only from Claude's suggestion at the end of a task.</li>
+</ul>
+<p><strong>Token benefit:</strong> reading one known file is cheaper than searching the project and writing a new component. The saving has <strong>not been measured</strong> yet.</p>
+
+<!-- 13 -->
+<h2 id="s13">13. Token efficiency</h2>
+<div class="callout philo"><p>Goal: <strong>maximum engineering quality per token, not maximum AI activity.</strong></p></div>
+<table>
+<tr><th>Mechanism</th><th>How it works</th></tr>
+<tr><td>Relevant skills only</td><td>Skills load by description match. A task loads one lane skill and only the standards for areas touched</td></tr>
+<tr><td>Automatic routing</td><td>The developer does not paste process text into prompts</td></tr>
+<tr><td>No unnecessary scans</td><td><code>init</code> never scans the project. <code>analyze</code> is on request only</td></tr>
+<tr><td>Light paths</td><td>Quick change and bug fix skip the brief, plan and reviewer</td></tr>
+<tr><td>No nested agents</td><td>One reviewer pass at most; agents do not call agents</td></tr>
+<tr><td>Selective reviewer</td><td>Only for Risk tasks over about 80 lines or touching sensitive code</td></tr>
+<tr><td>Concise notes</td><td><code>docs/PROCESS.md</code> under about 40 lines per task; memory notes 8 lines (fix, quick) or 20 at most</td></tr>
+<tr><td>Pattern reuse</td><td>Read one canonical file instead of building again</td></tr>
+<tr><td>Resume state</td><td><code>summary</code> then <code>/clear</code> then <code>resume</code>: continue from a short file, without rescanning</td></tr>
+<tr><td><code>analyze</code> vs <code>analyze deep</code></td><td>Light samples; deep maps once and re-checks only changed files afterwards</td></tr>
+<tr><td>No duplicated instructions</td><td>v1.4.1 removed repeated wording across skills. Hard rules stay written out in the entry skill</td></tr>
+<tr><td>No duplicated source code</td><td>Patterns point to files</td></tr>
+<tr><td>Approval at the right points</td><td>Stops only for the plan (new or large work), PR approval, gates and destructive actions, not on every step</td></tr>
+</table>
+<h3>What has been measured</h3>
+<p>Measured on a small fixture app (<code>tests/fixtures/mini-app</code>) with <code>claude -p</code>, same task with and without the plugin, 2 runs per cell. Source: <code>tests/TOKEN-COST.md</code> and <code>tests/token-runs-v1.4.1.jsonl</code>. The numbers are noisy because totals swing with the number of turns.</p>
+<ul>
+<li>Overhead per task ranged from about <strong>+3% to +37%</strong>; full-flow features about <strong>+35%</strong>; median across the five scenarios about <strong>+18%</strong>.</li>
+<li>Instruction size in v1.4.1: the entry skill is about 1,100 words; the always-loaded skill descriptions total about 324 words (436 in v1.4).</li>
+<li><strong>Not measured:</strong> any saving from fewer reworks, pattern reuse or <code>resume</code>; the cost of <code>init</code>, <code>analyze</code> or a reviewer run.</li>
+</ul>
+<div class="callout warn"><p>The plugin costs <strong>more</strong> tokens per task than plain Claude in these tests. Its case rests on quality and on fewer wasted rounds, which the pilot has to show. The <code>token-report</code> command (section 19) is built to measure exactly that and will say INSUFFICIENT DATA until enough runs are recorded.</p></div>
+
+<!-- 14 -->
+<h2 id="s14">14. Legacy project strategy</h2>
+<ul>
+<li><strong>Understand before changing.</strong> The first step on a legacy project is to map and baseline, not to edit.</li>
+<li><strong>Targeted analysis.</strong> <code>analyze</code> samples; <code>analyze deep</code> maps once and saves <code>docs/ARCHITECTURE.md</code> for reuse. <span class="tag cur">Current</span></li>
+<li><strong>Baseline.</strong> Migration stage 1 records build time, tests, coverage, bundle size, query times and known bugs in <code>docs/BASELINE.md</code>, and lists hidden behavior (jobs, emails, integrations, manual processes). <span class="tag cur">Current</span></li>
+<li><strong>Changed-code-only scope.</strong> Everyday tasks on a legacy project follow rule 8: improve what you touch, report the rest.</li>
+<li><strong>Migration lane.</strong> Seven stages: discover and baseline, guardrails, decision record, safety net, migrate in slices, verify and release, retrospective. <strong>Four human gates</strong> (baseline and guardrails; decision record and critical-flow coverage; every slice PR; release sign-off).</li>
+<li><strong>Safety net.</strong> Characterization tests lock current behavior before code changes. The plugin refuses to skip this "because the old app has no tests" and offers the smallest set that covers one critical flow.</li>
+<li><strong>Regression protection.</strong> Old tests stay green; data changes use backup, dry run on a copy and reconciled counts.</li>
+<li><strong>No forced rewrite.</strong> Preferred approach is piece by piece beside the old system behind feature flags. A full rewrite is listed as "avoid".</li>
+</ul>
+<p><strong>Why incremental.</strong> A legacy system carries behavior nobody has written down. Rewriting or bringing everything to standard in one run removes the evidence you need to know what broke. Small slices, each with tests and a human gate, keep every step reversible.</p>
+<p class="small">Wording note: <code>legacy-migration</code> stage 5 still refers to the old step names (<code>start</code>, <code>plan</code>, <code>build</code>, <code>review</code>, <code>done</code>). Since v1.3 there is no separate start command; each slice goes through the normal flow. This is a leftover to tidy.</p>
+
+<!-- 15 -->
+<h2 id="s15">15. Quality model</h2>
+<div class="callout"><p>The plugin does <strong>not</strong> make an old project compliant in one run. Each meaningful change is an opportunity to improve the affected area while protecting scope.</p></div>
+<table>
+<tr><th>Quality area</th><th>How it improves</th><th>Source</th></tr>
+<tr><td>UI consistency, frontend quality</td><td>Tokens, shared components, dark and light, density, feedback patterns on every touched screen</td><td><code>ui-check</code></td></tr>
+<tr><td>Accessibility</td><td>WCAG 2.1 AA scan, keyboard access, labels on touched UI</td><td><code>ui-check</code></td></tr>
+<tr><td>Backend robustness</td><td>API shape, validation, auth, pagination, safe retries</td><td><code>db-check</code></td></tr>
+<tr><td>Database efficiency</td><td>No N+1, indexes verified with the real query plan, a test that fails if query count grows</td><td><code>db-check</code></td></tr>
+<tr><td>Testing</td><td>Failing test first for bugs, tests with changes, tests green before and after refactors</td><td>lanes, hooks, CI</td></tr>
+<tr><td>Security</td><td>Deny by default, secrets handling, scans, prompt-data classes</td><td><code>security-check</code>, hooks</td></tr>
+<tr><td>Logging and error handling</td><td>Critical actions logged, errors reported, a per-task logging check</td><td><code>security-check</code></td></tr>
+<tr><td>AI safety and compliance</td><td>Data rules, spend cap, usage log, pricing in settings</td><td><code>ai-check</code></td></tr>
+<tr><td>Reusable architecture</td><td>Approved patterns reused, memory notes searched before planning</td><td>patterns, <code>docs/memory/</code></td></tr>
+<tr><td>Legacy modernization</td><td>Slices with gates and a safety net</td><td><code>legacy-migration</code></td></tr>
+</table>
+<p>Over time, the touched areas become consistent, the memory notes and patterns grow, and <code>analyze</code> reports show the project-wide gaps so the team can schedule dedicated tasks for them.</p>
+
+<!-- 16 -->
+<h2 id="s16">16. Enforcement model</h2>
+<div class="two">
+<div><h4>1. Guidance</h4><p>Skills and instructions: the lanes, the standards, scope rules, the summary shape. Claude follows them but nothing in code forces it. <span class="tag cur">Current</span></p></div>
+<div><h4>2. Automated enforcement</h4><p>Hooks, deny rules, lint and tests, CI, secret scans. These run whether or not Claude cooperates. <span class="tag cur">Current</span> (a small set)</p></div>
+</div>
+<h4>3. Human control</h4>
+<p>The developer's decisions, the named approver, hotfix approval, migration gates, release sign-off.</p>
+<table>
+<tr><th>Layer</th><th>What is actually enforced today</th></tr>
+<tr><td>Hook: before a tool runs</td><td>Blocks reading <code>.env</code> files, force-push, deleting branches (local and remote), and recursive deletes of wide paths</td></tr>
+<tr><td>Hook: before a prompt is sent</td><td>Blocks prompts that contain a secret (private keys, cloud and API keys, tokens, connection strings with passwords, credential assignments). Also gives a one-time offer to run <code>init</code> in a project that is not set up</td></tr>
+<tr><td>Hook: after an edit</td><td>Runs the project's lint and test commands from <code>.devprocess/config.json</code>; a failure goes back to Claude to fix</td></tr>
+<tr><td>Project settings</td><td>Deny rules for <code>.env</code>, secrets folders, force-push (template <code>settings.json.tpl</code>)</td></tr>
+<tr><td>CI template (GitHub)</td><td>PR size (400 lines), lint, types, tests, secret scan, dependency scan, PR checklist check, and "a bug-fix PR changes a test". Mark the jobs as required in branch protection</td></tr>
+<tr><td>Not enforced by code</td><td>The frontend, backend and AI standards, scope protection, lane choice, the logging check. They rely on guidance and review</td></tr>
+</table>
+<p><strong>Why subjective standards are not forced through hooks.</strong> Rules like "restrained color", "one clear primary action per screen" or "an index that fits the query" need judgment about context. A hook that guesses would block valid work and teach developers to disable hooks. Deterministic rules (secrets, force-push, tests, size) go in hooks and CI. Contextual rules go to AI judgment plus human review.</p>
+<p><span class="tag plan">Planned</span> Moving more rules into deterministic checks was discussed (a machine-readable rule registry, per-rule severity, <code>CODEOWNERS</code> for sensitive folders). None of it is built.</p>
+
+<!-- 17 -->
+<h2 id="s17">17. Human approval model</h2>
+<div class="callout philo"><p>AI proposes. Humans remain accountable for approval.</p></div>
+<table>
+<tr><th>Role</th><th>Decision</th></tr>
+<tr><td>Approver</td><td>A named person approves every PR. Set during <code>init</code> (defaults to the developer who ran it)</td></tr>
+<tr><td>Technical lead</td><td>Approves the plan for new or large work, design pages, migration gates 1 to 3, data-fix scripts, and pattern promotion</td></tr>
+<tr><td>Reviewer</td><td>The <code>standards-reviewer</code> agent comes first (read-only, one pass, only for large or risky Risk-standard changes); the human approver comes last</td></tr>
+<tr><td>Release owner</td><td>Signs off releases, Gate 4 of a migration, and data-fix rollbacks</td></tr>
+<tr><td>Hotfix approver</td><td>One named approver (technical lead or on-call) reviews now; CI and hooks still run</td></tr>
+</table>
+<p><strong>Claude always stops</strong> at: the plan (new or large work), PR approval, hotfix approval, migration gates, release sign-off, anything destructive or hard to undo, anything against production, and Red-class data. Claude never deploys, rolls back or touches production.</p>
+<p><strong>Why high-risk changes get stronger review.</strong> Payments, personal data, authentication and migrations have costly failure modes. Task risk escalation applies the full rule set and allows the reviewer agent for those tasks, even in a Safe project.</p>
+
+<!-- 18 -->
+<h2 id="s18">18. Developer workflow</h2>
+<h3>A bug fix, from start to finish</h3>
+<pre><code>Developer opens project
+  &darr;
+init                          (once; prepares files, no scan; Safe by default)
+  &darr;
+Developer: "Fix employee attendance filter"
+  &darr;
+Lane = Bug fix                (chosen automatically)
+  &darr;
+Areas touched = UI + DB
+  &darr;
+Checks = ui-check + db-check  (only the Safe rules, or Risk if the task is risky)
+  &darr;
+Approved pattern, if one matches
+  &darr;
+Reproduce &rarr; failing regression test &rarr; root cause &rarr; minimal fix
+  &darr;
+Verify: lint and tests (hooks), new test passes, suite green, query plan if a query changed
+  &darr;
+Short summary (lane, checked, changed, how, proof, standards, noticed, cost, next)
+  &darr;
+Human review and approval</code></pre>
+<p>If the project has not been set up, the first prompt still works: Claude does the task and offers <code>init</code> once at the end.</p>
+<h3>The short summary</h3>
+<pre><code>Lane:  Checked:  Changed:  How:  Proof:
+Standards applied:  Standards skipped (reason):  Noticed, not changed (if useful):
+Cost: Low | Medium | High     Next:</code></pre>
+<p>Cost is a judgement of context used, never an exact token count.</p>
+<h3>Analysis</h3>
+<pre><code>analyze           light report: sampled standards table, saved to docs/analysis/
+analyze deep      first time: map once into docs/ARCHITECTURE.md, then deeper report
+                  later: re-check only files changed since the last report</code></pre>
+<h3>Continuing after clearing context</h3>
+<pre><code>summary           writes .devprocess/summary.md (task, scope, state, decisions, files, next step)
+/clear            Claude Code's own command
+resume            reads the summary and docs/PROCESS.md only, no rescan, continues from "Next step"</code></pre>
+
+<!-- 19 -->
+<h2 id="s19">19. Commands reference</h2>
+<p>Seven commands exist, all <span class="tag cur">Current</span>. Full form is <code>/dev-process:&lt;name&gt;</code>.</p>
+<div class="tw"><table>
+<tr><th>Command</th><th>Purpose</th><th>Cost / scope</th></tr>
+<tr><td><code>init</code></td><td>Prepare the project once (CLAUDE.md, <code>docs/PROCESS.md</code>, memory folders, PR template, settings, hook config, CI template, <code>docs/PATTERNS.md</code>), then continue the current task. Never overwrites an existing file</td><td>Lightweight, <em>task-changing</em> (writes setup files). No project scan</td></tr>
+<tr><td><code>analyze [area]</code></td><td>Light standards report</td><td>Lightweight; <em>read-only on code</em>; writes one report file</td></tr>
+<tr><td><code>analyze deep [area]</code>, <code>deep --full</code></td><td>Map once and report more thoroughly; incremental later; <code>--full</code> re-maps</td><td><strong>Potentially expensive</strong> (first run especially); read-only on code; writes the map and a report</td></tr>
+<tr><td><code>summary</code></td><td>Save the task state to <code>.devprocess/summary.md</code></td><td>Lightweight; writes one file (git-ignored by <code>init</code>)</td></tr>
+<tr><td><code>status</code></td><td>Five lines: task, lane, step, done, what needs the developer</td><td>Lightweight; read-only; reads <code>docs/PROCESS.md</code> only</td></tr>
+<tr><td><code>resume</code></td><td>Continue a task after <code>/clear</code></td><td>Lightweight; reads the summary and <code>docs/PROCESS.md</code>; continues the task</td></tr>
+<tr><td><code>patterns [filter|all]</code></td><td>List approved patterns, or filter by name or category</td><td>Lightweight; read-only; reads <code>docs/PATTERNS.md</code> only</td></tr>
+<tr><td><code>token-report</code></td><td>Token overhead and efficiency from recorded runs, with a verdict</td><td>Lightweight; read-only; runs a script, no AI analysis</td></tr>
+</table></div>
+<h3><code>token-report</code> in detail</h3>
+<p>Data lives in <code>.devprocess/token-runs.jsonl</code>. Nothing is recorded automatically. Record runs with <code>scripts/token-record.py</code> (from <code>claude -p --output-format json</code> output, or typed numbers) using the same <code>--task</code> id for the same task with and without the plugin; add rework and review rounds later with <code>--annotate</code>.</p>
+<ul>
+<li>It separates <strong>token overhead</strong> (extra tokens) from <strong>token efficiency</strong> (fewer rework and review rounds).</li>
+<li>It needs at least 5 comparable tasks. Below that it prints "N/A &mdash; insufficient comparable data".</li>
+<li>Verdicts: <strong>WORTH IT</strong> (at least 20% fewer rework or review rounds, neither worse than 10%), <strong>NOT YET WORTH IT</strong>, <strong>INSUFFICIENT DATA</strong> (including when there is no rework data). Lower token use alone never counts as efficiency.</li>
+</ul>
+
+<!-- 20 -->
+<h2 id="s20">20. What happens automatically vs manually</h2>
+<div class="tw"><table>
+<tr><th>Automatic (Claude, without being asked)</th><th>Developer-initiated</th><th>Needs human approval</th></tr>
+<tr><td><ul>
+<li>Lane selection</li>
+<li>Affected-area detection</li>
+<li>Routing to the relevant standards</li>
+<li>Looking up an Approved or Active pattern when a task clearly matches</li>
+<li>Scope control ("Noticed, not changed")</li>
+<li>Verification by lane (lint, tests, short check, logging check)</li>
+<li>Task-risk escalation for money, personal data, auth, migrations</li>
+<li>The short task summary</li>
+<li>Hooks: secret and command guards, lint and tests after edits</li>
+<li>One-time <code>init</code> offer in an unprepared project</li>
+</ul></td>
+<td><ul>
+<li><code>init</code></li>
+<li><code>analyze</code>, <code>analyze deep</code></li>
+<li><code>summary</code></li>
+<li><code>resume</code>, <code>status</code></li>
+<li><code>patterns</code></li>
+<li><code>token-report</code> and recording runs</li>
+<li>Setting the project to Risk</li>
+<li>Adding a pattern candidate to the registry (when Claude suggests one)</li>
+<li>Committing analysis reports so the team shares them</li>
+</ul></td>
+<td><ul>
+<li>The plan, for new or large work</li>
+<li>Architecture decisions (design page)</li>
+<li>Pattern promotion to Approved</li>
+<li>High-risk changes (named approver on the PR)</li>
+<li>Hotfix approval; data-fix scripts</li>
+<li>Migration gates 1 to 4</li>
+<li>Release sign-off</li>
+<li>Anything destructive or against production</li>
+</ul></td></tr>
+</table></div>
+
+<!-- 21 -->
+<h2 id="s21">21. Stack-agnostic design</h2>
+<p>The plugin contains no framework code. It works the same for PHP/Laravel, Node, React, Vue, Python, Java and others, because of how it is built:</p>
+<ul>
+<li><strong>Lanes are technology independent.</strong> A bug fix is reproduce, failing test, root cause, minimal fix in any language.</li>
+<li><strong>Standards are conceptual.</strong> "No N+1, index the filter columns, show the query plan" applies whatever the ORM. The skills say to run <code>EXPLAIN</code>, not a specific ORM call.</li>
+<li><strong>Skills inspect the actual stack.</strong> <code>init</code> detects language, framework and commands from the repo and records them in <code>CLAUDE.md</code> and <code>.devprocess/config.json</code>.</li>
+<li><strong>Stack-specific enforcement lives in project tooling.</strong> The CI template has placeholders for your lint, type, test and dependency-scan commands (for example <code>npm audit</code>, <code>pip-audit</code>, <code>composer audit</code>).</li>
+<li><strong>Orchestration, not replacement.</strong> The plugin steers behavior. Your framework, linters and test runners still do their jobs.</li>
+</ul>
+<p class="small">The evidence for this is limited: the evals and token tests run on one small Python fixture app. Behavior on other stacks has not been tested by us. Treat stack-agnostic as a design property, not a tested result.</p>
+
+<!-- 22 -->
+<h2 id="s22">22. How this was orchestrated</h2>
+<p>The principles used while designing the plugin:</p>
+<ul>
+<li>Start from engineering problems (inconsistent output, scope creep, cost), not features.</li>
+<li>Separate process from technology.</li>
+<li>Use small specialized skills rather than one large prompt.</li>
+<li>Route only the relevant context.</li>
+<li>Minimize token use, and measure it instead of assuming.</li>
+<li>Use hooks and CI for deterministic rules; use AI judgment for contextual ones.</li>
+<li>Keep humans accountable for approval.</li>
+<li>Reuse approved patterns.</li>
+<li>Improve legacy systems incrementally.</li>
+<li>Test the instructions themselves with evals (47 across 9 skills, LLM-graded and noisy; latest full run 126 of 158 assertions).</li>
+</ul>
+<h3>Evolution, as recorded in the repository</h3>
+<p>The repository history starts at v1.2.0. Earlier procedure drafts (v1.0, v1.1) existed before it and are not in this history.</p>
+<table>
+<tr><th>Version</th><th>Date</th><th>What was added</th></tr>
+<tr><td>v1.2.0</td><td>2026-10-05</td><td>Skills for standards and migration, lane skills (fix-lanes, change-lanes), automatic lane choice, hooks, templates, evals, token-cost measurement</td></tr>
+<tr><td>(same day)</td><td>2026-10-05</td><td>Open-source preparation (licence, marketplace file); AI rules applied in bug fixes; <strong>scope protection</strong> (standards limited to changed lines), "Skipped" and "Noticed, not changed" in the summary</td></tr>
+<tr><td>v1.3.0</td><td>2026-10-06</td><td>Commands <code>init</code> (then starts the task), <code>analyze</code>, <code>summary</code>, <code>status</code>, <code>resume</code>, <code>patterns</code>; <strong>reusable patterns</strong> with lifecycle; short summary after every task; <code>db-review</code> renamed <code>db-check</code></td></tr>
+<tr><td>v1.4.0</td><td>2026-10-06</td><td>Safe and Risk standards (replacing Light and Full), task-risk escalation, no tier question at <code>init</code>, <code>analyze</code> light and deep with timestamped reports, one-time setup hint, logging check</td></tr>
+<tr><td>v1.4.1</td><td>2026-10-06</td><td><strong>Token-efficiency pass</strong> (shorter always-loaded text), <code>token-report</code> and recording scripts</td></tr>
+</table>
+
+<!-- 23 -->
+<h2 id="s23">23. What the plugin changes for developers</h2>
+<table>
+<tr><th>Before</th><th>With dev-process</th></tr>
+<tr><td>Manually explain the process to the AI each time</td><td>Standardized workflow chosen automatically</td></tr>
+<tr><td>Recreate components</td><td>Reuse Approved patterns (when the registry is maintained)</td></tr>
+<tr><td>Load all rules every time</td><td>Load only relevant standards</td></tr>
+<tr><td>Large context</td><td>Targeted context, short state files</td></tr>
+<tr><td>Unclear quality checks</td><td>Evidence-based verification and a short checklist</td></tr>
+<tr><td>Legacy exploration repeated</td><td>Saved map and timestamped analysis in the repo</td></tr>
+<tr><td>AI can expand scope</td><td>Scope protected, nearby debt reported not fixed</td></tr>
+<tr><td>AI output only</td><td>AI + standards + verification + human approval</td></tr>
+</table>
+<p class="small">These are design intents. Whether they hold in your project is what the pilot is for.</p>
+
+<!-- 24 -->
+<h2 id="s24">24. Current limitations</h2>
+<ul>
+<li><strong>AI can still make mistakes.</strong> Evals on the plugin's own instructions score about 80% of assertions (126 of 158), vary between runs, and one backend scenario (<code>db-check</code> #1) is a known weak spot.</li>
+<li><strong>Standards are guidance, not magic.</strong> Most are not enforced by code. A developer or Claude can skip them; the reviewer and the approver are the backstop.</li>
+<li><strong>Existing technical debt is not eliminated.</strong> Scope protection means untouched code stays as it is.</li>
+<li><strong>Subjective quality needs human judgment.</strong> Visual restraint, naming and architecture choices are not machine-checked.</li>
+<li><strong>Stack-specific CI is the project's job.</strong> The template has placeholders only.</li>
+<li><strong>Deep analysis costs more tokens</strong>, and its incremental mode has not been run on a real project.</li>
+<li><strong>Pattern quality depends on human approval.</strong> A poorly kept registry gives poor reuse. Automatic pattern discovery is not built.</li>
+<li><strong>Cost is higher per task.</strong> Measured overhead is about +3% to +37% on a small test app. Savings from less rework are unproven.</li>
+<li><strong>The project standard is not auto-detected.</strong> It defaults to Safe; task risk escalation is judged by Claude.</li>
+<li><strong>Single-stack testing.</strong> Only a small Python fixture has been used.</li>
+<li><strong>Not yet used on a real project.</strong> The system improves a project progressively, not instantly.</li>
+</ul>
+
+<!-- 25 -->
+<h2 id="s25">25. Recommended adoption</h2>
+<p>Do not overwhelm developers. Most work is just typing the task. Introduce the commands one at a time.</p>
+<table>
+<tr><th>Step</th><th>Command</th><th>When</th></tr>
+<tr><td>Start</td><td><code>init</code></td><td>Once per project. Takes the defaults, then continues the task</td></tr>
+<tr><td>Understand current work</td><td><code>analyze</code></td><td>When you want a quick view of standards gaps</td></tr>
+<tr><td>Need complete project understanding</td><td><code>analyze deep</code></td><td>Before legacy work or a migration; expect higher cost on the first run</td></tr>
+<tr><td>Find reusable implementation</td><td><code>patterns</code></td><td>Before building a common component. Needs a maintained <code>docs/PATTERNS.md</code></td></tr>
+<tr><td>Save task state</td><td><code>summary</code></td><td>Before clearing context or ending the day</td></tr>
+<tr><td>Continue after clearing context</td><td><code>resume</code></td><td>Start of the next session</td></tr>
+<tr><td>Judge the pilot</td><td><code>token-report</code></td><td>After recording at least 5 comparable tasks with and without the plugin</td></tr>
+</table>
+<h3>Suggested pilot</h3>
+<ol>
+<li>Pick one project and one or two developers. Run <code>init</code> and review the generated files.</li>
+<li>Define pass and fail lines first: for example at least 20% fewer rework or review rounds and no increase in post-merge defects.</li>
+<li>Do at least 5 comparable tasks with and without the plugin; record tokens, rework and review rounds.</li>
+<li>Review a few PRs by hand to check that proof is real, not just claimed.</li>
+<li>Run <code>token-report</code>, decide, and extend the pilot if the result is unclear.</li>
+</ol>
+
+<!-- 26 -->
+<h2 id="s26">26. Final mental model</h2>
+<div class="mm">
+<div>UNDERSTAND</div><i>&darr;</i>
+<div>CLASSIFY</div><i>&darr;</i>
+<div>ROUTE</div><i>&darr;</i>
+<div>REUSE</div><i>&darr;</i>
+<div>BUILD</div><i>&darr;</i>
+<div>VERIFY</div><i>&darr;</i>
+<div>SUMMARIZE</div><i>&darr;</i>
+<div>APPROVE</div><i>&darr;</i>
+<div>IMPROVE THE PROJECT</div>
+</div>
+<p>The goal is not to make AI do more work. It is to make AI-assisted engineering <strong>more predictable, reusable, safe, consistent and economical</strong>, with people still accountable for what is merged.</p>
+
+<!-- status -->
+<h2 id="status">Status summary: current, planned, optional</h2>
+<table>
+<tr><th>Item</th><th>Status</th></tr>
+<tr><td>Ten lanes with automatic selection</td><td><span class="tag cur">Current</span></td></tr>
+<tr><td>Four standards skills, legacy-migration, extend-process, reviewer agent</td><td><span class="tag cur">Current</span></td></tr>
+<tr><td>Safe and Risk standards, task-risk escalation</td><td><span class="tag cur">Current</span> (default Safe; escalation judged by Claude)</td></tr>
+<tr><td>Scope protection</td><td><span class="tag cur">Current</span> (guidance and reviewer check)</td></tr>
+<tr><td>Commands: init, analyze, summary, status, resume, patterns, token-report</td><td><span class="tag cur">Current</span></td></tr>
+<tr><td>analyze light; timestamped reports</td><td><span class="tag cur">Current</span></td></tr>
+<tr><td>analyze deep incremental mode and <code>--full</code></td><td><span class="tag cur">Current</span> as instructions; not yet run on a real project</td></tr>
+<tr><td>Pattern registry, lifecycle, lookup, candidate suggestion</td><td><span class="tag cur">Current</span></td></tr>
+<tr><td>Hooks (command guard, prompt guard, lint and tests after edit), CI template</td><td><span class="tag cur">Current</span></td></tr>
+<tr><td>Automatic detection of the project standard</td><td><span class="tag plan">Planned</span></td></tr>
+<tr><td>Machine-readable rule registry and deterministic selector from the git diff</td><td><span class="tag plan">Planned</span> (after the pilot)</td></tr>
+<tr><td>Per-rule severity (blocking or advisory), <code>CODEOWNERS</code> for sensitive folders</td><td><span class="tag plan">Planned</span></td></tr>
+<tr><td>Automatic discovery of pattern candidates by scanning code</td><td><span class="tag plan">Planned</span></td></tr>
+<tr><td>Automatic recording of token runs</td><td><span class="tag opt">Optional / Future</span></td></tr>
+<tr><td>Proven token savings from fewer reworks</td><td><span class="tag opt">Not yet measured</span></td></tr>
+</table>
+</main>
+</div>
+<script>
+// Open all collapsible sections when printing.
+window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.setAttribute('open','')})});
+</script>
+</body>
+</html>

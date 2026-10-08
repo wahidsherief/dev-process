@@ -1,0 +1,620 @@
+<title>Development Procedure Walkthrough</title>
+<style>
+:root{
+  --bg:#F7F7F5;--panel:#FFFFFF;--line:#DAD9D3;--fg:#1B1F24;--mut:#5B646E;
+  --acc:#2D5F8B;--soft:#E8EFF5;--ok:#3C6E4F;--warn:#86641B;--no:#8A3B2E;--code:#EFEEE9;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101418;--panel:#161B21;--line:#2A323B;--fg:#E6EAEE;--mut:#98A2AD;
+  --acc:#82B1DB;--soft:#1A2530;--ok:#7DB592;--warn:#D1B068;--no:#D88E80;--code:#1B2128;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101418;--panel:#161B21;--line:#2A323B;--fg:#E6EAEE;--mut:#98A2AD;
+  --acc:#82B1DB;--soft:#1A2530;--ok:#7DB592;--warn:#D1B068;--no:#D88E80;--code:#1B2128;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0;text-align:left}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+#app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+.pad{padding-inline:clamp(16px,4vw,48px)}
+header.top{display:flex;align-items:center;gap:16px;padding-block:10px;border-bottom:1px solid var(--line);background:var(--bg)}
+.brand{font-size:.8rem;font-weight:600;color:var(--mut);white-space:nowrap}
+#secs{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+#secs::-webkit-scrollbar{display:none}
+#secs button{font-size:.85rem;padding:5px 10px;border-radius:6px;color:var(--mut);white-space:nowrap}
+#secs button{pointer-events:none;cursor:default}
+#secs button.on{color:var(--fg);background:var(--soft);font-weight:600}
+#secSel{display:none;flex:1;min-width:0;font:inherit;font-size:.9rem;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+.tools{display:flex;gap:6px}
+.tb{font-size:.8rem;border:1px solid var(--line);border-radius:6px;padding:5px 10px;background:var(--panel)}
+.tb:hover{border-color:var(--acc)}
+.tb[aria-pressed="true"]{background:var(--soft);border-color:var(--acc)}
+
+main{overflow-y:auto;overflow-x:hidden}
+.slide{max-width:1180px;margin-inline:auto;padding:clamp(18px,4vh,44px) clamp(16px,4vw,48px) 40px}
+.eyebrow{font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+h1{margin:10px 0 0;font-size:clamp(2.2rem,6vw,4.2rem);line-height:1.08;letter-spacing:-.02em;font-weight:700;text-wrap:balance}
+h2{margin:6px 0 0;font-size:clamp(1.9rem,4.2vw,3rem);line-height:1.12;letter-spacing:-.015em;font-weight:700;text-wrap:balance}
+.why{margin:10px 0 0;font-size:clamp(1rem,1.7vw,1.2rem);color:var(--mut);max-width:62ch}
+.body{margin-top:clamp(16px,3vh,28px)}
+.body>*+*{margin-top:26px}
+h3.lab{margin:0 0 12px;font-size:1.05rem;font-weight:700;display:flex;align-items:center;gap:10px}
+h3.lab::before{content:'';width:3px;height:1.1em;background:var(--acc);border-radius:2px}
+h3.lab span{font-weight:500;color:var(--mut);font-size:.85rem}
+
+/* hero */
+.hero{padding-top:clamp(24px,10vh,110px)}
+.hero .sub{margin:18px 0 0;font-size:clamp(1.15rem,2.2vw,1.6rem);color:var(--mut)}
+.hero .by{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 18px;color:var(--mut);font-size:1rem}
+.hero .by b{color:var(--fg);font-weight:600}
+.hint{margin-top:28px;font-size:.9rem;color:var(--mut)}
+kbd{font:inherit;font-size:.8rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 6px;background:var(--panel)}
+
+/* card grid */
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));align-items:stretch}
+.grid[data-c="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid[data-c="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid[data-c="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{position:relative;display:flex;flex-direction:column;gap:5px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px 16px;min-width:0}
+.card.pref{border-color:var(--acc);background:var(--soft)}
+.card.link{cursor:pointer;transition:border-color .15s}
+.card.link:hover{border-color:var(--acc)}
+.top2{display:flex;align-items:center;gap:8px;min-height:1.2em}
+.cn{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;font-weight:600;color:var(--acc)}
+.ct{font-size:1.08rem;font-weight:650;line-height:1.3}
+.ct.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1rem}
+.cs{color:var(--mut);font-size:.95rem}
+.cm{margin:4px 0 0;padding:0;list-style:none}
+.cm li{position:relative;padding:2px 0 2px 14px;font-size:.9rem}
+.cm li::before{content:'';position:absolute;left:1px;top:.7em;width:5px;height:5px;background:var(--acc)}
+body.compact .cm{display:none}
+.lt{margin-left:8px;font-size:.68rem;font-weight:600;border:1px solid var(--acc);color:var(--acc);border-radius:4px;padding:0 5px;vertical-align:2px}
+.tag{font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:1px 7px;border:1px solid var(--line);color:var(--mut)}
+.tag.p{color:var(--acc);border-color:var(--acc)}
+.tag.x{color:var(--no);border-color:var(--no)}
+.gtag{margin-left:auto;font-size:.7rem;font-weight:600;color:var(--warn);border:1px solid var(--warn);border-radius:999px;padding:0 9px}
+.cg{margin-top:auto;padding-top:8px;font-size:.85rem;color:var(--warn);font-weight:600;border-top:1px dashed var(--line)}
+.cg:first-child{border:0}
+.go{margin-top:auto;padding-top:6px;font-size:.85rem;color:var(--acc);font-weight:600}
+.lbl{font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.cls{font-weight:700}
+.c-g{color:var(--ok)}.c-a{color:var(--warn)}.c-r{color:var(--no)}
+.tc .cs+.cs{margin-top:4px}
+
+/* flow arrows */
+.fc::after{content:'→';position:absolute;right:-11px;top:50%;transform:translateY(-50%);color:var(--mut);font-size:.95rem;background:var(--bg);line-height:1;z-index:1}
+.grid[data-c="4"] .fc:nth-child(4n)::after,.grid[data-c="3"] .fc:nth-child(3n)::after,.fc:last-child::after{display:none}
+
+/* before after */
+.ba{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:stretch}
+.ba>div{border:1px solid var(--line);border-radius:10px;padding:12px 16px;background:var(--panel)}
+.ba .a{border-color:var(--acc);background:var(--soft)}
+.ba .ar{border:0;background:none;padding:0;align-self:center;color:var(--mut);font-size:1.3rem}
+.ba .lbl{display:block;margin-bottom:3px}
+.code{margin:0;padding:12px 16px;border-radius:10px;background:var(--code);font-size:.9rem;line-height:1.6;overflow-x:auto;white-space:pre}
+.cap{margin-bottom:6px}
+.psub{margin:-6px 0 12px;color:var(--mut);font-size:.95rem;max-width:80ch}
+.note{color:var(--mut);font-size:.98rem;border-left:3px solid var(--acc);padding-left:14px;max-width:72ch}
+.legend{font-size:.85rem;color:var(--mut)}
+
+/* checklist */
+.cprog{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.cbar{flex:1;height:6px;background:var(--line);border-radius:6px;overflow:hidden}
+.cbar i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
+.cprog span{font-size:.9rem;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chk{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;cursor:pointer}
+.chk input{width:19px;height:19px;margin-top:2px;accent-color:var(--acc)}
+.chk .cs{color:var(--fg)}
+.chk:has(input:checked){background:var(--soft);border-color:var(--acc)}
+.chk:has(input:checked) .cs{color:var(--mut);text-decoration:line-through}
+
+footer.bot{display:grid;grid-template-columns:auto minmax(80px,1fr) auto auto;align-items:center;gap:16px;padding-block:10px;border-top:1px solid var(--line);background:var(--bg)}
+.bar{height:4px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
+.cnt{font-size:.85rem;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
+.nx{font-size:.85rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+.nb{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:8px 16px;font-weight:600}
+.nb:hover:not(:disabled){border-color:var(--acc)}
+.nb:disabled{opacity:.4;cursor:default}
+.nb.pri{background:var(--acc);border-color:var(--acc);color:var(--bg)}
+.btns{display:flex;gap:10px;align-items:center}
+
+@media(max-width:1000px){.grid[data-c="4"]{grid-template-columns:repeat(2,minmax(0,1fr))}.grid[data-c="3"]{grid-template-columns:repeat(2,minmax(0,1fr))}.fc::after{display:none!important}}
+@media(max-width:860px){#secs{display:none}#secSel{display:block}.nx{display:none}.brand{display:none}footer.bot{grid-template-columns:minmax(60px,1fr) auto auto}footer.bot .bar{grid-column:1}.ba{grid-template-columns:1fr}.ba .ar{transform:rotate(90deg);justify-self:center}}
+@media(max-width:560px){.grid,.grid[data-c]{grid-template-columns:minmax(0,1fr)}.tools .tb:first-child{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div id="app">
+  <header class="top pad">
+    <span class="brand">AI-Assisted Development · Standard Procedure</span>
+    <nav id="secs" aria-label="Sections"></nav>
+    <select id="secSel" aria-label="Section"></select>
+    <div class="tools">
+      <button class="tb" id="det" type="button" aria-pressed="true" title="Show or hide detail bullets (D)">Details</button>
+      <button class="tb" id="theme" type="button" aria-label="Toggle theme">Theme</button>
+    </div>
+  </header>
+  <main id="main"><div id="stage"></div></main>
+  <footer class="bot pad">
+    <div class="btns"><button class="nb" id="prev" type="button">Previous</button></div>
+    <div class="bar"><i id="prog"></i></div>
+    <span class="nx" id="nx"></span>
+    <div class="btns"><span class="cnt" id="cnt"></span><button class="nb pri" id="next" type="button">Next</button></div>
+  </footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var h=function(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+var pad=function(n){return (n<10?'0':'')+n};
+
+/* ================= CONTENT ================= */
+var LEG='L = applies in the Light tier and the Full tier. Rules without L apply to the Full tier only.';
+var DECK=[
+{id:'title',sec:'Context',kind:'hero'},
+
+{id:'scope',sec:'Context',title:'One procedure for every project',
+ why:'The same process and quality bar on any stack, so quality does not depend on who builds it.',
+ parts:[
+  {c:3,cards:[
+   {t:'What it is',s:'How every project is designed, built, migrated and maintained with AI.',m:['Fixes the process and the quality criteria','Does not fix the technology stack']},
+   {t:'What it covers',s:'New systems, features, bug fixes, legacy migrations, UI redesigns.',m:['Frontend, backend and AI-integrated systems','Code samples are illustrative: use the project\'s own language, framework and ORM']},
+   {t:'How it is used',s:'Set up once. Follow the work loop. Attach proof.',m:['Project setup once per project','Work loop for every task','Standards verified through the done check']}
+  ]},
+  {label:'Four principles',sub:'The rules behind every other rule.',c:4,num:true,cards:[
+   {t:'AI proposes. A named human approves.',s:'Nothing ships on AI judgment alone.',m:['The approver reviews every PR','The technical lead approves baselines, designs and decision records']},
+   {t:'Evidence or N/A',s:'Every criterion is met with proof, or marked N/A with a written reason.',m:['Proof: screenshot, query plan, test output or log line']},
+   {t:'Enforce, do not only instruct',s:'Rules that must never be broken live in hooks or CI.',m:['CLAUDE.md and skills guide Claude','Hooks and CI enforce']},
+   {t:'Small slices',s:'Each slice has tests and a memory note.',m:['One slice is one screen or one module','One slice per PR']}
+  ]}
+ ]},
+
+{id:'map',sec:'Approach',title:'How a project runs',
+ why:'One path for every task, plus an extra track for legacy migration. Read in order: each page follows the one before.',
+ parts:[{sub:'Steps 1 to 6 are the normal path for every task. The legacy track is added only when migrating an older system.',c:4,flow:[
+  {n:'1',t:'Setup',s:'Prepare Claude and the project once, before the first prompt.',m:['AI environment, plugins, prompt-data rules, token discipline']},
+  {n:'2',t:'Design step',s:'Write a one-page plan for new systems and large modules.',m:['One page, approved before the first slice']},
+  {n:'3',t:'Work loop',s:'The six steps used for every task.',m:['Kick off, plan, build, review, done check, record']},
+  {n:'4',t:'Standards',s:'Quality rules followed while building.',m:['Core, frontend, backend, AI-integrated systems']},
+  {n:'5',t:'Done check',s:'A checklist with proof, attached to every PR.',m:['Proof attached for every item']},
+  {n:'6',t:'Memory note',s:'A short record of the work, saved in the same PR.',m:['Saved in docs/memory by category']},
+  {n:'+',t:'Legacy migration',s:'Extra track for moving an older system to this standard.',m:['Baseline, guardrails, decision record, safety net, slices, release, retrospective','Four human gates']}
+ ]}]},
+
+{id:'tiers',sec:'Approach',title:'Tiers, roles and terms',
+ why:'Choose the tier in the plan and record it in CLAUDE.md. It decides which rules apply.',
+ parts:[
+  {label:'Tiers',sub:'The tier sets how many rules apply to a project.',c:2,table:{head:['Tier','Applies to','Requirements'],rows:[['Light','Internal tools, prototypes, small fixes','Rules tagged L'],['Full','Customer-facing systems, user data, AI features','All rules']]}},
+  {label:'Roles',sub:'Who does what.',c:4,table:{head:['Role','Responsibility'],rows:[
+    ['Developer','Plans, builds and tests a slice with AI. Attaches proof. Writes the memory note.'],
+    ['Approver','Reviews and approves each PR. Rejects work without proof.'],
+    ['Technical lead','Approves baselines, guardrails, designs and decision records. Also acts as architect and UI owner unless assigned separately.'],
+    ['Release owner','Approves the release checklist and rollback plan.']]}},
+  {label:'Terms',sub:'Words used throughout this procedure.',c:4,table:{head:['Term','Meaning'],rows:[
+    ['Slice','One small deliverable: one screen or one module. One slice per PR.'],
+    ['Gate','A point where a named human must approve before work continues.'],
+    ['N/A','A rule that does not apply, recorded with a written reason.'],
+    ['N+1 query','One query for a list, then one extra query per item.'],
+    ['Characterization test','A test that records current legacy behavior so it can be proven preserved.'],
+    ['Feature flag','A switch that turns new code on or off without a release.'],
+    ['Memory note','A short record of a delivered task, kept in docs/memory.'],
+    ['Token','The unit an AI provider uses to measure and price text.']]}}
+ ]},
+
+{id:'setup',sec:'Setup',title:'Project setup',
+ why:'Done once, before the first prompt. Guidance steers Claude. Hooks enforce.',legend:true,
+ parts:[
+  {label:'AI environment',sub:'The files and settings that tell Claude how this project works and stop it breaking rules.',cards:[
+   {t:'CLAUDE.md',l:1,s:'Generate with /init. Record tier, stack, commands and the standards.',m:['Keep it short']},
+   {t:'Skills',l:1,s:'One skill per repeated job.',m:['new-feature, db-review, ui-check, security-check']},
+   {t:'Reviewer agent',l:1,s:'One read-only standards-reviewer.',m:['Do not nest agents']},
+   {t:'Hooks',l:1,s:'Lint and tests after every edit. Block risky commands.',m:['Exit code 2 blocks the action']},
+   {t:'Permissions',l:1,s:'Deny reading .env, force-push and recursive delete.'}
+  ]},
+  {label:'Plugins',sub:'Add-ons for Claude. Each one can run code on a developer machine, so they are reviewed first.',cards:[
+   {t:'Allowlist',s:'Small allowlist in project settings. Reason written in the PR.'},
+   {t:'Trusted sources',s:'Read a plugin\'s commands and hooks first.',m:['They run code on the developer machine']},
+   {t:'Pin versions',s:'Prefer a skill in the repo over a plugin when a skill is enough.'},
+   {t:'Tool servers (MCP)',s:'Same review as plugins. Start with read-only access.'},
+   {t:'Core set',s:'skill-creator, Playwright, library docs, frontend-design.'}
+  ]},
+  {label:'Prompt data',sub:'What may be pasted into an AI prompt. Data is sorted into three classes.',c:3,table:{head:['Class','Examples','Rule'],rows:[
+    ['Green','Source code, public docs, error messages without personal data','Allowed'],
+    ['Amber','Logs, database samples, config files','Allowed after redaction: replace names, emails, ids and keys with fake values'],
+    ['Red','Secrets, credentials, personal or customer data, production dumps','Never']]},
+   cards:[
+   {t:'Account',s:'Use the company-approved AI account, not a personal one.'},
+   {t:'Data',s:'Develop against seed or synthetic data.'},
+   {t:'Mistakes',s:'If red data is pasted: rotate any exposed secret and tell the technical lead.'}
+  ]},
+  {label:'Token discipline',sub:'Tokens are the unit AI is priced by. These habits keep cost and noise down.',cards:[
+   {t:'Explore once',s:'Save the map in docs/ARCHITECTURE.md and reuse it.'},
+   {t:'Plan first',s:'One slice per session.',m:['/compact keeps decisions','/clear between slices']},
+   {t:'Right model',s:'Smaller model for search and formatting, larger for design and hard bugs.'},
+   {t:'Short output',s:'Ask for diffs, not whole files. Cap answer length.'},
+   {t:'Spec plugins',s:'Only for large features.'}
+  ]}
+ ]},
+
+{id:'design',sec:'Procedure',title:'Design step',
+ why:'Prevents building the wrong thing. For new systems and large new modules.',
+ parts:[{sub:'A short planning page written before any code, so the team agrees what is being built. Six questions to answer.',c:3,num:true,cards:[
+  {t:'Scope',s:'What the system does, who uses it, and what it will not do.'},
+  {t:'Data model',s:'Main entities and their relations.'},
+  {t:'Boundaries',s:'Main modules and outside services.'},
+  {t:'Targets',s:'Expected users and data volume, response time, availability.'},
+  {t:'Threat check',s:'Who may do what, which data is sensitive, what could be abused.'},
+  {t:'Decision record',s:'Stack, ORM and main choices, with the reason for each.'}
+ ],note:'Output: one page in docs/, approved by the technical lead before the first slice.'}]},
+
+{id:'loop',sec:'Procedure',title:'The work loop and rules',
+ why:'Every task, big or small, follows the same six steps and the same six rules.',
+ parts:[
+  {label:'Work loop',sub:'The six steps, in order, for every task.',c:3,flow:[
+   {n:'1',t:'Kick off',s:'Claude reads the project notes and says which rules apply. No code yet.',m:['Claude reads CLAUDE.md and docs/memory','Lists which rules apply and which are N/A','No code is written']},
+   {n:'2',t:'Plan',s:'Claude writes a plan for one slice. A human accepts it before building.',m:['Names tables and indexes, settings, log events, cache keys, tests and affected rules','The approver accepts the plan']},
+   {n:'3',t:'Build',s:'Claude implements only the approved plan and writes tests with it.',m:['Implement only the approved plan','Write tests with the code','Clear the session between slices']},
+   {n:'4',t:'Review',s:'Automated checks run first, then the approver reviews the PR.',m:['Run the reviewer agent, lint, type checks, tests and scans','The approver reviews the PR']},
+   {n:'5',t:'Done check',s:'The developer proves each checklist item with a screenshot, test output or log line.',m:['Attach proof for every item on the done check']},
+   {n:'6',t:'Record',s:'A short memory note describing the work, saved with the PR.',m:['Save the memory note in the same PR']}
+  ]},
+  {label:'Six rules',sub:'Short rules that apply at every step of the loop.',c:3,num:true,cards:[
+   {t:'Plan before code',s:'One slice per PR. Every change has a test.'},
+   {t:'No secrets in prompts',s:'Never put secrets, passwords or real customer data into a prompt.'},
+   {t:'No hard-coding',s:'Never hard-code colors, prices, URLs or settings.'},
+   {t:'No queries in loops',s:'Never query the database inside a loop.'},
+   {t:'Log and report',s:'Log every critical action and report every error.'},
+   {t:'Ask, do not guess',s:'If something is unclear, ask.'}
+  ]}
+ ]},
+
+{id:'memory',sec:'Procedure',title:'Memory notes',
+ why:'Every delivered task leaves a note, so the next developer and the next AI session start with context.',
+ parts:[
+  {label:'Folders',sub:'Each note is saved in a folder that matches the kind of work.',c:3,table:{head:['Folder','Use'],mono:true,rows:[
+    ['feature','A new capability delivered'],['fix','A bug or issue resolved'],['refactor','An internal change with no behavior change'],
+    ['migration','A legacy slice or data moved'],['decision','Design and decision records'],['incident','A production problem, with cause and prevention']]},
+   code:{cap:'LOCATION',x:'docs/memory/<category>/YYYY-MM-DD-short-name.md'},note:'Add a new folder only when none of these fit.'},
+  {label:'Note content (maximum 20 lines)',sub:'What a note says. Short enough to read in a minute.',c:3,cards:[
+   {t:'What was done and why'},{t:'What changed',s:'Modules, tables, settings, endpoints.'},{t:'Decisions and trade-offs'},{t:'How it was verified'},{t:'Gotchas and follow-ups'},{t:'Link to the PR'}]},
+  {label:'Rules',c:3,cards:[
+   {t:'Who writes it',s:'Claude drafts from the PR. The developer checks it. It ships in the same PR.'},
+   {t:'Who reads it',s:'Claude searches docs/memory for related notes before planning.'},
+   {t:'Fix notes',s:'Record the root cause, not only the patch.'}]}
+ ]},
+
+{id:'core',sec:'Standards',title:'Core standards',
+ why:'Apply to frontend and backend alike.',legend:true,
+ parts:[
+  {label:'Git and PR',sub:'How code is branched, reviewed and merged. A PR (pull request) is a proposed change awaiting review.',c:3,cards:[
+   {t:'Branches',l:1,s:'One branch per slice. Maximum 400 changed lines per PR.'},
+   {t:'Review order',l:1,s:'Reviewer agent first. Approver last.'},
+   {t:'Merge',l:1,s:'Use the PR template. All checks green.'}]},
+  {label:'Security',sub:'Keeps data and access safe.',cards:[
+   {t:'Identity and role',l:1,s:'Checked on every route and API. Deny by default.'},
+   {t:'Secrets',l:1,s:'Only in environment variables or a secret store.'},
+   {t:'Input and output',l:1,s:'Validate all input. Encode all output.'},
+   {t:'Scans',l:1,s:'Dependency and secret scans in CI. High severity blocks the merge.'},
+   {t:'Backups and rollback',s:'Automated backups with a tested restore. A rollback step for every release.'}]},
+  {label:'Logging',sub:'A record of what happened, so problems can be found and traced.',cards:[
+   {t:'Structured logs',l:1,s:'Request id and user id on every line.'},
+   {t:'Critical actions',l:1,s:'Sign-in, create, update, delete, permission changes, imports, background jobs.'},
+   {t:'Error reporting',l:1,s:'Sentry where applicable or decided, with environment and release.'},
+   {t:'Audit table',l:1,s:'Who changed what and when.'},
+   {t:'Never log',l:1,s:'Secrets or personal data.'}]},
+  {label:'Settings',sub:'Values an admin can change from a page, without a code release.',c:3,cards:[
+   {t:'Settings page',s:'Every admin-changeable value: limits, toggles, prices, email, AI keys.'},
+   {t:'Each setting',s:'Defaults, validation, role protection, masked secrets, audited changes.'},
+   {t:'Cache',s:'Cleared when a setting is saved.'}],
+   ba:{b:'Limit hard-coded in code. A release is needed to change it.',a:'Setting with default, validation and audit. An admin changes it.'}},
+  {label:'Test environment',sub:'A safe way to test without real users, real email or real money.',cards:[
+   {t:'Test mode',s:'Flag with a visible TEST banner.'},
+   {t:'Data',s:'Seed and reset commands.'},
+   {t:'External services',s:'Mocks or sandboxes for email, AI and payments.'},
+   {t:'Time',s:'Fake clock where time matters.'},
+   {t:'Email',s:'Mailpit catches all email in dev and test.'}]}
+ ]},
+
+{id:'frontend',sec:'Standards',title:'Frontend standards',
+ why:'Consistent, calm, guided, and usable when something fails.',legend:true,
+ parts:[
+  {label:'Foundation',sub:'The base every screen is built on.',c:2,cards:[
+   {t:'Design tokens and components',l:1,s:'Color, spacing, radius, shadow and type as tokens. No hard-coded values.',m:['One shared component set: button, input, table, modal, nav, card, toast, alert']},
+   {t:'Layout density',l:1,s:'Compact, standard, relaxed. Saved per user.',m:['Applied through spacing tokens']},
+   {t:'Dark and light mode',l:1,s:'Both themes as tokens. System default plus a saved manual toggle.',m:['Verify contrast, focus rings, charts and images in both']},
+   {t:'Responsive layout',l:1,s:'Mobile-first. Verify at 360, 768 and 1280 px.',m:['Tap targets at least 44 px','No horizontal page scroll']}]},
+  {label:'UX and feedback',sub:'How the screen talks to the user: errors, confirmations and help.',c:3,cards:[
+   {t:'Validation',l:1,s:'Client for speed. Server for correctness.',m:['Message beside the field after the user leaves it; state what to fix','Keep entered data after a failed submit; disable submit while sending','Map server errors to the correct fields']},
+   {t:'Toasts and alerts',l:1,s:'Toast confirms. Alert stays. Dialog confirms destructive actions.',m:['Toast: short confirmation, auto-dismiss after 4 to 5 seconds, maximum 3 stacked','Inline alert: warnings, failures, system notices. Never auto-dismiss errors','Confirm dialog: destructive actions only; state the consequence; offer undo where possible','Announce through a live region. No toast for field validation']},
+   {t:'Built-in guidance',s:'Empty states explain and offer the next action.',m:['Helper text and short tooltips for non-obvious fields; dismissible first-run hints','One term per action across the product; one clear primary action per screen']}]},
+  {label:'Visual quality',sub:'Keeps screens calm, modern and readable.',c:2,cards:[
+   {t:'No clutter',s:'One primary action per view. Whitespace over borders.',m:['Group related items','Reveal secondary detail on demand: expand, drawer, more']},
+   {t:'Restrained color',s:'Neutral base, one accent, muted status colors.',m:['At most three hues on a screen; no fully saturated colors','Color carries meaning, not decoration']},
+   {t:'Typography',s:'One modern sans family plus one monospace.',m:['Variable font or system UI stack','Fixed type scale; line height 1.4 to 1.6; line length 65 to 75 characters']},
+   {t:'Animation',s:'Small and purposeful: 150 to 250 ms, ease-out.',m:['Up to 400 ms for page transitions; animate only transform and opacity','Skeleton loaders for content','No looping motion on work screens; respect reduced motion']}]},
+  {label:'Resilience',sub:'What the user sees when something fails or is loading.',c:3,cards:[
+   {t:'Fallback pages',l:1,s:'Designed pages for 404, 500, 403, offline and maintenance.',m:['Each states what happened, offers a way out (home, retry, contact) and shows a reference id','A top-level error boundary shows a fallback and reports the error','Never show a stack trace']},
+   {t:'Data states',l:1,s:'Loading, empty and error states on every data view. Errors offer a retry.'},
+   {t:'Error reporting',l:1,s:'Client errors reported (Sentry where decided) with source maps.',m:['Send the user id only, no personal data']}]},
+  {label:'Quality gates',sub:'Checks every frontend change must pass.',c:2,cards:[
+   {t:'Accessibility',l:1,s:'WCAG 2.1 AA. Zero violations on the automated scan.',m:['Keyboard access, visible focus, labels, alt text, contrast']},
+   {t:'Performance',s:'Bundle budget in CI. Lazy loading. Paginated lists.',m:['Lazy-load routes and heavy components','Track Core Web Vitals: LCP, INP, CLS']},
+   {t:'Data fetching',s:'One data layer with cache keys and invalidation. No duplicate or looping requests.'},
+   {t:'Testing',s:'Component tests for logic, end-to-end for critical flows, screenshot tests for key screens.'}]}
+ ]},
+
+{id:'backend',sec:'Standards',title:'Backend standards',
+ why:'Correct, fast at real data volumes, observable, safe to roll back.',legend:true,
+ parts:[
+  {label:'API and access',sub:'How other programs call the backend, and who is allowed to.',c:2,cards:[
+   {t:'API design',l:1,s:'Consistent names, response shape and error format. Validate every input on the server.',m:['Paginate every list; filter and sort only on indexed fields','Document the API; version it when a change can break clients']},
+   {t:'Authentication and authorization',l:1,s:'Identity on every request, role on every action, deny by default.',m:['Expire sessions; rate-limit sign-in attempts; modern password hash','Log permission changes']}]},
+  {label:'Data',sub:'How data is stored, queried and changed safely.',c:2,cards:[
+   {t:'Database and ORM',l:1,s:'All queries through the ORM. No N+1.',m:['Load related data in one query or in batches, never in a loop','Select only needed columns; paginate; keep joins simple','Index every foreign key and every filter or sort column; check the query plan','Add a test that fails when a key endpoint\'s query count grows']},
+   {t:'Migrations',l:1,s:'Versioned files, each with a rollback.',m:['Additive first: add, backfill, switch, remove later','Test on a copy of realistic data; never edit production by hand']},
+   {t:'Scalable design',s:'Stateless services. No unbounded queries. Heavy work in queues.',m:['Rate-limit expensive endpoints','Load-test key flows against the baseline']},
+   {t:'Backups and rollback',s:'Automated backups, tested restore, feature flags for risky changes.'}],
+   ba:{b:'Loop over orders, one query per user: 1 + N queries.',a:'One batched query: needed columns only, paginated, indexed.'}},
+  {label:'Caching and jobs',sub:'Caching saves repeated work. Jobs move slow work out of the user\'s request.',c:2,cards:[
+   {t:'Caching',s:'Cache data that is read often and rarely changes.',m:['Settings, lookups, heavy reports','Clear key pattern and TTL; invalidate on write','Never per-user data under a shared key; admin clear-cache action']},
+   {t:'Background jobs',s:'Slow work runs in a queue: email, imports, reports, AI calls.',m:['Safe to retry; set a timeout; keep a failed-job list']}]},
+  {label:'Email and configuration',sub:'How the system sends email and how its settings are managed.',c:2,cards:[
+   {t:'Email',s:'Mailpit in dev and test. Email settings page with test-send.',m:['Host, port, user, from-address, encryption','Send through a queue; templates in one place']},
+   {t:'Configuration',s:'Environment config for deployment. Database settings for admins.',m:['Validate on read and write; encrypt stored secrets','Audit changes; clear the cache on save']}]},
+  {label:'Observability and tests',sub:'Seeing how the system behaves, and testing it with safe data.',c:2,cards:[
+   {t:'Logging and audit',l:1,s:'One audit helper. Request id on every log line.',m:['Health checks plus error-rate and latency alerts']},
+   {t:'Test data',s:'Seed, reset, factories. Mock external services.',m:['Unit, integration and contract tests run from an empty database']}]}
+ ]},
+
+{id:'ai',sec:'Standards',title:'AI-integrated systems',
+ why:'AI usage must be visible, limited and priced.',
+ parts:[{sub:'When a product calls an AI service, these seven things make its use visible, limited and priced.',c:4,num:true,cards:[
+  {t:'Settings page',s:'Provider, model, API key (masked), limits, model options, mock mode.'},
+  {t:'Service layer',s:'One service for every AI call.',m:['Timeouts, safe retries, clear failure messages']},
+  {t:'Usage log and dashboard',s:'Every call is logged.',m:['Model, tokens in, tokens out, cost, feature, user, time','Dashboard: today, this month, by feature, by user']},
+  {t:'Pricing in GBP and USD',s:'Prices per 1M tokens and the USD to GBP rate live in settings.',m:['Never in code','Every cost is shown in both currencies']},
+  {t:'Budgets',s:'Per-user and monthly limits, with a warning bar and an alert before the limit.'},
+  {t:'Data rules',s:'Follow the prompt-data classes. Redact personal data before sending.',m:['Log prompts only when policy allows']},
+  {t:'Testing',s:'Mock mode and a test for the cost calculation.'}
+ ],code:{cap:'COST CALCULATION (ILLUSTRATIVE)',x:'usd = (tokens_in * price_in + tokens_out * price_out) / 1,000,000\ngbp = usd * usd_to_gbp_rate     // rate from settings'}}]},
+
+{id:'approach',sec:'Migration',title:'Legacy migration: choose an approach',
+ why:'Legacy migration means moving an existing, older system to a modern standard. The first decision is how.',
+ parts:[{sub:'Four ways to move an old system to the new standard. Choose one and record it in the decision record.',c:4,cards:[
+  {t:'Piece by piece beside the old system',s:'New code is built next to the old system. Each slice goes live behind a feature flag, then the old slice is switched off.',tag:'Preferred',cls:'p'},
+  {t:'Parallel run',s:'For risky logic, old and new code process the same input and the results are compared before switching.'},
+  {t:'In-place upgrade',s:'Upgrade the existing system itself in small version steps, with strong tests after each step.'},
+  {t:'Full rewrite',s:'Start again from nothing. Only when the old system cannot be understood or run.',tag:'Avoid',cls:'x'}
+ ],note:'Record the chosen approach in the decision record.'}]},
+
+{id:'stages',sec:'Migration',title:'Legacy migration: seven stages, four gates',
+ why:'The path every legacy migration follows. A gate is a point where a named human must approve before work continues.',
+ parts:[{sub:'Understand the old system, protect it with tests, change it in small slices, then release and review.',c:4,flow:[
+  {n:'1',t:'Discover and baseline',s:'Learn what the old system does and record how it performs today, before changing anything.',m:['Explore agent maps the code; save docs/ARCHITECTURE.md','Record build time, tests, coverage, bundle size, query times, known bugs','Frontend: list screens and components. Backend: list modules, endpoints, tables, jobs']},
+  {n:'2',t:'Guardrails',s:'Set up the rules and automatic checks that stop mistakes before the first change.',gate:'Gate 1',gt:'Technical lead approves baseline and guardrails',m:['CLAUDE.md, hooks, deny rules and CI before any change']},
+  {n:'3',t:'Decision record',s:'Write one page: the chosen approach, the order of slices and how to roll back.',m:['Options, chosen target and reason, slice order, rollback path, tier']},
+  {n:'4',t:'Safety net',s:'Add tests that capture what the old system does today, so any change in behavior is caught.',gate:'Gate 2',gt:'Technical lead approves the decision record and coverage of critical flows',m:['Characterization tests lock current behavior','Backend: golden API responses and data fixtures','Frontend: end-to-end tests and screenshots','CI is green on untouched code']},
+  {n:'5',t:'Migrate in slices',s:'Move one small piece at a time using the normal work loop. A feature flag switches it on or off.',gate:'Gate 3',gt:'Approver reviews every slice PR',m:['One module or screen per session, behind a feature flag, using the work loop','Data: backup, dry run on a copy, reconcile counts afterwards','Old tests stay green']},
+  {n:'6',t:'Verify and release',s:'Check the result against the starting measurements, then release in stages with a way back.',gate:'Gate 4',gt:'Release owner signs off',m:['End-to-end, security and performance checks against the baseline','Staged rollout, tested rollback, monitoring and alerts live']},
+  {n:'7',t:'Retrospective',s:'Compare results with the baseline and improve this procedure.',m:['Compare metrics with the baseline','Update CLAUDE.md, skills and this procedure']}
+ ]}]},
+
+{id:'legacy',sec:'Migration',title:'Legacy migration: risks and UI redesign',
+ why:'What usually goes wrong when moving an old system, and how to redesign its screens safely.',
+ parts:[
+  {label:'Legacy risks',sub:'The usual problems in old systems, and the safe response to each.',c:3,cards:[
+   {t:'Missing documentation',s:'Claude maps the code and writes it down. A human corrects it.'},
+   {t:'Missing tests',s:'Write characterization tests before any change.'},
+   {t:'Hidden behavior',s:'List scheduled jobs, emails, integrations and manual processes in the baseline.'},
+   {t:'Data',s:'Back up, dry run on a copy, reconcile counts afterwards, plan the rollback.'},
+   {t:'Dependencies',s:'Upgrade in small steps and run the tests after each.'},
+   {t:'Dead code',s:'Remove only after tests and usage logs show it is unused.'}]},
+  {label:'UI redesign',sub:'Changing how an old system looks without changing what it does. Five steps.',c:3,num:true,cards:[
+   {t:'Freeze logic',s:'Tag the current release. Keep tests green. Change only markup and styles.'},
+   {t:'Audit and design system',s:'Audit every screen and component. Build tokens and a small component set of 15 to 20.'},
+   {t:'Golden page',s:'One page, approved by the technical lead. Apply it page by page.'},
+   {t:'Visual QA',s:'Screenshots against the golden page, accessibility scan, three widths, light and dark, three densities.'},
+   {t:'Keep structure',s:'Keep the legacy structure and navigation. One design owner.'}]}
+ ]},
+
+{id:'check',sec:'Verify',title:'Done check',
+ why:'Attached to every PR. No proof, no tick.',
+ parts:[{sub:'A checklist the developer ticks on every PR, attaching proof for each item.',check:[
+  ['UI','Density modes, dark and light, and 360 / 768 / 1280 px verified with screenshots'],
+  ['UI','Validation, toasts and alerts, loading, empty and error states work'],
+  ['UI','Fallback pages (404, 500, 403, offline) and the error boundary tested'],
+  ['UI','Restrained colors, one font family, uncluttered layout, short animations, reduced motion respected'],
+  ['UI','Accessibility scan clean, no hard-coded colors'],
+  ['Platform','Critical actions logged and a test error visible in the error-reporting tool'],
+  ['Platform','Settings page for configurable values, caching with invalidation'],
+  ['Platform','Email works in Mailpit, test mode, seed and reset work'],
+  ['Data','No N+1, indexes in place, query plans checked, migration and rollback tested'],
+  ['AI','Settings, usage log, cost in GBP and USD, budget alert, mock mode'],
+  ['Security','Auth and roles enforced, scans clean, rollback noted'],
+  ['Process','Tests pass, reviewer report attached, approver named, memory note saved']
+ ],note:'Tick only with proof: screenshot, query plan, test output or log line. Items that do not apply are N/A with a written reason.'}]},
+
+{id:'metrics',sec:'Verify',title:'Metrics and review',
+ why:'Measure, so the procedure improves with evidence.',
+ parts:[
+  {label:'Metrics',sub:'Numbers recorded at the start and compared at the end.',c:4,table:{head:['Group','Measures'],rows:[
+    ['Delivery','Lead time per slice, rework rate, defects found after merge, PR size'],
+    ['Quality','Coverage of critical flows, flaky test rate, standards pass rate'],
+    ['UI','Accessibility violations, token coverage, visual diff count'],
+    ['AI usage','Tokens per slice, cost per slice']]},note:'Record the baseline at project start. Compare at the retrospective.'},
+  {label:'Review of this procedure',sub:'The procedure itself is improved after every project.',c:3,cards:[
+   {t:'After each project',s:'Record what slowed the work and which rules were skipped, and why.'},
+   {t:'Update together',s:'This document, the CLAUDE.md template and the reviewer agent.'},
+   {t:'Version',s:'Record the version and a short change log in the document.'}]}
+ ]},
+
+{id:'next',sec:'Next',title:'Decisions and next steps',
+ why:'V1 is ready to pilot and will be updated periodically.',
+ parts:[
+  {label:'Next steps',sub:'What happens after this walkthrough.',c:4,flow:[
+   {n:'1',t:'Build the kit',s:'CLAUDE.md template, reviewer agent, PR template, step-by-step tracking file.'},
+   {n:'2',t:'Run the pilot',s:'Project not decided. Suggested: one with a real UI and a real database, so both tracks are tested.'},
+   {n:'3',t:'Measure',s:'Compare the metrics with the baseline.'},
+   {n:'4',t:'Revise',s:'Update this procedure periodically.'}]},
+  {label:'Decisions',sub:'Where each open decision stands.',c:3,table:{head:['Item','Status'],rows:[
+    ['Light tier','Rules tagged L'],
+    ['Approvals','One named approver per PR, including security-sensitive changes'],
+    ['Error reporting','Sentry where applicable or decided for the project'],
+    ['Plugins and prompt data','As defined in project setup'],
+    ['Pilot project','Not decided'],
+    ['Kit','To be built']]}}
+ ]}
+];
+
+/* ================= ENGINE ================= */
+var stage=$('#stage'), main=$('#main');
+var cur=0;
+var SECS=[]; DECK.forEach(function(d){if(SECS.indexOf(d.sec)<0)SECS.push(d.sec)});
+function idx(id){for(var i=0;i<DECK.length;i++)if(DECK[i].id===id)return i;return 0}
+
+function cardEl(it,i,o){
+  var c=h('div','card'+(it.cls==='p'?' pref':'')+(o.flow?' fc':'')+(it.go?' link':''));
+  var hasTop=o.num||it.n||it.tag||it.gate;
+  if(hasTop){
+    var tp=h('div','top2');
+    if(o.num||it.n) tp.append(h('span','cn',it.n||pad(i+1)));
+    if(it.tag) tp.append(h('span','tag '+it.cls,it.tag));
+    if(it.gate) tp.append(h('span','gtag',it.gate));
+    c.append(tp);
+  }
+  var t=h('div','ct',it.t); if(it.l)t.append(h('span','lt','L')); c.append(t);
+  if(it.s) c.append(h('div','cs',it.s));
+  if(it.m){var ul=h('ul','cm');it.m.forEach(function(x){ul.append(h('li',null,x))});c.append(ul)}
+  if(it.gt) c.append(h('div','cg',it.gt));
+  if(it.go){
+    c.append(h('div','go','Open section →'));
+    c.tabIndex=0; c.setAttribute('role','link');
+    var jump=function(){go(idx(it.go))};
+    c.onclick=jump; c.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();e.stopPropagation();jump()}};
+  }
+  return c;
+}
+function gridEl(items,o){
+  var g=h('div','grid'); if(o.c)g.dataset.c=o.c;
+  items.forEach(function(it,i){g.append(cardEl(it,i,o))});
+  return g;
+}
+function tableCards(t,c){
+  var g=h('div','grid'); if(c)g.dataset.c=c;
+  t.rows.forEach(function(r){
+    var cd=h('div','card tc'); var ti=h('div','ct'+(t.mono?' mono':''));
+    if(r[0]==='Green'||r[0]==='Amber'||r[0]==='Red'){ti.append(h('span','cls '+(r[0]==='Green'?'c-g':r[0]==='Amber'?'c-a':'c-r'),r[0]))}else ti.textContent=r[0];
+    cd.append(ti);
+    for(var i=1;i<r.length;i++){
+      if(t.head.length>2){var l=h('div','lbl',t.head[i]);l.style.marginTop='4px';cd.append(l)}
+      cd.append(h('div','cs',r[i]));
+    }
+    g.append(cd);
+  });
+  return g;
+}
+function baEl(x){
+  var w=h('div','ba');
+  var b=h('div'); b.append(h('span','lbl','Before'),document.createTextNode(x.b));
+  var a=h('div','a'); a.append(h('span','lbl','After'),document.createTextNode(x.a));
+  w.append(b,h('span','ar','→'),a); return w;
+}
+function checkEl(p){
+  var w=h('div'); var items=p.check;
+  var pr=h('div','cprog'); var bar=h('div','cbar'); var fill=h('i'); bar.append(fill); var ct=h('span',null,'0 of '+items.length);
+  pr.append(bar,ct); w.append(pr);
+  var g=h('div','grid'); g.dataset.c='2'; var boxes=[];
+  items.forEach(function(it){
+    var l=h('label','card chk'); var cb=document.createElement('input'); cb.type='checkbox';
+    var d=h('div'); d.append(h('div','lbl',it[0]),h('div','cs',it[1]));
+    l.append(cb,d); g.append(l); boxes.push(cb);
+    cb.onchange=function(){var n=boxes.filter(function(x){return x.checked}).length;fill.style.width=(n/items.length*100)+'%';ct.textContent=n+' of '+items.length};
+  });
+  w.append(g); return w;
+}
+function partEl(p){
+  var w=h('div','part');
+  if(p.label) w.append(h('h3','lab',p.label));
+  if(p.sub) w.append(h('p','psub',p.sub));
+  var o={num:p.num,c:p.c};
+  if(p.table) w.append(tableCards(p.table,p.c));
+  if(p.cards){var g=gridEl(p.cards,o); if(p.table)g.style.marginTop='12px'; w.append(g)}
+  if(p.flow) w.append(gridEl(p.flow,{c:p.c,flow:true}));
+  if(p.check) w.append(checkEl(p));
+  if(p.ba){var b=baEl(p.ba);b.style.marginTop='12px';w.append(b)}
+  if(p.code){var cw=h('div');cw.style.marginTop='14px';cw.append(h('div','lbl cap',p.code.cap));var pre=h('pre','code');pre.textContent=p.code.x;cw.append(pre);w.append(cw)}
+  if(p.note){var n=h('div','note',p.note);n.style.marginTop='14px';w.append(n)}
+  return w;
+}
+function buildHero(){
+  var s=h('section','slide hero');
+  s.append(h('div','eyebrow','V1 · Team walkthrough'));
+  s.append(h('h1',null,'AI-Assisted Development: Standard Procedure'));
+  s.append(h('p','sub','One process for every project: design, build, migrate, maintain.'));
+  var by=h('div','by'); var a=h('span'); a.append('Created by ');a.append(h('b',null,'Wahidul Alam'));
+  by.append(a,h('span',null,'Senior Developer, Pen Global BD')); s.append(by);
+  var hint=h('p','hint'); hint.append('Press ');hint.append(h('kbd',null,'→'));hint.append(' or use Next. Every page opens fully. Press ');hint.append(h('kbd',null,'D'));hint.append(' to hide detail bullets.');
+  s.append(hint);
+  return s;
+}
+function build(d){
+  if(d.kind==='hero') return buildHero();
+  var s=h('section','slide');
+  s.append(h('div','eyebrow',d.sec),h('h2',null,d.title));
+  if(d.why) s.append(h('p','why',d.why));
+  var b=h('div','body');
+  d.parts.forEach(function(p){b.append(partEl(p))});
+  if(d.legend) b.append(h('div','legend',LEG));
+  s.append(b); return s;
+}
+
+function go(i){
+  i=Math.max(0,Math.min(DECK.length-1,i)); cur=i;
+  stage.innerHTML=''; stage.append(build(DECK[cur])); main.scrollTop=0;
+  chrome();
+}
+function chrome(){
+  var d=DECK[cur];
+  [].forEach.call(document.querySelectorAll('#secs button'),function(b){b.classList.toggle('on',b.dataset.s===d.sec)});
+  $('#secSel').value=d.sec;
+  $('#prog').style.width=((cur+1)/DECK.length*100)+'%';
+  $('#cnt').textContent=(cur+1)+' / '+DECK.length;
+  var nx=DECK[cur+1]; $('#nx').textContent=nx?('Next: '+(nx.title||'Overview')):'End';
+  $('#prev').disabled=cur===0; $('#next').disabled=cur===DECK.length-1;
+  try{history.replaceState(null,'','#s'+(cur+1))}catch(e){}
+}
+var secs=$('#secs'), sel=$('#secSel');
+SECS.forEach(function(s){
+  var b=h('button',null,s); b.type='button'; b.dataset.s=s;
+  b.tabIndex=-1; b.setAttribute('aria-disabled','true');
+  secs.append(b);
+  var o=h('option',null,s); o.value=s; sel.append(o);
+});
+sel.disabled=true;
+$('#prev').onclick=function(){go(cur-1)}; $('#next').onclick=function(){go(cur+1)};
+var det=$('#det');
+function toggleDet(){var c=document.body.classList.toggle('compact');det.setAttribute('aria-pressed',!c)}
+det.onclick=toggleDet;
+$('#theme').onclick=function(){var r=document.documentElement,d=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=d?'light':'dark'};
+document.addEventListener('keydown',function(e){
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  var k=e.key, t=e.target, onCtl=t&&t.closest&&t.closest('button,input,select,label,[role="link"]');
+  if(k==='ArrowRight'||k==='PageDown'){e.preventDefault();go(cur+1)}
+  else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();go(cur-1)}
+  else if(k===' '&&!onCtl){e.preventDefault();go(cur+1)}
+  else if(k==='Home'){go(0)} else if(k==='End'){go(DECK.length-1)}
+  else if(k==='d'||k==='D'){toggleDet()}
+});
+var tx=0,ty=0;
+main.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+main.addEventListener('touchend',function(e){var t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;if(Math.abs(dx)>90&&Math.abs(dy)<45){go(cur+(dx<0?1:-1))}},{passive:true});
+var start=0; try{var m=/^#s(\d+)$/.exec(location.hash);if(m)start=Math.min(DECK.length,Math.max(1,+m[1]))-1}catch(e){}
+go(start);
+})();
+</script>

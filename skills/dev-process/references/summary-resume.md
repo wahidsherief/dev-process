@@ -27,9 +27,9 @@ Writes the full current-task state to `.devprocess/summary.md` (overwrite) and s
 **Changes:**
 - [file](path): one short phrase each. This is the list `resume` reads.
 **Test Result:** what was run and the result (before -> after).
-**Standards:** Applied ...; Skipped ... (reason).
+**Skipped:** standards not applied, with the reason (leave out when none).
 **Patterns:** names from docs/PATTERNS.md (only if used).
-**Note saved to:** [name.md](docs/memory/<task type>/YYYY-MM-DD-name.md), or "none".
+**Note:** [name.md](docs/memory/<task type>/YYYY-MM-DD-name.md). Leave the line out when there is none.
 
 **Outstanding**
 - what is left, including anything not changed on purpose.

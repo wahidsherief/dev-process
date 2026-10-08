@@ -1,6 +1,6 @@
 {
   "name": "dev-process",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "AI-assisted development standard procedure: the developer types the task, the plugin picks the lane (feature, bug fix, hotfix, data fix, quick change, refactor, upgrade, spike, release, migration) and enforces standards, proof and notes behind the scenes. Stack-agnostic.",
   "author": {
     "name": "Wahidul Alam"
